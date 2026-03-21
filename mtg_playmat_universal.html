@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>MTG Playmat</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-apple-system,sans-serif;}
+
+:root{
+  --c-bg:#221608;--c-border:#7a5c2e;--c-inner:rgba(245,230,190,0.04);
+  --c-inner-border:rgba(180,140,60,0.2);--c-card:rgba(245,225,175,0.05);
+  --c-card-border:rgba(180,140,60,0.28);--c-accent:rgba(180,140,60,0.22);
+  --c-accent-border:#c8a050;--c-gold:#f0d080;--c-muted:rgba(210,170,90,0.45);
+  --c-faint:rgba(210,170,90,0.25);--c-btn:rgba(180,140,60,0.12);
+  --c-btn-border:rgba(180,140,60,0.35);--c-btn-active:rgba(180,140,60,0.32);
+  --c-status:rgba(210,170,90,0.35);--c-divider:rgba(180,140,60,0.18);
+}
+
+/* ── PORTRAIT HINT (phones only) ── */
+.rotate-hint{
+  display:none;position:fixed;inset:0;background:#111;z-index:999;
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;color:rgba(210,170,90,0.65);font-size:13px;
+  text-transform:uppercase;letter-spacing:.1em;
+}
+.rotate-hint svg{opacity:.45;}
+
+/* Show rotate hint only on narrow portrait phones */
+@media (max-width:600px) and (orientation:portrait){
+  .rotate-hint{display:flex;}
+  body > .wrap{display:none;}
+}
+
+/* ── WRAPPER ── */
+.wrap{
+  padding:10px;
+  display:flex;align-items:flex-start;justify-content:center;min-height:100vh;
+}
+.mat{
+  background:var(--c-bg);border:2px solid var(--c-border);border-radius:14px;
+  padding:10px;width:100%;max-width:1200px;
+  transition:background .4s,border-color .4s;
+}
+.mat-inner{
+  background:var(--c-inner);border:1px solid var(--c-inner-border);
+  border-radius:10px;padding:10px;position:relative;
+}
+
+/* ── SHARED COMPONENTS ── */
+.sec-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-muted);margin-bottom:5px;font-weight:500;}
+.card{background:var(--c-card);border:1px solid var(--c-card-border);border-radius:8px;padding:9px 11px;transition:background .3s,border-color .3s;}
+
+/* top strip */
+.top-strip{display:flex;gap:6px;margin-bottom:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+.fmt-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;user-select:none;transition:all .2s;}
+.fmt-btn.active{background:var(--c-accent);border-color:var(--c-accent-border);color:var(--c-gold);}
+.reset-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid rgba(200,80,60,0.4);color:rgba(220,100,80,0.65);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;background:transparent;user-select:none;}
+.reset-btn:active{background:rgba(200,80,60,0.18);}
+.theme-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;background:transparent;user-select:none;display:flex;align-items:center;gap:4px;}
+.theme-btn:active{background:var(--c-accent);}
+.theme-dots{display:flex;gap:2px;}
+.theme-dot{width:8px;height:8px;border-radius:50%;}
+
+/* life */
+.life-num{font-size:clamp(48px,7vw,72px);font-weight:500;color:var(--c-gold);text-align:center;line-height:1;font-family:Georgia,serif;}
+.life-num.danger{color:#e05040;}
+.life-sub{font-size:10px;color:var(--c-faint);text-align:center;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
+.life-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;}
+.lbtn{background:var(--c-btn);border:1px solid var(--c-btn-border);border-radius:7px;color:var(--c-gold);font-size:clamp(13px,2vw,17px);height:clamp(38px,5vh,50px);cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;transition:background .12s;}
+.lbtn:active{background:var(--c-btn-active);}
+
+/* mana pool */
+.mana-top{display:flex;align-items:center;margin-bottom:7px;gap:7px;flex-wrap:wrap;}
+.mana-status{font-size:9px;color:var(--c-status);margin-left:auto;}
+.untap-btn{font-size:9px;padding:3px 10px;border-radius:6px;border:1px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;white-space:nowrap;}
+.untap-btn:active{filter:brightness(1.2);}
+
+.mana-pool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.pool-slot{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.pool-empty{border-radius:8px;border:1.5px dashed rgba(180,140,60,0.15);background:transparent;width:100%;min-height:84px;}
+.pool-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 4px 6px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s,opacity .2s;width:100%;min-height:84px;position:relative;}
+.pool-card:active{filter:brightness(1.3);transform:scale(.96);}
+.pool-card.spent-out{opacity:.28;cursor:default;}
+.pool-card.spent-out:active{transform:none;filter:none;}
+.pool-total{font-size:clamp(16px,2.2vw,22px);font-weight:500;line-height:1;font-family:Georgia,serif;}
+.pool-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pool-icon svg{width:26px!important;height:26px!important;display:block;}
+.pool-name{font-size:8px;text-transform:uppercase;letter-spacing:.06em;text-align:center;line-height:1.2;}
+.pool-spent{font-size:8px;text-align:center;opacity:.55;line-height:1;}
+.pool-untap{font-size:8px;padding:3px 6px;border-radius:4px;border:1px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);cursor:pointer;text-transform:uppercase;letter-spacing:.05em;user-select:none;width:100%;text-align:center;}
+.pool-untap:active{filter:brightness(1.2);}
+.pool-untap-ghost{font-size:8px;padding:3px 6px;visibility:hidden;border:1px solid transparent;width:100%;}
+.hybrid-half-l{position:absolute;left:0;top:0;width:50%;height:100%;border-radius:6px 0 0 6px;}
+.hybrid-half-r{position:absolute;right:0;top:0;width:50%;height:100%;border-radius:0 6px 6px 0;}
+.pool-card-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;}
+
+/* right col */
+.right-col{display:flex;flex-direction:column;gap:7px;}
+.cmd-row{display:flex;align-items:center;gap:3px;margin-bottom:5px;}
+.cmd-name{font-size:10px;color:var(--c-muted);width:24px;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;}
+.cmd-val{font-size:17px;font-weight:500;color:var(--c-gold);font-family:Georgia,serif;min-width:26px;text-align:center;}
+.cmd-val.danger{color:#e05040;}
+.cbtn{height:24px;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;padding:0 5px;white-space:nowrap;flex-shrink:0;}
+.cbtn:active{background:var(--c-btn-active);}
+
+.pt-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.counter-card{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;}
+.counter-tap-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;padding:9px 4px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s;flex:1;}
+.counter-tap-btn:active{filter:brightness(1.3);transform:scale(.97);}
+.counter-num{font-size:clamp(20px,3vw,28px);font-weight:500;line-height:1;font-family:Georgia,serif;}
+.counter-icon{display:flex;align-items:center;justify-content:center;width:28px;height:28px;}
+.counter-label{font-size:8px;text-transform:uppercase;letter-spacing:.07em;opacity:.8;text-align:center;}
+.counter-reset{font-size:8px;padding:3px 0;border-radius:4px;border:1px solid rgba(200,80,60,0.35);background:transparent;color:rgba(220,100,80,0.6);cursor:pointer;text-transform:uppercase;letter-spacing:.05em;user-select:none;width:100%;text-align:center;}
+.counter-reset:active{background:rgba(200,80,60,0.18);}
+
+/* initiative */
+.init-compact{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 6px;cursor:pointer;user-select:none;text-align:center;height:100%;}
+.init-icon-el{font-size:22px;opacity:.3;transition:opacity .2s;line-height:1;}
+.initiative-card.active .init-icon-el{opacity:1;}
+.init-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted);}
+.initiative-card.active .init-lbl{color:var(--c-gold);}
+.init-state{font-size:9px;color:var(--c-faint);font-style:italic;}
+.initiative-card.active .init-state{color:rgba(240,200,80,0.7);}
+
+/* dice */
+.dice-compact-inner{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 5px;}
+.dice-result-row{display:flex;align-items:center;gap:7px;}
+.d20-svg{opacity:.3;flex-shrink:0;}
+.dice-face{font-size:clamp(22px,3vw,32px);font-weight:500;color:var(--c-gold);font-family:Georgia,serif;line-height:1;min-width:36px;text-align:center;}
+.dice-rolling{animation:pop .28s ease-out;}
+@keyframes pop{0%{transform:scale(.45);opacity:.15;}100%{transform:scale(1);opacity:1;}}
+.dice-btn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:100%;}
+.dbtn{font-size:9px;padding:6px 0;border-radius:5px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;user-select:none;text-align:center;transition:background .1s;}
+.dbtn:active{background:var(--c-btn-active);}
+.dice-hist{font-size:8px;color:var(--c-faint);text-align:center;}
+
+/* add mana */
+.add-mana-card{padding:10px 12px;}
+.add-mana-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.clear-btn{font-size:9px;padding:3px 10px;border-radius:5px;border:1px solid rgba(200,80,60,0.35);background:transparent;color:rgba(220,100,80,0.6);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;user-select:none;}
+.clear-btn:active{background:rgba(200,80,60,0.18);}
+.mana-btn-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.mana-pair{display:flex;flex-direction:column;gap:4px;}
+.mc-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 3px 8px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s;background:rgba(0,0,0,0.22);}
+.mc-btn:active{filter:brightness(1.35);transform:scale(.97);}
+.mc-btn-sign{font-size:15px;font-weight:500;line-height:1;}
+.mc-btn-icon{line-height:1;display:flex;align-items:center;justify-content:center;}
+.mc-btn-icon svg{width:24px!important;height:24px!important;display:block;}
+.mc-btn-name{font-size:7px;text-transform:uppercase;letter-spacing:.06em;opacity:.85;text-align:center;line-height:1.2;}
+.mc-btn.sub-style{background:rgba(0,0,0,0.32);opacity:.82;}
+.mc-btn.sub-style:active{filter:brightness(1.3);transform:scale(.97);opacity:1;}
+.mc-btn.hybrid-style{border-color:rgba(180,120,240,0.55);background:rgba(100,60,180,0.15);}
+
+/* ── LAYOUT: MOBILE LANDSCAPE + TABLET + DESKTOP (≥600px) ── */
+.main-grid{display:grid;gap:8px;margin-bottom:8px;}
+.bot-grid{display:grid;gap:8px;}
+
+/* Wide layout — tablet landscape, desktop */
+@media (min-width:600px){
+  body{padding:clamp(8px,1.5vw,20px);}
+  .wrap{padding:clamp(8px,1.5vw,20px);}
+  .mat{padding:clamp(10px,1.5vw,16px);}
+  .mat-inner{padding:clamp(10px,1.5vw,14px);}
+
+  .main-grid{grid-template-columns:clamp(140px,16vw,200px) 1fr clamp(180px,22vw,240px);}
+  .bot-grid{grid-template-columns:clamp(90px,11vw,130px) clamp(110px,14vw,160px) 1fr;}
+
+  .pool-empty{min-height:clamp(80px,10vh,110px);}
+  .pool-card{min-height:clamp(80px,10vh,110px);}
+
+  .sec-label{font-size:clamp(8px,0.9vw,10px);}
+  .fmt-btn,.reset-btn,.theme-btn{font-size:clamp(9px,0.9vw,11px);padding:clamp(3px,0.5vh,5px) clamp(8px,1vw,12px);}
+}
+
+/* Desktop — more breathing room */
+@media (min-width:1024px){
+  .mc-btn-icon svg{width:26px!important;height:26px!important;}
+  .mc-btn{padding:11px 4px 9px;gap:5px;}
+  .mc-btn-name{font-size:8px;}
+  .pool-card{min-height:clamp(90px,11vh,120px);}
+  .pool-empty{min-height:clamp(90px,11vh,120px);}
+  .card{padding:10px 13px;}
+  .mana-btn-grid{gap:7px;}
+  .cbtn{height:26px;font-size:11px;}
+  .cmd-val{font-size:18px;}
+}
+
+/* Large desktop — generous sizing */
+@media (min-width:1400px){
+  .pool-card{min-height:120px;}
+  .pool-empty{min-height:120px;}
+  .lbtn{height:52px;}
+  .dbtn{padding:8px 0;font-size:10px;}
+  .dice-btn-grid{gap:5px;}
+}
+
+/* ── MOBILE PORTRAIT LAYOUT (portrait phones, <600px) ── */
+/* Only shown when not in portrait-blocked state */
+@media (max-width:599px) and (orientation:landscape){
+  .main-grid{grid-template-columns:130px 1fr 185px;}
+  .bot-grid{grid-template-columns:88px 115px 1fr;}
+  .pool-card{min-height:76px;}
+  .pool-empty{min-height:76px;}
+  .life-num{font-size:46px;}
+  .lbtn{height:36px;font-size:13px;}
+  .sec-label{font-size:8px;}
+  .cmd-val{font-size:15px;}
+  .cbtn{height:22px;}
+}
+
+/* ── MODALS ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;padding:16px;}
+.overlay.open{display:flex;}
+.modal{background:#1a1208;border:1px solid var(--c-border);border-radius:14px;padding:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:12px;color:var(--c-gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;font-weight:500;}
+.modal-note{font-size:9px;color:var(--c-faint);margin-bottom:10px;font-style:italic;}
+.theme-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+.tpick{border-radius:8px;border:2px solid transparent;padding:8px;cursor:pointer;user-select:none;display:flex;align-items:center;gap:7px;transition:all .15s;background:rgba(0,0,0,0.2);}
+.tpick:hover{background:rgba(180,140,60,0.1);}
+.tpick.sel{border-color:var(--c-gold);background:rgba(180,140,60,0.18);}
+.tpick-swatch{width:20px;height:20px;border-radius:50%;border:2px solid;flex-shrink:0;}
+.tpick-name{font-size:10px;color:rgba(210,170,90,0.6);}
+.tpick.sel .tpick-name{color:var(--c-gold);}
+.tpick-check{width:14px;height:14px;border-radius:3px;border:1.5px solid rgba(180,140,60,0.4);margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--c-gold);}
+.tpick.sel .tpick-check{background:rgba(180,140,60,0.35);border-color:var(--c-gold);}
+.modal-foot{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px;}
+.modal-close{font-size:10px;padding:6px 12px;border-radius:7px;border:1px solid var(--c-btn-border);background:transparent;color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.modal-apply{font-size:10px;padding:6px 12px;border-radius:7px;border:1px solid rgba(100,180,80,0.45);background:rgba(60,140,40,0.15);color:rgba(150,220,120,0.85);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.modal-apply:active{background:rgba(60,140,40,0.32);}
+.modal-reset-btn{font-size:10px;padding:6px 12px;border-radius:7px;border:1px solid var(--c-btn-border);background:transparent;color:var(--c-faint);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.sel-note{font-size:9px;color:var(--c-faint);font-style:italic;margin-bottom:6px;}
+.divider{border:none;border-top:1px solid var(--c-divider);margin:8px 0;}
+.guild-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px;}
+.guild-btn{padding:7px 8px;border-radius:7px;border:1px solid var(--c-btn-border);background:var(--c-btn);font-size:10px;cursor:pointer;color:var(--c-muted);display:flex;align-items:center;gap:5px;user-select:none;}
+.guild-btn:active{background:var(--c-btn-active);}
+.c-dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.manual-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:8px;}
+.c-sel{width:28px;height:28px;border-radius:50%;border:2px solid rgba(180,140,60,0.3);cursor:pointer;user-select:none;opacity:.45;transition:opacity .1s;}
+.c-sel.selected{opacity:1;border-color:#f0d080;}
+</style>
+</head>
+<body>
+
+<!-- Portrait blocker — phones only -->
+<div class="rotate-hint">
+  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2"/>
+    <path d="M3 12h18M15 8l4 4-4 4"/>
+  </svg>
+  Rotate to landscape
+</div>
+
+<div class="wrap">
+<div class="mat">
+<div class="mat-inner">
+
+  <!-- top strip -->
+  <div class="top-strip">
+    <div style="display:flex;gap:5px;align-items:center;">
+      <div class="fmt-btn active" onclick="setFormat('commander',this)">Commander</div>
+      <div class="fmt-btn" onclick="setFormat('standard',this)">Standard</div>
+      <div class="fmt-btn" onclick="setFormat('draft',this)">Draft</div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <div class="theme-btn" onclick="openTheme()">
+        <div class="theme-dots" id="themeDots"><div class="theme-dot" style="background:#7a5c2e;"></div></div>
+        Theme
+      </div>
+      <div class="reset-btn" onclick="resetAll()">Reset game</div>
+    </div>
+  </div>
+
+  <!-- main 3-col grid -->
+  <div class="main-grid">
+
+    <!-- life -->
+    <div class="card">
+      <div class="sec-label">Life total</div>
+      <div class="life-num" id="lifeNum">40</div>
+      <div class="life-sub">points</div>
+      <div class="life-btns">
+        <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(-5)">−5</div>
+        <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(5)">+5</div>
+        <div class="lbtn" onclick="adjLife(-1)">−1</div>
+        <div class="lbtn" onclick="adjLife(1)">+1</div>
+      </div>
+    </div>
+
+    <!-- mana pool -->
+    <div class="card">
+      <div class="mana-top">
+        <div class="sec-label" style="margin-bottom:0;">Mana pool — tap to spend</div>
+        <div class="untap-btn" onclick="untapAll()">↺ Untap all</div>
+        <div class="mana-status" id="manaStatus"></div>
+      </div>
+      <div class="mana-pool-grid" id="manaPoolGrid"></div>
+    </div>
+
+    <!-- right col -->
+    <div class="right-col">
+      <div class="card" id="cmdCard">
+        <div class="sec-label">Commander damage</div>
+        <div id="cmdRows"></div>
+      </div>
+      <div class="pt-row">
+        <div class="card" style="padding:8px;">
+          <div class="sec-label">Poison</div>
+          <div class="counter-card">
+            <div class="counter-tap-btn" id="poisonBtn"
+              style="border-color:rgba(60,180,60,0.6);background:rgba(20,100,20,0.25);"
+              onclick="adjPoison(1)">
+              <div class="counter-num" id="poisonNum" style="color:#80e080;">0</div>
+              <div class="counter-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#80e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 3 L9 8 C9 8 5 10 5 15 C5 19 8 21 12 21 C16 21 19 19 19 15 C19 10 15 8 15 8 L15 3"/>
+                  <line x1="7" y1="3" x2="17" y2="3"/>
+                  <ellipse cx="12" cy="15" rx="3" ry="3.5" fill="rgba(40,160,40,0.3)" stroke="#80e080" stroke-width="1.2"/>
+                  <path d="M10.5 14 Q12 12.5 13.5 14" stroke="#80e080" stroke-width="1" fill="none"/>
+                </svg>
+              </div>
+              <div class="counter-label" style="color:#80e080;">tap to add</div>
+            </div>
+            <div class="counter-reset" onclick="resetPoison()">Reset</div>
+          </div>
+        </div>
+        <div class="card" style="padding:8px;">
+          <div class="sec-label">Tokens</div>
+          <div class="counter-card">
+            <div class="counter-tap-btn"
+              style="border-color:rgba(180,140,60,0.5);background:rgba(120,90,20,0.2);"
+              onclick="adjToken(1)">
+              <div class="counter-num" id="tokenNum" style="color:#f0d080;">0</div>
+              <div class="counter-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f0d080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="4.5" r="2"/>
+                  <line x1="12" y1="6.5" x2="12" y2="14"/>
+                  <line x1="7" y1="9.5" x2="17" y2="9.5"/>
+                  <line x1="12" y1="14" x2="8" y2="20"/>
+                  <line x1="12" y1="14" x2="16" y2="20"/>
+                </svg>
+              </div>
+              <div class="counter-label" style="color:rgba(210,170,90,0.6);">tap to add</div>
+            </div>
+            <div class="counter-reset" onclick="resetToken()">Reset</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- bottom grid: initiative | dice | add mana -->
+  <div class="bot-grid">
+
+    <div class="card initiative-card" id="initCard" onclick="toggleInit()">
+      <div class="init-compact">
+        <div class="init-icon-el">⚔</div>
+        <div class="init-lbl">Initiative</div>
+        <div class="init-state" id="initState">Not held</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="dice-compact-inner">
+        <div class="sec-label" style="margin-bottom:3px;">Dice</div>
+        <div class="dice-result-row">
+          <svg class="d20-svg" width="24" height="24" viewBox="0 0 36 36" fill="none">
+            <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(210,170,90,0.45);"/>
+            <polygon points="18,2 34,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+            <polygon points="18,2 2,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+            <polygon points="34,10 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+            <polygon points="2,10 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+            <polygon points="18,34 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+            <polygon points="18,34 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+          </svg>
+          <div class="dice-face" id="diceFace">—</div>
+        </div>
+        <div class="dice-hist" id="diceHist"></div>
+        <div class="dice-btn-grid">
+          <div class="dbtn" onclick="roll(4)">d4</div>
+          <div class="dbtn" onclick="roll(6)">d6</div>
+          <div class="dbtn" onclick="roll(8)">d8</div>
+          <div class="dbtn" onclick="roll(10)">d10</div>
+          <div class="dbtn" onclick="roll(12)">d12</div>
+          <div class="dbtn" onclick="roll(20)">d20</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card add-mana-card">
+      <div class="add-mana-top">
+        <div class="sec-label" style="margin-bottom:0;">Add mana</div>
+        <div class="clear-btn" onclick="clearMana()">Clear all</div>
+      </div>
+      <div class="mana-btn-grid" id="manaGrid"></div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- theme modal -->
+<div class="overlay" id="themeOverlay" onclick="closeOutside(event,'themeOverlay')">
+  <div class="modal">
+    <div class="modal-title">UI theme</div>
+    <div class="modal-note">Pick up to 3 colors for your deck's identity</div>
+    <div class="theme-grid" id="themeGrid"></div>
+    <div class="sel-note" id="themeSelNote">None selected — showing default</div>
+    <div class="modal-foot">
+      <div class="modal-reset-btn" onclick="resetTheme()">Default</div>
+      <div class="modal-close" onclick="closeTheme()">Cancel</div>
+      <div class="modal-apply" onclick="applyTheme()">Apply</div>
+    </div>
+  </div>
+</div>
+
+<!-- hybrid modal -->
+<div class="overlay" id="hybridOverlay" onclick="closeOutside(event,'hybridOverlay')">
+  <div class="modal">
+    <div class="modal-title">Hybrid mana</div>
+    <div style="font-size:9px;color:var(--c-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Guild presets</div>
+    <div class="guild-grid" id="guildGrid"></div>
+    <div class="divider"></div>
+    <div style="font-size:9px;color:var(--c-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Manual — pick two colors</div>
+    <div class="manual-row" id="manualRow"></div>
+    <div class="modal-foot">
+      <div class="modal-close" onclick="closeHybrid()">Cancel</div>
+      <div class="modal-apply" onclick="addManualHybrid()">Add pip</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FORMATS={commander:{life:40},standard:{life:20},draft:{life:20}};
+const ICONS={
+  w:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+  u:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 C12 2 6 8 6 14 a6 6 0 0 0 12 0 C18 8 12 2 12 2 Z"/></svg>`,
+  b:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6.8 20 Q8 14 12 14 Q16 14 17.2 20"/><path d="M3 20 Q4 13 7 11"/><path d="M21 20 Q20 13 17 11"/><line x1="3" y1="20" x2="21" y2="20"/></svg>`,
+  r:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 C10 6 7 8 7 12 C7 15 9 17 12 17 C15 17 17 15 17 12 C17 8 14 6 12 2 Z"/><path d="M9 21 C9 18 10.5 17 12 17 C13.5 17 15 18 15 21"/></svg>`,
+  g:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22 L12 8"/><path d="M12 8 C12 8 6 10 5 4 C5 4 11 3 12 8 Z"/><path d="M12 13 C12 13 18 11 19 5 C19 5 13 4 12 13 Z"/><path d="M9 22 L15 22"/></svg>`,
+  c:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L20 9 L17 20 L7 20 L4 9 Z"/><line x1="12" y1="3" x2="12" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/></svg>`,
+  hybrid:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3 C9 6 7 9 7 12 C7 15 9 18 12 21"/><path d="M12 3 C15 6 17 9 17 12 C17 15 15 18 12 21"/></svg>`
+};
+const CM={
+  w:{label:'White',name:'Plains',   bg:'#d4c98a',bc:'#c8b870',text:'#2a1e00',themeBg:'#1e1a08',themeBorder:'#c8b060',themeAccent:'#a89040',themeGold:'#f0d890'},
+  u:{label:'Blue', name:'Island',   bg:'#2a5fa8',bc:'#4a8fd8',text:'#d0e8ff',themeBg:'#08141e',themeBorder:'#4a8fd8',themeAccent:'#2a5fa8',themeGold:'#90ccff'},
+  b:{label:'Black',name:'Swamp',    bg:'#1a1018',bc:'#7a5090',text:'#d0a8f0',themeBg:'#100810',themeBorder:'#7a5090',themeAccent:'#5a3070',themeGold:'#d0a8f0'},
+  r:{label:'Red',  name:'Mountain', bg:'#c03020',bc:'#e06040',text:'#ffe0d0',themeBg:'#1e0808',themeBorder:'#e06040',themeAccent:'#a02818',themeGold:'#ffb890'},
+  g:{label:'Green',name:'Forest',   bg:'#1a6030',bc:'#40a060',text:'#c0f0c0',themeBg:'#081408',themeBorder:'#40a060',themeAccent:'#206030',themeGold:'#90e890'},
+  c:{label:'Colorless',name:'Wastes',bg:'#5a5450',bc:'#9a8a80',text:'#f0e8e0',themeBg:'#141210',themeBorder:'#9a8a80',themeAccent:'#6a6460',themeGold:'#e0d8d0'}
+};
+const MANA_KEYS=['w','u','b','r','g','c'];
+const GUILDS=[
+  {name:'Azorius',c1:'w',c2:'u'},{name:'Dimir',c1:'u',c2:'b'},
+  {name:'Rakdos',c1:'b',c2:'r'},{name:'Gruul',c1:'r',c2:'g'},
+  {name:'Selesnya',c1:'g',c2:'w'},{name:'Orzhov',c1:'w',c2:'b'},
+  {name:'Izzet',c1:'u',c2:'r'},{name:'Golgari',c1:'b',c2:'g'},
+  {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
+];
+const POOL_SLOTS=8;
+let fmt='commander',life=40,poison=0,tokens=0,initiative=false;
+let cmdPlayers=['P2','P3','P4'],cmdDmg={};
+let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add';
+
+function adjPoison(d){poison=Math.max(0,poison+d);document.getElementById('poisonNum').textContent=poison;const btn=document.getElementById('poisonBtn');btn.style.background=poison>=10?'rgba(180,20,20,0.3)':poison>=7?'rgba(120,60,0,0.3)':'rgba(20,100,20,0.25)';btn.style.borderColor=poison>=10?'rgba(220,60,60,0.7)':poison>=7?'rgba(200,120,40,0.6)':'rgba(60,180,60,0.6)';document.getElementById('poisonNum').style.color=poison>=10?'#ff8080':poison>=7?'#ffb060':'#80e080';}
+function resetPoison(){poison=0;adjPoison(0);}
+function adjToken(d){tokens=Math.max(0,tokens+d);document.getElementById('tokenNum').textContent=tokens;}
+function resetToken(){tokens=0;document.getElementById('tokenNum').textContent=0;}
+function adjLife(d){life=Math.max(0,life+d);const el=document.getElementById('lifeNum');el.textContent=life;el.className='life-num'+(life<=5?' danger':'');}
+
+function eKey(t,a,b){return t==='mono'?a:'h:'+[a,b].sort().join('');}
+function addCol(c){const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}renderMana();}
+function removeCol(c){const k=eKey('mono',c),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();}
+function addHybrid(c1,c2){const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0});}renderMana();}
+function removeHybrid(c1,c2){const k=eKey('hybrid',c1,c2),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();}
+function untapEntry(idx){manaEntries[idx].spent=0;renderMana();}
+function untapAll(){manaEntries.forEach((_,i)=>manaEntries[i].spent=0);renderMana();}
+function clearMana(){manaEntries=[];renderMana();}
+
+function renderMana(){
+  const grid=document.getElementById('manaPoolGrid');grid.innerHTML='';
+  let totalAvail=0,totalSpent=0;
+  for(let si=0;si<POOL_SLOTS;si++){
+    const slot=document.createElement('div');slot.className='pool-slot';
+    const e=manaEntries[si];
+    if(!e){
+      const ghost=document.createElement('div');ghost.className='pool-empty';
+      const ug=document.createElement('div');ug.className='pool-untap-ghost';ug.textContent='↺ Untap';
+      slot.appendChild(ghost);slot.appendChild(ug);
+    } else {
+      const avail=e.total-e.spent;totalAvail+=avail;totalSpent+=e.spent;
+      const card=document.createElement('div');card.className='pool-card'+(avail===0?' spent-out':'');
+      if(e.type==='hybrid'){
+        card.style.borderColor='rgba(180,140,60,0.55)';card.style.background='transparent';
+        const hl=document.createElement('div');hl.className='hybrid-half-l';hl.style.background=CM[e.c1].bg+'bb';
+        const hr=document.createElement('div');hr.className='hybrid-half-r';hr.style.background=CM[e.c2].bg+'bb';
+        card.appendChild(hl);card.appendChild(hr);
+        const inner=document.createElement('div');inner.className='pool-card-inner';inner.style.color='rgba(255,255,255,0.92)';
+        inner.innerHTML=`<div class="pool-total" style="color:rgba(255,255,255,0.92)">${avail}<span style="font-size:11px;opacity:.5;">/${e.total}</span></div><div class="pool-icon" style="color:rgba(255,255,255,0.92)">${ICONS.hybrid}</div><div class="pool-name" style="color:rgba(255,255,255,0.8)">${CM[e.c1].label}/${CM[e.c2].label}</div><div class="pool-spent" style="color:rgba(255,255,255,0.42)">${e.spent} spent</div>`;
+        card.appendChild(inner);
+      } else {
+        card.style.background=CM[e.color].bg;card.style.borderColor=CM[e.color].bc;
+        const tc=CM[e.color].text;
+        card.innerHTML=`<div class="pool-total" style="color:${tc}">${avail}<span style="font-size:11px;opacity:.5;">/${e.total}</span></div><div class="pool-icon" style="color:${tc}">${ICONS[e.color]}</div><div class="pool-name" style="color:${tc}">${CM[e.color].name}</div><div class="pool-spent" style="color:${tc};opacity:.5">${e.spent} spent</div>`;
+      }
+      if(avail>0){const idx=si;card.onclick=()=>{manaEntries[idx].spent++;renderMana();};}
+      slot.appendChild(card);
+      const ub=document.createElement('div');ub.className='pool-untap';ub.textContent='↺ Untap';
+      const idx=si;ub.onclick=()=>untapEntry(idx);slot.appendChild(ub);
+    }
+    grid.appendChild(slot);
+  }
+  const st=document.getElementById('manaStatus');
+  st.textContent=manaEntries.length?totalAvail+' avail · '+totalSpent+' spent':'';
+}
+
+function buildManaGrid(){
+  const g=document.getElementById('manaGrid');g.innerHTML='';
+  MANA_KEYS.forEach(c=>{
+    const m=CM[c];const pair=document.createElement('div');pair.className='mana-pair';
+    const add=document.createElement('div');add.className='mc-btn';add.style.borderColor=m.bc;add.style.color=m.text;add.style.background=m.bg;
+    add.innerHTML=`<div class="mc-btn-sign" style="color:${m.text}">+</div><div class="mc-btn-icon" style="color:${m.text}">${ICONS[c]}</div><div class="mc-btn-name" style="color:${m.text}">${m.name}</div>`;add.onclick=()=>addCol(c);
+    const sub=document.createElement('div');sub.className='mc-btn sub-style';sub.style.borderColor=m.bc;sub.style.color=m.text;sub.style.background=m.bg;
+    sub.innerHTML=`<div class="mc-btn-sign" style="color:${m.text}">−</div><div class="mc-btn-icon" style="color:${m.text}">${ICONS[c]}</div><div class="mc-btn-name" style="color:${m.text}">${m.name}</div>`;sub.onclick=()=>removeCol(c);
+    pair.appendChild(add);pair.appendChild(sub);g.appendChild(pair);
+  });
+  const hpair=document.createElement('div');hpair.className='mana-pair';
+  const hadd=document.createElement('div');hadd.className='mc-btn hybrid-style';hadd.style.color='rgba(210,180,255,0.9)';
+  hadd.innerHTML=`<div class="mc-btn-sign" style="color:rgba(210,180,255,0.9)">+</div><div class="mc-btn-icon" style="color:rgba(210,180,255,0.9)">${ICONS.hybrid}</div><div class="mc-btn-name" style="color:rgba(210,180,255,0.85)">Hybrid</div>`;hadd.onclick=()=>openHybrid('add');
+  const hsub=document.createElement('div');hsub.className='mc-btn sub-style hybrid-style';hsub.style.color='rgba(185,155,235,0.75)';
+  hsub.innerHTML=`<div class="mc-btn-sign" style="color:rgba(185,155,235,0.75)">−</div><div class="mc-btn-icon" style="color:rgba(185,155,235,0.75)">${ICONS.hybrid}</div><div class="mc-btn-name" style="color:rgba(185,155,235,0.75)">Hybrid</div>`;hsub.onclick=()=>openHybrid('remove');
+  hpair.appendChild(hadd);hpair.appendChild(hsub);g.appendChild(hpair);
+}
+
+function renderCmd(){
+  const el=document.getElementById('cmdRows');el.innerHTML='';
+  document.getElementById('cmdCard').style.opacity=fmt==='commander'?'1':'0.45';
+  cmdPlayers.forEach(p=>{
+    if(!cmdDmg[p])cmdDmg[p]=0;
+    const row=document.createElement('div');row.className='cmd-row';
+    const danger=cmdDmg[p]>=21;
+    row.innerHTML=`<div class="cmd-name">${p}</div><div class="cbtn" onclick="adjCmd('${p}',-5)">−5</div><div class="cbtn" onclick="adjCmd('${p}',-1)">−1</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div>`;
+    el.appendChild(row);
+  });
+}
+function adjCmd(p,d){cmdDmg[p]=Math.max(0,(cmdDmg[p]||0)+d);renderCmd();}
+
+function toggleInit(){initiative=!initiative;document.getElementById('initCard').classList.toggle('active',initiative);document.getElementById('initState').textContent=initiative?'Holding':'Not held';}
+
+function roll(n){const result=Math.ceil(Math.random()*n);diceHist.unshift('d'+n+':'+result);if(diceHist.length>3)diceHist.pop();const el=document.getElementById('diceFace');el.className='dice-face';void el.offsetWidth;el.className='dice-face dice-rolling';el.textContent=result;document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');}
+
+function openTheme(){buildThemeGrid();document.getElementById('themeOverlay').classList.add('open');}
+function closeTheme(){document.getElementById('themeOverlay').classList.remove('open');}
+function closeOutside(e,id){if(e.target.id===id)document.getElementById(id).classList.remove('open');}
+
+function buildThemeGrid(){
+  const g=document.getElementById('themeGrid');g.innerHTML='';
+  MANA_KEYS.forEach(c=>{
+    const m=CM[c];const row=document.createElement('div');row.className='tpick'+(themeSel.includes(c)?' sel':'');row.dataset.color=c;
+    const sw=document.createElement('div');sw.className='tpick-swatch';sw.style.background=m.bg;sw.style.borderColor=m.bc;
+    const nm=document.createElement('div');nm.className='tpick-name';nm.textContent=m.label;
+    const chk=document.createElement('div');chk.className='tpick-check';chk.textContent=themeSel.includes(c)?'✓':'';
+    row.appendChild(sw);row.appendChild(nm);row.appendChild(chk);
+    row.addEventListener('click',function(){const col=this.dataset.color;if(themeSel.includes(col)){themeSel=themeSel.filter(x=>x!==col);}else if(themeSel.length<3){themeSel.push(col);}buildThemeGrid();updateSelNote();});
+    g.appendChild(row);
+  });
+  updateSelNote();
+}
+function updateSelNote(){const note=document.getElementById('themeSelNote');note.textContent=!themeSel.length?'None selected — will apply default':themeSel.map(c=>CM[c].label).join(' + ')+' selected';}
+
+function applyTheme(){
+  if(!themeSel.length){resetTheme();return;}
+  let bg,border,accent,gold;
+  if(themeSel.length===1){const m=CM[themeSel[0]];bg=m.themeBg;border=m.themeBorder;accent=m.themeAccent;gold=m.themeGold;}
+  else{bg=blendHex(themeSel.map(c=>CM[c].themeBg));border=blendHex(themeSel.map(c=>CM[c].themeBorder));accent=blendHex(themeSel.map(c=>CM[c].themeAccent));gold=blendHex(themeSel.map(c=>CM[c].themeGold));const[r,g2,b2]=h2r(bg);if((r*299+g2*587+b2*114)/1000>40){bg=darken(bg,0.35);}}
+  sv('--c-bg',bg);sv('--c-border',border);sv('--c-inner',ha(accent,0.08));sv('--c-inner-border',ha(border,0.25));sv('--c-card',ha(accent,0.08));sv('--c-card-border',ha(border,0.35));sv('--c-accent',ha(accent,0.3));sv('--c-accent-border',border);sv('--c-gold',gold);sv('--c-muted',ha(gold,0.58));sv('--c-faint',ha(gold,0.3));sv('--c-btn',ha(accent,0.14));sv('--c-btn-border',ha(border,0.4));sv('--c-btn-active',ha(accent,0.35));sv('--c-status',ha(gold,0.4));sv('--c-divider',ha(border,0.22));
+  updateDots();buildManaGrid();closeTheme();
+}
+function resetTheme(){themeSel=[];const d={'--c-bg':'#221608','--c-border':'#7a5c2e','--c-inner':'rgba(245,230,190,0.04)','--c-inner-border':'rgba(180,140,60,0.2)','--c-card':'rgba(245,225,175,0.05)','--c-card-border':'rgba(180,140,60,0.28)','--c-accent':'rgba(180,140,60,0.22)','--c-accent-border':'#c8a050','--c-gold':'#f0d080','--c-muted':'rgba(210,170,90,0.45)','--c-faint':'rgba(210,170,90,0.25)','--c-btn':'rgba(180,140,60,0.12)','--c-btn-border':'rgba(180,140,60,0.35)','--c-btn-active':'rgba(180,140,60,0.32)','--c-status':'rgba(210,170,90,0.35)','--c-divider':'rgba(180,140,60,0.18)'};Object.entries(d).forEach(([k,v])=>sv(k,v));updateDots();buildManaGrid();closeTheme();}
+function sv(n,v){document.documentElement.style.setProperty(n,v);}
+function updateDots(){const d=document.getElementById('themeDots');d.innerHTML='';if(!themeSel.length){const dot=document.createElement('div');dot.className='theme-dot';dot.style.background='#7a5c2e';d.appendChild(dot);}else{themeSel.forEach(c=>{const dot=document.createElement('div');dot.className='theme-dot';dot.style.cssText=`background:${CM[c].bg};border:1px solid ${CM[c].bc};`;d.appendChild(dot);});}}
+
+function openHybrid(mode){hybridMode=mode;manualSel=[];buildGuildGrid();buildManualRow();document.getElementById('hybridOverlay').classList.add('open');}
+function closeHybrid(){document.getElementById('hybridOverlay').classList.remove('open');}
+function buildGuildGrid(){const g=document.getElementById('guildGrid');g.innerHTML='';GUILDS.forEach(gu=>{const btn=document.createElement('div');btn.className='guild-btn';[gu.c1,gu.c2].forEach(c=>{const d=document.createElement('div');d.className='c-dot';d.style.cssText=`background:${CM[c].bg};border:1px solid ${CM[c].bc};`;btn.appendChild(d);});btn.appendChild(document.createTextNode(gu.name));btn.onclick=()=>{if(hybridMode==='add')addHybrid(gu.c1,gu.c2);else removeHybrid(gu.c1,gu.c2);closeHybrid();};g.appendChild(btn);});}
+function buildManualRow(){const row=document.getElementById('manualRow');row.innerHTML='';MANA_KEYS.forEach(c=>{const el=document.createElement('div');el.className='c-sel'+(manualSel.includes(c)?' selected':'');el.style.background=CM[c].bg;el.style.borderColor=CM[c].bc;el.onclick=()=>{if(manualSel.includes(c)){manualSel=manualSel.filter(x=>x!==c);}else if(manualSel.length<2){manualSel.push(c);}buildManualRow();};row.appendChild(el);});const note=document.createElement('div');note.style.cssText='font-size:9px;color:var(--c-faint);margin-left:4px;';note.textContent=manualSel.length===0?'Pick two':manualSel.length===1?'One more':'Ready';row.appendChild(note);}
+function addManualHybrid(){if(manualSel.length!==2)return;if(hybridMode==='add')addHybrid(manualSel[0],manualSel[1]);else removeHybrid(manualSel[0],manualSel[1]);closeHybrid();}
+
+function h2r(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function r2h(r,g,b){return'#'+[r,g,b].map(x=>Math.round(Math.max(0,Math.min(255,x))).toString(16).padStart(2,'0')).join('');}
+function blendHex(hs){const rs=hs.filter(h=>h&&h.startsWith('#')).map(h=>h2r(h));if(!rs.length)return'#c8a050';const avg=rs[0].map((_,i)=>rs.reduce((s,r)=>s+r[i],0)/rs.length);return r2h(...avg);}
+function darken(h,a){const[r,g,b]=h2r(h);return r2h(r*a,g*a,b*a);}
+function ha(h,a){if(!h.startsWith('#'))return h;const[r,g,b]=h2r(h);return`rgba(${r},${g},${b},${a})`;}
+
+function setFormat(f,el){fmt=f;document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');life=FORMATS[f].life;poison=0;tokens=0;manaEntries=[];cmdDmg={};diceHist=[];initiative=false;renderAll();}
+function resetAll(){life=FORMATS[fmt].life;poison=0;tokens=0;manaEntries=[];cmdDmg={};diceHist=[];initiative=false;renderAll();}
+function renderAll(){adjLife(0);renderMana();renderCmd();adjPoison(0);document.getElementById('tokenNum').textContent=tokens;document.getElementById('initCard').classList.remove('active');document.getElementById('initState').textContent='Not held';document.getElementById('diceFace').textContent='—';document.getElementById('diceHist').textContent='';}
+
+buildManaGrid();
+renderAll();
+</script>
+</body>
+</html>
