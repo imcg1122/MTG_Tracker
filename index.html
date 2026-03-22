@@ -35,6 +35,67 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   body > .wrap{display:none;}
 }
 
+/* ── DUNGEON MODE ── */
+.dungeon-screen{display:none;width:100%;flex-direction:column;gap:10px;}
+.mat.dungeon-mode .dungeon-screen{display:flex;}
+.mat.dungeon-mode .main-grid,
+.mat.dungeon-mode .bot-grid{display:none!important;}
+.dungeon-picker{display:flex;gap:6px;flex-wrap:wrap;}
+.dungeon-pick-btn{font-size:10px;padding:6px 14px;border-radius:8px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;user-select:none;text-transform:uppercase;letter-spacing:.06em;transition:all .2s;flex:1;text-align:center;}
+.dungeon-pick-btn.active{border-color:var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);}
+.dungeon-pick-btn:active{filter:brightness(1.2);}
+.dungeon-map-wrap{background:rgba(0,0,0,0.35);border:1px solid var(--c-card-border);border-radius:10px;padding:16px;overflow-x:auto;}
+.dungeon-map-wrap svg{display:block;margin:0 auto;}
+.dungeon-complete-banner{padding:10px;border-radius:8px;border:1px solid rgba(200,170,40,0.5);background:rgba(160,130,20,0.2);color:#f0d080;font-size:11px;text-align:center;text-transform:uppercase;letter-spacing:.1em;display:none;}
+.dungeon-complete-banner.show{display:block;}
+.dungeon-footer{display:flex;align-items:center;justify-content:space-between;}
+.dungeon-status-txt{font-size:9px;color:var(--c-status);}
+.dungeon-reset-btn{font-size:9px;padding:3px 10px;border-radius:5px;border:1px solid rgba(200,80,60,0.35);background:transparent;color:rgba(220,100,80,0.6);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.dungeon-reset-btn:active{background:rgba(200,80,60,0.18);}
+.dungeon-placeholder{text-align:center;padding:40px 20px;color:var(--c-faint);font-size:11px;text-transform:uppercase;letter-spacing:.1em;}
+
+/* ── RING MODE ── */
+.ring-screen{display:none;width:100%;flex-direction:column;gap:12px;}
+.mat.ring-mode .ring-screen{display:flex;}
+.mat.ring-mode .main-grid,
+.mat.ring-mode .bot-grid{display:none!important;}
+.ring-emblem{background:rgba(0,0,0,0.4);border:2px solid rgba(160,120,40,0.5);border-radius:12px;padding:16px;position:relative;overflow:hidden;}
+.ring-emblem::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(200,160,40,0.08) 0%,transparent 70%);pointer-events:none;}
+.ring-title{font-size:13px;font-weight:700;color:#c8a030;text-transform:uppercase;letter-spacing:.15em;text-align:center;margin-bottom:4px;}
+.ring-subtitle{font-size:9px;color:rgba(200,160,40,0.45);text-transform:uppercase;letter-spacing:.1em;text-align:center;margin-bottom:14px;}
+.ring-stage{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;border:1.5px solid rgba(160,120,40,0.2);background:rgba(0,0,0,0.2);margin-bottom:6px;cursor:pointer;user-select:none;transition:all .2s;opacity:.35;}
+.ring-stage:last-child{margin-bottom:0;}
+.ring-stage.unlocked{opacity:1;border-color:rgba(200,160,40,0.55);background:rgba(160,120,20,0.15);}
+.ring-stage.unlocked:active{filter:brightness(1.15);}
+.ring-stage-num{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(160,120,40,0.4);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(200,160,40,0.4);flex-shrink:0;margin-top:1px;transition:all .2s;}
+.ring-stage.unlocked .ring-stage-num{background:rgba(200,160,40,0.25);border-color:#c8a030;color:#c8a030;}
+.ring-stage-body{flex:1;}
+.ring-stage-title{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:rgba(200,160,40,0.4);margin-bottom:3px;font-weight:600;transition:color .2s;}
+.ring-stage.unlocked .ring-stage-title{color:#c8a030;}
+.ring-stage-text{font-size:10px;color:rgba(200,160,40,0.3);line-height:1.45;transition:color .2s;}
+.ring-stage.unlocked .ring-stage-text{color:rgba(210,170,90,0.85);}
+.ring-bearer-row{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(160,120,40,0.3);border-radius:8px;padding:10px 12px;}
+.ring-bearer-label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:rgba(200,160,40,0.5);white-space:nowrap;}
+.ring-bearer-name{flex:1;background:transparent;border:none;outline:none;color:#c8a030;font-size:13px;font-family:Georgia,serif;font-weight:500;caret-color:#c8a030;}
+.ring-bearer-name::placeholder{color:rgba(200,160,40,0.25);font-style:italic;font-size:11px;}
+.ring-footer{display:flex;align-items:center;justify-content:space-between;}
+.ring-status{font-size:9px;color:var(--c-status);}
+.ring-reset-btn{font-size:9px;padding:3px 10px;border-radius:5px;border:1px solid rgba(200,80,60,0.35);background:transparent;color:rgba(220,100,80,0.6);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.ring-reset-btn:active{background:rgba(200,80,60,0.18);}
+.ring-complete-banner{padding:10px;border-radius:8px;border:1px solid rgba(200,160,40,0.5);background:rgba(160,120,20,0.2);color:#c8a030;font-size:11px;text-align:center;text-transform:uppercase;letter-spacing:.12em;display:none;}
+.ring-complete-banner.show{display:block;}
+
+
+.simple-hidden{display:none!important;}
+.mat.simple-mode .main-grid{grid-template-columns:clamp(140px,20vw,220px) 1fr!important;}
+.mat.simple-mode .life-num{font-size:clamp(56px,9vw,88px);}
+.mat.simple-mode .lbtn{height:clamp(44px,6vh,60px);font-size:clamp(14px,2vw,18px);}
+.mat.simple-mode .pool-card{min-height:clamp(90px,12vh,130px);}
+.mat.simple-mode .pool-empty{min-height:clamp(90px,12vh,130px);}
+.mat.simple-mode .mc-btn{padding:clamp(12px,2vh,18px) 4px clamp(10px,1.5vh,14px);}
+.mat.simple-mode .mana-btn-grid{gap:clamp(6px,1vw,10px);}
+.mat.simple-mode .bot-grid{grid-template-columns:1fr!important;}
+
 /* ── WRAPPER ── */
 .wrap{
   padding:10px;
@@ -56,8 +117,12 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* top strip */
 .top-strip{display:flex;gap:6px;margin-bottom:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
-.fmt-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;user-select:none;transition:all .2s;}
+.fmt-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;user-select:none;transition:all .25s;position:relative;}
 .fmt-btn.active{background:var(--c-accent);border-color:var(--c-accent-border);color:var(--c-gold);}
+.fmt-btn.has-activity:not(.active){border-color:rgba(180,140,60,0.55);color:rgba(210,170,90,0.75);}
+.fmt-btn.has-activity:not(.active)::after{content:'';position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:#c8a030;}
+.fmt-divider{width:1px;height:16px;background:rgba(180,140,60,0.25);flex-shrink:0;transition:opacity .25s;}
+.fmt-divider.hidden{display:none;}
 .reset-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid rgba(200,80,60,0.4);color:rgba(220,100,80,0.65);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;background:transparent;user-select:none;}
 .reset-btn:active{background:rgba(200,80,60,0.18);}
 .theme-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;background:transparent;user-select:none;display:flex;align-items:center;gap:4px;}
@@ -99,7 +164,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .pool-card-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;}
 
 /* right col */
-.right-col{display:flex;flex-direction:column;gap:7px;}
+.right-col{display:flex;flex-direction:column;gap:7px;height:100%;}
 .cmd-row{display:flex;align-items:center;gap:3px;margin-bottom:5px;}
 .cmd-name{font-size:10px;color:var(--c-muted);width:24px;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;}
 .cmd-val{font-size:17px;font-weight:500;color:var(--c-gold);font-family:Georgia,serif;min-width:26px;text-align:center;}
@@ -107,15 +172,15 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .cbtn{height:24px;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;padding:0 5px;white-space:nowrap;flex-shrink:0;}
 .cbtn:active{background:var(--c-btn-active);}
 
-.pt-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.counter-card{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;}
-.counter-tap-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;padding:9px 4px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s;flex:1;}
+.pt-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1;}
+.counter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.counter-tap-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;padding:10px 4px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s;}
 .counter-tap-btn:active{filter:brightness(1.3);transform:scale(.97);}
 .counter-num{font-size:clamp(20px,3vw,28px);font-weight:500;line-height:1;font-family:Georgia,serif;}
 .counter-icon{display:flex;align-items:center;justify-content:center;width:28px;height:28px;}
 .counter-label{font-size:8px;text-transform:uppercase;letter-spacing:.07em;opacity:.8;text-align:center;}
-.counter-reset{font-size:8px;padding:3px 0;border-radius:4px;border:1px solid rgba(200,80,60,0.35);background:transparent;color:rgba(220,100,80,0.6);cursor:pointer;text-transform:uppercase;letter-spacing:.05em;user-select:none;width:100%;text-align:center;}
-.counter-reset:active{background:rgba(200,80,60,0.18);}
+.reset-icon{display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;}
+.reset-icon:active{background:rgba(200,80,60,0.18);}
 
 /* initiative */
 .init-compact{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 6px;cursor:pointer;user-select:none;text-align:center;height:100%;}
@@ -138,6 +203,24 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .dbtn:active{background:var(--c-btn-active);}
 .dice-hist{font-size:8px;color:var(--c-faint);text-align:center;}
 
+/* storm counter */
+.storm-card{padding:8px 10px;display:flex;flex-direction:column;gap:5px;}
+.storm-header{display:flex;align-items:center;justify-content:space-between;}
+.storm-controls{display:flex;gap:4px;align-items:center;}
+.storm-result-row{display:flex;align-items:center;justify-content:center;gap:8px;}
+.storm-face{font-size:clamp(22px,3vw,32px);font-weight:500;color:#90c8ff;font-family:Georgia,serif;line-height:1;min-width:36px;text-align:center;}
+.storm-icon{opacity:.35;flex-shrink:0;}
+
+/* monarch toggle */
+.monarch-card{cursor:pointer;user-select:none;transition:all .2s;}
+.monarch-compact{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px 4px;text-align:center;height:100%;}
+.monarch-icon-el{font-size:16px;opacity:.3;transition:opacity .2s;line-height:1;}
+.monarch-card.active .monarch-icon-el{opacity:1;}
+.monarch-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted);}
+.monarch-card.active .monarch-lbl{color:var(--c-gold);}
+.monarch-state{font-size:9px;color:var(--c-faint);font-style:italic;}
+.monarch-card.active .monarch-state{color:rgba(240,200,80,0.7);}
+
 /* add mana */
 .add-mana-card{padding:10px 12px;}
 .add-mana-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
@@ -156,7 +239,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .mc-btn.hybrid-style{border-color:rgba(180,120,240,0.55);background:rgba(100,60,180,0.15);}
 
 /* ── LAYOUT: MOBILE LANDSCAPE + TABLET + DESKTOP (≥600px) ── */
-.main-grid{display:grid;gap:8px;margin-bottom:8px;}
+.main-grid{display:grid;gap:8px;margin-bottom:8px;align-items:stretch;}
 .bot-grid{display:grid;gap:8px;}
 
 /* Wide layout — tablet landscape, desktop */
@@ -260,10 +343,12 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
   <!-- top strip -->
   <div class="top-strip">
-    <div style="display:flex;gap:5px;align-items:center;">
+    <div style="display:flex;gap:5px;align-items:center;" id="fmtBtnGroup">
       <div class="fmt-btn active" onclick="setFormat('commander',this)">Commander</div>
       <div class="fmt-btn" onclick="setFormat('standard',this)">Standard</div>
-      <div class="fmt-btn" onclick="setFormat('draft',this)">Draft</div>
+      <div class="fmt-btn" onclick="setFormat('simple',this)">Simple Mana</div>
+      <div class="fmt-btn" onclick="setFormat('dungeon',this)">Dungeon</div>
+      <div class="fmt-btn" onclick="setFormat('ring',this)">The Ring</div>
     </div>
     <div style="display:flex;gap:6px;align-items:center;">
       <div class="theme-btn" onclick="openTheme()">
@@ -279,7 +364,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
     <!-- life -->
     <div class="card">
-      <div class="sec-label">Life total</div>
+      <div class="sec-label" style="text-align:center;">Life total</div>
       <div class="life-num" id="lifeNum">40</div>
       <div class="life-sub">points</div>
       <div class="life-btns">
@@ -300,52 +385,130 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
       <div class="mana-pool-grid" id="manaPoolGrid"></div>
     </div>
 
+
     <!-- right col -->
-    <div class="right-col">
+    <div class="right-col" id="rightCol">
+      <!-- commander damage — shown in commander mode -->
       <div class="card" id="cmdCard">
         <div class="sec-label">Commander damage</div>
         <div id="cmdRows"></div>
       </div>
-      <div class="pt-row">
-        <div class="card" style="padding:8px;">
-          <div class="sec-label">Poison</div>
-          <div class="counter-card">
-            <div class="counter-tap-btn" id="poisonBtn"
-              style="border-color:rgba(60,180,60,0.6);background:rgba(20,100,20,0.25);"
-              onclick="adjPoison(1)">
-              <div class="counter-num" id="poisonNum" style="color:#80e080;">0</div>
+
+      <!-- day/night + energy — shown in standard mode -->
+      <div class="card" id="standardCard" style="display:none;flex:0 0 auto;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;height:100%;">
+
+          <!-- day/night toggle -->
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px;">
+              <div class="sec-label" style="margin-bottom:0;">Day / Night</div>
+            </div>
+            <div id="dayNightBtn" onclick="toggleDayNight()"
+              style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;padding:10px 4px;border-radius:8px;border:2px solid rgba(200,170,80,0.5);background:rgba(180,140,20,0.15);cursor:pointer;user-select:none;transition:all .25s;flex:1;">
+              <div id="dayNightIcon" style="font-size:28px;line-height:1;">☀️</div>
+              <div id="dayNightLabel" style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#f0d080;font-weight:500;">Day</div>
+              <div style="font-size:8px;color:rgba(210,170,90,0.45);text-transform:uppercase;letter-spacing:.06em;">tap to toggle</div>
+            </div>
+          </div>
+
+          <!-- energy counter -->
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px;">
+              <div class="sec-label" style="margin-bottom:0;">Energy</div>
+              <div style="display:flex;gap:4px;align-items:center;">
+                <div class="reset-icon" onclick="adjEnergy(-1)" title="Subtract one">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                <div class="reset-icon" onclick="resetEnergy()" title="Reset">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="counter-tap-btn" onclick="adjEnergy(1)"
+              style="border-color:rgba(100,160,240,0.6);background:rgba(40,80,180,0.2);flex:1;">
+              <div class="counter-num" id="energyNum" style="color:#a0c8ff;">0</div>
               <div class="counter-icon">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#80e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 3 L9 8 C9 8 5 10 5 15 C5 19 8 21 12 21 C16 21 19 19 19 15 C19 10 15 8 15 8 L15 3"/>
-                  <line x1="7" y1="3" x2="17" y2="3"/>
-                  <ellipse cx="12" cy="15" rx="3" ry="3.5" fill="rgba(40,160,40,0.3)" stroke="#80e080" stroke-width="1.2"/>
-                  <path d="M10.5 14 Q12 12.5 13.5 14" stroke="#80e080" stroke-width="1" fill="none"/>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#a0c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                 </svg>
               </div>
-              <div class="counter-label" style="color:#80e080;">tap to add</div>
+              <div class="counter-label" style="color:#a0c8ff;">tap to add</div>
             </div>
-            <div class="counter-reset" onclick="resetPoison()">Reset</div>
+          </div>
+
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="card" style="padding:8px;display:flex;flex-direction:column;">
+          <div class="counter-header">
+            <div class="sec-label" style="margin-bottom:0;">Poison</div>
+            <div class="reset-icon" onclick="resetPoison()" title="Reset">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </div>
+          </div>
+          <div class="counter-tap-btn" id="poisonBtn"
+            style="border-color:rgba(60,180,60,0.6);background:rgba(20,100,20,0.25);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;"
+            onclick="adjPoison(1)">
+            <div class="counter-num" id="poisonNum" style="color:#80e080;font-size:clamp(18px,2.2vw,24px);">0</div>
+            <div class="counter-icon" style="width:22px;height:22px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#80e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 3 L9 8 C9 8 5 10 5 15 C5 19 8 21 12 21 C16 21 19 19 19 15 C19 10 15 8 15 8 L15 3"/>
+                <line x1="7" y1="3" x2="17" y2="3"/>
+                <ellipse cx="12" cy="15" rx="3" ry="3.5" fill="rgba(40,160,40,0.3)" stroke="#80e080" stroke-width="1.2"/>
+                <path d="M10.5 14 Q12 12.5 13.5 14" stroke="#80e080" stroke-width="1" fill="none"/>
+              </svg>
+            </div>
+            <div class="counter-label" style="color:#80e080;flex:1;text-align:left;">tap to add</div>
           </div>
         </div>
-        <div class="card" style="padding:8px;">
-          <div class="sec-label">Tokens</div>
-          <div class="counter-card">
-            <div class="counter-tap-btn"
-              style="border-color:rgba(180,140,60,0.5);background:rgba(120,90,20,0.2);"
-              onclick="adjToken(1)">
-              <div class="counter-num" id="tokenNum" style="color:#f0d080;">0</div>
-              <div class="counter-icon">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f0d080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="4.5" r="2"/>
-                  <line x1="12" y1="6.5" x2="12" y2="14"/>
-                  <line x1="7" y1="9.5" x2="17" y2="9.5"/>
-                  <line x1="12" y1="14" x2="8" y2="20"/>
-                  <line x1="12" y1="14" x2="16" y2="20"/>
-                </svg>
+        <div class="card" style="padding:8px;display:flex;flex-direction:column;">
+          <div class="counter-header">
+            <div class="sec-label" style="margin-bottom:0;">Exp</div>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <div class="reset-icon" onclick="adjXp(-1)" title="Subtract one">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
               </div>
-              <div class="counter-label" style="color:rgba(210,170,90,0.6);">tap to add</div>
+              <div class="reset-icon" onclick="resetXp()" title="Reset">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              </div>
             </div>
-            <div class="counter-reset" onclick="resetToken()">Reset</div>
+          </div>
+          <div class="counter-tap-btn"
+            style="border-color:rgba(140,100,220,0.55);background:rgba(80,50,160,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;"
+            onclick="adjXp(1)">
+            <div class="counter-num" id="xpNum" style="color:#c0a0ff;font-size:clamp(18px,2.2vw,24px);">0</div>
+            <div class="counter-icon" style="width:22px;height:22px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c0a0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+              </svg>
+            </div>
+            <div class="counter-label" style="color:rgba(180,150,255,0.65);flex:1;text-align:left;">tap to add</div>
+          </div>
+        </div>
+        <div class="card storm-card" id="stormCard" style="padding:8px;display:flex;flex-direction:column;">
+          <div class="counter-header">
+            <div class="sec-label" style="margin-bottom:0;">Storm</div>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <div class="reset-icon" onclick="adjStorm(-1)" title="Subtract one">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <div class="reset-icon" onclick="resetStorm()" title="Reset">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="counter-tap-btn" onclick="adjStorm(1)"
+            style="border-color:rgba(100,160,240,0.6);background:rgba(40,80,180,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;">
+            <div class="counter-num" id="stormFace" style="color:#90c8ff;font-size:clamp(18px,2.2vw,24px);">0</div>
+            <div class="counter-icon" style="width:22px;height:22px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#90c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 17H7a4 4 0 0 1-.5-7.96A5.5 5.5 0 0 1 18 11.5a3 3 0 0 1 2 5.5Z" fill="rgba(80,140,255,0.2)"/>
+                <line x1="9" y1="20" x2="8" y2="22"/>
+                <line x1="13" y1="20" x2="12" y2="22"/>
+                <line x1="17" y1="20" x2="16" y2="22"/>
+              </svg>
+            </div>
+            <div class="counter-label" style="color:#90c8ff;flex:1;text-align:left;">tap to add</div>
           </div>
         </div>
       </div>
@@ -353,18 +516,111 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
   </div>
 
-  <!-- bottom grid: initiative | dice | add mana -->
-  <div class="bot-grid">
+  <!-- dungeon screen — full layout replacement in dungeon mode -->
+  <div id="dungeonPanel" class="dungeon-screen">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div class="dungeon-picker" id="dungeonPicker" style="flex:1;"></div>
+      <div class="dungeon-reset-btn" onclick="resetDungeon()">Reset</div>
+    </div>
+    <div class="dungeon-map-wrap" id="dungeonMapWrap">
+      <div class="dungeon-placeholder">Choose a dungeon above to begin</div>
+    </div>
+    <div class="dungeon-footer">
+      <div class="dungeon-status-txt" id="dungeonStatus"></div>
+    </div>
+    <div class="dungeon-complete-banner" id="dungeonBanner">✦ Dungeon Completed ✦</div>
+  </div>
 
-    <div class="card initiative-card" id="initCard" onclick="toggleInit()">
-      <div class="init-compact">
-        <div class="init-icon-el">⚔</div>
-        <div class="init-lbl">Initiative</div>
-        <div class="init-state" id="initState">Not held</div>
+  <!-- ring screen — full layout replacement in ring mode -->
+  <div id="ringPanel" class="ring-screen">
+    <div class="ring-footer">
+      <div class="ring-status" id="ringStatus">Tap a stage to tempt the Ring</div>
+      <div class="ring-reset-btn" onclick="resetRing()">Reset</div>
+    </div>
+    <div class="ring-emblem">
+      <div class="ring-title">The Ring</div>
+      <div class="ring-subtitle">Emblem — tap each stage as the Ring tempts you</div>
+      <div class="ring-stage" id="ringStage0" onclick="temptRing(0)">
+        <div class="ring-stage-num">I</div>
+        <div class="ring-stage-body">
+          <div class="ring-stage-title">First Temptation</div>
+          <div class="ring-stage-text">Your Ring-bearer is legendary and can't be blocked by creatures with greater power.</div>
+        </div>
+      </div>
+      <div class="ring-stage" id="ringStage1" onclick="temptRing(1)">
+        <div class="ring-stage-num">II</div>
+        <div class="ring-stage-body">
+          <div class="ring-stage-title">Second Temptation</div>
+          <div class="ring-stage-text">Whenever your Ring-bearer attacks, draw a card, then discard a card.</div>
+        </div>
+      </div>
+      <div class="ring-stage" id="ringStage2" onclick="temptRing(2)">
+        <div class="ring-stage-num">III</div>
+        <div class="ring-stage-body">
+          <div class="ring-stage-title">Third Temptation</div>
+          <div class="ring-stage-text">Whenever your Ring-bearer becomes blocked by a creature, that creature's controller sacrifices it at the end of combat.</div>
+        </div>
+      </div>
+      <div class="ring-stage" id="ringStage3" onclick="temptRing(3)">
+        <div class="ring-stage-num">IV</div>
+        <div class="ring-stage-body">
+          <div class="ring-stage-title">Fourth Temptation</div>
+          <div class="ring-stage-text">Whenever your Ring-bearer deals combat damage to a player, each opponent loses 3 life.</div>
+        </div>
       </div>
     </div>
+    <div class="ring-bearer-row">
+      <div class="ring-bearer-label">Ring-bearer:</div>
+      <input class="ring-bearer-name" id="ringBearerName" type="text" placeholder="choose a creature…" autocomplete="off" spellcheck="false" oninput="updateActivityBadges()"/>
+    </div>
+    <div class="ring-complete-banner" id="ringBanner">💍 The Ring is fully powered</div>
+  </div>
 
-    <div class="card">
+  <!-- bottom grid: goaded+initiative | dice | add mana -->
+  <div class="bot-grid" id="botGrid">
+
+    <!-- left sidebar: goaded above, initiative below -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+
+      <!-- goaded toggle -->
+      <div class="card" id="goadedCard" onclick="toggleGoaded()" style="cursor:pointer;user-select:none;transition:all .2s;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px 0;">
+          <div id="goadedIcon" style="font-size:18px;line-height:1;opacity:.3;transition:opacity .2s;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:rgba(220,100,60,0.8);">
+              <path d="M12 2 L15 8 L22 9 L17 14 L18 21 L12 18 L6 21 L7 14 L2 9 L9 8 Z"/>
+            </svg>
+          </div>
+          <div class="init-lbl" id="goadedLbl">Goaded</div>
+          <div class="init-state" id="goadedState">None</div>
+        </div>
+      </div>
+
+      <!-- initiative (smaller) -->
+      <div class="card initiative-card" id="initCard" onclick="toggleInit()" style="flex:1;">
+        <div class="init-compact" style="padding:6px;gap:4px;">
+          <div class="init-icon-el" style="font-size:16px;">⚔</div>
+          <div class="init-lbl">Initiative</div>
+          <div class="init-state" id="initState">Not held</div>
+        </div>
+      </div>
+
+      <!-- monarch toggle -->
+      <div class="card monarch-card" id="monarchCard" onclick="toggleMonarch()" style="flex:1;">
+        <div class="monarch-compact">
+          <div class="monarch-icon-el" id="monarchIcon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:rgba(240,200,80,0.9);">
+              <path d="M3 18 L5 10 L9 14 L12 6 L15 14 L19 10 L21 18 Z"/>
+              <line x1="3" y1="21" x2="21" y2="21"/>
+            </svg>
+          </div>
+          <div class="monarch-lbl" id="monarchLbl">Monarch</div>
+          <div class="monarch-state" id="monarchState">Not held</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card" id="diceCard">
       <div class="dice-compact-inner">
         <div class="sec-label" style="margin-bottom:3px;">Dice</div>
         <div class="dice-result-row">
@@ -437,7 +693,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 </div>
 
 <script>
-const FORMATS={commander:{life:40},standard:{life:20},draft:{life:20}};
+const FORMATS={commander:{life:40},standard:{life:20},simple:{life:20},dungeon:{life:20},ring:{life:20}};
 const ICONS={
   w:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
   u:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 C12 2 6 8 6 14 a6 6 0 0 0 12 0 C18 8 12 2 12 2 Z"/></svg>`,
@@ -464,14 +720,53 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-let fmt='commander',life=40,poison=0,tokens=0,initiative=false;
+// ── Per-format saved state ──
+const fmtState={
+  commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false},
+  standard: {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false},
+  simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false},
+  dungeon:  {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,dungeonId:null,currentRoom:-1,dungeonPath:[],storm:0,monarch:false},
+  ring:     {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,ringStage:-1,ringBearer:'',storm:0,monarch:false}
+};
+
+function saveState(){
+  const s=fmtState[fmt];
+  s.life=life;s.poison=poison;s.xp=xp;s.energy=energy;
+  s.manaEntries=JSON.parse(JSON.stringify(manaEntries));
+  s.cmdDmg=JSON.parse(JSON.stringify(cmdDmg));
+  s.diceHist=[...diceHist];
+  s.initiative=initiative;s.goaded=goaded;s.isDay=isDay;s.storm=storm;s.monarch=monarch;
+  if(fmt==='dungeon'){s.dungeonId=dungeonId;s.currentRoom=currentRoom;s.dungeonPath=[...dungeonPath];}
+  if(fmt==='ring'){s.ringStage=ringStage;s.ringBearer=document.getElementById('ringBearerName')?document.getElementById('ringBearerName').value:ringBearer;}
+}
+function loadState(){
+  const s=fmtState[fmt];
+  life=s.life;poison=s.poison;xp=s.xp;energy=s.energy;
+  manaEntries=JSON.parse(JSON.stringify(s.manaEntries));
+  cmdDmg=JSON.parse(JSON.stringify(s.cmdDmg));
+  diceHist=[...s.diceHist];
+  initiative=s.initiative;goaded=s.goaded;isDay=s.isDay;storm=s.storm||0;monarch=s.monarch||false;
+  if(fmt==='dungeon'){dungeonId=s.dungeonId;currentRoom=s.currentRoom;dungeonPath=[...(s.dungeonPath||[])];}
+  else{dungeonId=null;currentRoom=-1;dungeonPath=[];}
+  if(fmt==='ring'){ringStage=s.ringStage!=null?s.ringStage:-1;ringBearer=s.ringBearer||'';}
+  else{ringStage=-1;ringBearer='';}
+}
 let cmdPlayers=['P2','P3','P4'],cmdDmg={};
+// ── Working variables (current format) ──
+let fmt='commander',life=40,poison=0,xp=0,energy=0,initiative=false,isDay=true,goaded=false,storm=0,monarch=false;
+let dungeonId=null,currentRoom=-1,dungeonPath=[];
+let ringStage=-1,ringBearer='';
 let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add';
 
+// ── Core game functions ──
+function adjEnergy(d){energy=Math.max(0,energy+d);document.getElementById('energyNum').textContent=energy;}
+function resetEnergy(){energy=0;document.getElementById('energyNum').textContent=0;}
+function toggleDayNight(){isDay=!isDay;applyDayNightUI();}
+function resetDayNight(){isDay=true;applyDayNightUI();}
 function adjPoison(d){poison=Math.max(0,poison+d);document.getElementById('poisonNum').textContent=poison;const btn=document.getElementById('poisonBtn');btn.style.background=poison>=10?'rgba(180,20,20,0.3)':poison>=7?'rgba(120,60,0,0.3)':'rgba(20,100,20,0.25)';btn.style.borderColor=poison>=10?'rgba(220,60,60,0.7)':poison>=7?'rgba(200,120,40,0.6)':'rgba(60,180,60,0.6)';document.getElementById('poisonNum').style.color=poison>=10?'#ff8080':poison>=7?'#ffb060':'#80e080';}
 function resetPoison(){poison=0;adjPoison(0);}
-function adjToken(d){tokens=Math.max(0,tokens+d);document.getElementById('tokenNum').textContent=tokens;}
-function resetToken(){tokens=0;document.getElementById('tokenNum').textContent=0;}
+function adjXp(d){xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;}
+function resetXp(){xp=0;document.getElementById('xpNum').textContent=0;}
 function adjLife(d){life=Math.max(0,life+d);const el=document.getElementById('lifeNum');el.textContent=life;el.className='life-num'+(life<=5?' danger':'');}
 
 function eKey(t,a,b){return t==='mono'?a:'h:'+[a,b].sort().join('');}
@@ -552,6 +847,37 @@ function renderCmd(){
 function adjCmd(p,d){cmdDmg[p]=Math.max(0,(cmdDmg[p]||0)+d);renderCmd();}
 
 function toggleInit(){initiative=!initiative;document.getElementById('initCard').classList.toggle('active',initiative);document.getElementById('initState').textContent=initiative?'Holding':'Not held';}
+function toggleGoaded(){goaded=!goaded;applyGoadedUI();}
+function resetGoaded(){goaded=false;applyGoadedUI();}
+
+function adjStorm(d){storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;}
+function resetStorm(){storm=0;document.getElementById('stormFace').textContent=0;}
+
+function toggleMonarch(){monarch=!monarch;applyMonarchUI();}
+function applyMonarchUI(){
+  const card=document.getElementById('monarchCard');
+  const icon=document.getElementById('monarchIcon');
+  const lbl=document.getElementById('monarchLbl');
+  const state=document.getElementById('monarchState');
+  if(!card)return;
+  if(monarch){
+    card.classList.add('active');
+    card.style.background='rgba(180,140,20,0.18)';
+    card.style.borderColor='rgba(220,180,40,0.65)';
+    icon.style.opacity='1';
+    lbl.style.color='#f0d080';
+    state.textContent='Holding';
+    state.style.color='rgba(240,200,80,0.75)';
+  } else {
+    card.classList.remove('active');
+    card.style.background='';
+    card.style.borderColor='';
+    icon.style.opacity='0.3';
+    lbl.style.color='';
+    state.textContent='Not held';
+    state.style.color='';
+  }
+}
 
 function roll(n){const result=Math.ceil(Math.random()*n);diceHist.unshift('d'+n+':'+result);if(diceHist.length>3)diceHist.pop();const el=document.getElementById('diceFace');el.className='dice-face';void el.offsetWidth;el.className='dice-face dice-rolling';el.textContent=result;document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');}
 
@@ -598,9 +924,414 @@ function blendHex(hs){const rs=hs.filter(h=>h&&h.startsWith('#')).map(h=>h2r(h))
 function darken(h,a){const[r,g,b]=h2r(h);return r2h(r*a,g*a,b*a);}
 function ha(h,a){if(!h.startsWith('#'))return h;const[r,g,b]=h2r(h);return`rgba(${r},${g},${b},${a})`;}
 
-function setFormat(f,el){fmt=f;document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');life=FORMATS[f].life;poison=0;tokens=0;manaEntries=[];cmdDmg={};diceHist=[];initiative=false;renderAll();}
-function resetAll(){life=FORMATS[fmt].life;poison=0;tokens=0;manaEntries=[];cmdDmg={};diceHist=[];initiative=false;renderAll();}
-function renderAll(){adjLife(0);renderMana();renderCmd();adjPoison(0);document.getElementById('tokenNum').textContent=tokens;document.getElementById('initCard').classList.remove('active');document.getElementById('initState').textContent='Not held';document.getElementById('diceFace').textContent='—';document.getElementById('diceHist').textContent='';}
+// ── Dungeon data — accurate branching structure ──
+const DUNGEONS={
+  mad:{
+    name:'Mad Mage',color:'#5588cc',
+    nodes:[
+      {id:0,label:'Yawning Portal',    effect:'Gain 1 life',                                         x:50,  y:5},
+      {id:1,label:'Dungeon Level',     effect:'Scry 1',                                              x:50,  y:17},
+      {id:2,label:'Goblin Bazaar',     effect:'Create a Treasure token',                             x:25,  y:30},
+      {id:3,label:'Twisted Caverns',   effect:"Creature can't attack next turn",                     x:75,  y:30},
+      {id:4,label:'Lost Level',        effect:'Scry 2',                                              x:50,  y:43},
+      {id:5,label:'Runestone Caverns', effect:'Exile top 2, you may play them',                      x:25,  y:56},
+      {id:6,label:"Muiral's Graveyard",effect:'Create two 1/1 Skeleton tokens',                      x:75,  y:56},
+      {id:7,label:'Deep Mines',        effect:'Scry 3',                                              x:50,  y:69},
+      {id:8,label:"Mad Wizard's Lair", effect:'Draw 3, cast one without paying its mana cost',       x:50,  y:85}
+    ],
+    edges:[[0,1],[1,2],[1,3],[2,4],[3,4],[4,5],[4,6],[5,7],[6,7],[7,8]],
+    terminals:[8]
+  },
+  phandelver:{
+    name:'Lost Mine',color:'#55aa66',
+    nodes:[
+      {id:0,label:'Cave Entrance',        effect:'Scry 1',                               x:50, y:5},
+      {id:1,label:'Goblin Lair',          effect:'Create a 1/1 red Goblin token',        x:22, y:22},
+      {id:2,label:'Mine Tunnels',         effect:'Create a Treasure token',              x:78, y:22},
+      {id:3,label:'Storeroom',            effect:'Put a +1/+1 counter on a creature',    x:18, y:42},
+      {id:4,label:'Dark Pool',            effect:'Each opp loses 1 life, gain 1 life',   x:50, y:42},
+      {id:5,label:'Fungi Cavern',         effect:'Creature gets -4/-0 until next turn',  x:82, y:42},
+      {id:6,label:'Temple of Dumathoin',  effect:'Draw a card',                          x:50, y:65}
+    ],
+    edges:[[0,1],[0,2],[1,3],[1,4],[2,4],[2,5],[3,6],[4,6],[5,6]],
+    terminals:[6]
+  },
+  tomb:{
+    name:'Tomb of Annihilation',color:'#aa4444',
+    nodes:[
+      {id:0,label:'Trapped Entry',          effect:'Each player loses 1 life',                                   x:50, y:8},
+      {id:1,label:'Veils of Fear',          effect:'Each player loses 2 life unless they discard a card',        x:27, y:30},
+      {id:2,label:'Oubliette',              effect:'Discard a card, sacrifice a creature, artifact, and land',   x:73, y:30},
+      {id:3,label:'Sandfall Cell',          effect:'Each player loses 2 life unless they sacrifice a permanent', x:27, y:58},
+      {id:4,label:'Cradle of the Death God',effect:'Create The Atropal — 4/4 God Horror with deathtouch',       x:50, y:82}
+    ],
+    edges:[[0,1],[0,2],[1,3],[2,4],[3,4]],
+    terminals:[4]
+  },
+  undercity:{
+    name:'Undercity',color:'#7755aa',
+    nodes:[
+      {id:0,label:'Secret Entrance',       effect:'Search library for a basic land, put it in your hand, then shuffle', x:50, y:5},
+      {id:1,label:'Forge',                 effect:'Put two +1/+1 counters on target creature',                          x:22, y:19},
+      {id:2,label:'Lost Well',             effect:'Scry 2',                                                              x:78, y:19},
+      {id:3,label:'Trap!',                 effect:'Target player loses 5 life',                                          x:16, y:36},
+      {id:4,label:'Arena',                 effect:'Goad target creature',                                                x:50, y:36},
+      {id:5,label:'Stash',                 effect:'Create a Treasure token',                                             x:84, y:36},
+      {id:6,label:'Archives',              effect:'Draw a card',                                                         x:28, y:56},
+      {id:7,label:'Catacombs',             effect:'Create a 4/1 black Skeleton token with menace',                      x:72, y:56},
+      {id:8,label:'Throne of the Dead Three',effect:'Reveal top 10 cards, put a creature onto the battlefield with three +1/+1 counters and hexproof until your next turn', x:50, y:80}
+    ],
+    edges:[[0,1],[0,2],[1,3],[1,4],[2,4],[2,5],[3,6],[4,6],[4,7],[5,7],[6,8],[7,8]],
+    terminals:[8]
+  }
+};
+
+// ── SVG dungeon map renderer ──
+function wrapText(text,maxLen){
+  const words=text.split(' ');const lines=[];let line='';
+  words.forEach(w=>{
+    if((line+' '+w).trim().length>maxLen&&line){lines.push(line);line=w;}
+    else line=(line?line+' ':'')+w;
+  });
+  if(line)lines.push(line);return lines;
+}
+
+function renderDungeon(){
+  const picker=document.getElementById('dungeonPicker');
+  picker.innerHTML='';
+  Object.entries(DUNGEONS).forEach(([id,d])=>{
+    const btn=document.createElement('div');
+    btn.className='dungeon-pick-btn'+(dungeonId===id?' active':'');
+    btn.textContent=d.name;
+    btn.onclick=()=>{
+      if(dungeonId!==id){dungeonId=id;currentRoom=-1;dungeonPath=[];}
+      renderDungeon();
+    };
+    picker.appendChild(btn);
+  });
+
+  const wrap=document.getElementById('dungeonMapWrap');
+  const status=document.getElementById('dungeonStatus');
+  const banner=document.getElementById('dungeonBanner');
+
+  if(!dungeonId){
+    wrap.innerHTML='<div class="dungeon-placeholder">Choose a dungeon above to begin</div>';
+    status.textContent='';banner.classList.remove('show');return;
+  }
+
+  const d=DUNGEONS[dungeonId];
+  const nodes=d.nodes;
+  const edges=d.edges;
+  const isComplete=d.terminals.includes(currentRoom);
+
+  if(currentRoom===-1) status.textContent=d.name+' — tap a room to enter';
+  else if(isComplete) status.textContent=d.name+' — dungeon completed!';
+  else status.textContent=d.name+' — current: '+nodes[currentRoom].label;
+  banner.classList.toggle('show',isComplete);
+  updateActivityBadges();
+
+  // find reachable rooms from current position
+  function getReachable(from){
+    if(from===-1)return new Set([0]);
+    const r=new Set();
+    edges.forEach(([a,b])=>{if(a===from)r.add(b);});
+    return r;
+  }
+  // find all nodes on any path from root to given node
+  // visited = only nodes actually tapped, in order
+  const visited=new Set(dungeonPath);
+  if(currentRoom!==-1)visited.add(currentRoom);
+  const reachable=getReachable(currentRoom);
+
+  // SVG dimensions
+  const W=520,H=480,RW=128,RH=42,RX=RW/2,RY=RH/2;
+  const px=n=>({x:n.x/100*W, y:20+n.y/100*(H-40)});
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;font-family:system-ui,sans-serif;">`;
+
+  // defs for arrowhead markers
+  svg+=`<defs>
+    <marker id="arr-active" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="${d.color}"/>
+    </marker>
+    <marker id="arr-dim" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="rgba(180,140,60,0.2)"/>
+    </marker>
+  </defs>`;
+
+  // draw edges
+  edges.forEach(([a,b])=>{
+    const pa=px(nodes[a]),pb=px(nodes[b]);
+    // edge is traversed only if a→b are consecutive steps in actual path
+    const fullPath=[...dungeonPath];
+    if(currentRoom!==-1&&(fullPath.length===0||fullPath[fullPath.length-1]!==currentRoom))fullPath.push(currentRoom);
+    const isTraversed=fullPath.some((_,i)=>i>0&&fullPath[i-1]===a&&fullPath[i]===b);
+    const isActive=reachable.has(b)&&!isComplete;
+    const col=isTraversed?d.color:isActive?'rgba(180,140,60,0.45)':'rgba(180,140,60,0.15)';
+    const marker=isTraversed?'url(#arr-active)':'url(#arr-dim)';
+    // curve path
+    const cx=(pa.x+pb.x)/2,cy1=pa.y+RY+8,cy2=pb.y-RY-8;
+    svg+=`<path d="M${pa.x},${pa.y+RY} C${pa.x},${cy1} ${pb.x},${cy2} ${pb.x},${pb.y-RY}"
+      fill="none" stroke="${col}" stroke-width="${isTraversed?2:1.5}"
+      stroke-dasharray="${isTraversed?'none':'5 3'}"
+      marker-end="${marker}"/>`;
+  });
+
+  // draw nodes
+  nodes.forEach((n,i)=>{
+    const p=px(n);
+    const isCurrent=i===currentRoom;
+    const isVisited=visited.has(i)&&!isCurrent;
+    const isReachable=reachable.has(i)&&!isComplete;
+    const isTerminal=d.terminals.includes(i);
+    const clickable=(isReachable||isCurrent||i===0&&currentRoom===-1)&&!isComplete;
+
+    let fill,stroke,strokeW=1.5,textCol,opacity=1;
+    if(isCurrent){
+      fill=d.color;stroke=d.color;strokeW=2.5;textCol='#fff';
+    } else if(isVisited){
+      fill='rgba(40,60,40,0.6)';stroke='rgba(100,180,100,0.5)';textCol='rgba(180,220,180,0.65)';
+    } else if(isReachable){
+      fill='rgba(180,140,60,0.08)';stroke='rgba(180,140,60,0.55)';textCol='rgba(210,170,90,0.9)';
+    } else {
+      fill='rgba(0,0,0,0.3)';stroke='rgba(180,140,60,0.12)';textCol='rgba(180,140,60,0.25)';opacity=0.45;
+    }
+
+    svg+=`<g ${clickable?`onclick="ventureRoom(${i})" style="cursor:pointer"`:''}
+      opacity="${opacity}">`;
+
+    // glow ring for current
+    if(isCurrent){
+      svg+=`<rect x="${p.x-RX-4}" y="${p.y-RY-4}" width="${RW+8}" height="${RH+8}"
+        rx="11" fill="none" stroke="${d.color}" stroke-width="1" opacity="0.35"/>`;
+    }
+    // terminal double-border
+    if(isTerminal){
+      svg+=`<rect x="${p.x-RX-2}" y="${p.y-RY-2}" width="${RW+4}" height="${RH+4}"
+        rx="9" fill="none" stroke="${isCurrent||isVisited?'rgba(200,170,40,0.6)':'rgba(180,140,60,0.2)'}" stroke-width="1" stroke-dasharray="4 2"/>`;
+    }
+
+    svg+=`<rect x="${p.x-RX}" y="${p.y-RY}" width="${RW}" height="${RH}"
+      rx="8" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
+
+    // text
+    const nameLines=wrapText(n.label,15);
+    const effectLines=wrapText(n.effect,20);
+    const totalH=(nameLines.length+effectLines.length)*9.5;
+    let ty=p.y-totalH/2+6;
+
+    nameLines.forEach(line=>{
+      svg+=`<text x="${p.x}" y="${ty}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${textCol}">${line}</text>`;
+      ty+=10;
+    });
+    ty+=1;
+    effectLines.forEach(line=>{
+      svg+=`<text x="${p.x}" y="${ty}" text-anchor="middle" font-size="7.5" fill="${textCol}" opacity="0.85">${line}</text>`;
+      ty+=9;
+    });
+
+    svg+=`</g>`;
+  });
+
+  svg+=`</svg>`;
+  wrap.innerHTML=svg;
+}
+
+function ventureRoom(i){
+  if(i===currentRoom){
+    // deselect — pop back to previous room in path
+    if(dungeonPath.length>0){
+      currentRoom=dungeonPath[dungeonPath.length-1];
+      dungeonPath=dungeonPath.slice(0,-1);
+    } else {
+      currentRoom=-1;
+      dungeonPath=[];
+    }
+  } else {
+    // advance — push current to path before moving
+    if(currentRoom!==-1)dungeonPath.push(currentRoom);
+    else dungeonPath=[];
+    currentRoom=i;
+  }
+  renderDungeon();
+}
+function resetDungeon(){dungeonId=null;currentRoom=-1;dungeonPath=[];renderDungeon();}
+
+// ── Activity badge — highlight boards with active state ──
+function fmtHasActivity(f){
+  const s=fmtState[f];
+  if(!s)return false;
+  const defaultLife=FORMATS[f]?FORMATS[f].life:20;
+  if(s.life!==defaultLife)return true;
+  if(s.poison>0||s.xp>0||s.energy>0)return true;
+  if(s.manaEntries&&s.manaEntries.length>0)return true;
+  if(s.initiative||s.goaded||s.monarch)return true;
+  if(!s.isDay)return true;
+  if(s.cmdDmg&&Object.values(s.cmdDmg).some(v=>v>0))return true;
+  if(s.diceHist&&s.diceHist.length>0)return true;
+  if((s.storm||0)>0)return true;
+  if(f==='dungeon'&&s.dungeonId)return true;
+  if(f==='ring'&&(s.ringStage>-1||(s.ringBearer&&s.ringBearer.trim())))return true;
+  // check current working state if this is the active format
+  if(f===fmt){
+    if(life!==defaultLife||poison>0||xp>0||energy>0)return true;
+    if(manaEntries.length>0||initiative||goaded||monarch||!isDay)return true;
+    if(Object.values(cmdDmg).some(v=>v>0)||diceHist.length>0||storm>0)return true;
+    if(f==='dungeon'&&dungeonId)return true;
+    if(f==='ring'&&(ringStage>-1||(ringBearer&&ringBearer.trim())))return true;
+    const nameEl=document.getElementById('ringBearerName');
+    if(f==='ring'&&nameEl&&nameEl.value.trim())return true;
+  }
+  return false;
+}
+// ── Activity badge and stable ordering ──
+// primaryFmt: the first primary board interacted with — locks to far left
+let primaryFmt=null;
+
+function updateActivityBadges(){
+  const group=document.getElementById('fmtBtnGroup');
+  if(!group)return;
+  const btns=Array.from(group.querySelectorAll('.fmt-btn'));
+
+  // update has-activity class
+  btns.forEach(btn=>{
+    const oc=btn.getAttribute('onclick')||'';
+    const match=oc.match(/'([^']+)'/);
+    const f=match?match[1]:null;
+    if(f)btn.classList.toggle('has-activity',fmtHasActivity(f));
+  });
+
+  // detect primary board activity and lock it in
+  const primaries=['commander','standard','simple'];
+  if(!primaryFmt){
+    for(const p of primaries){
+      if(fmtHasActivity(p)){primaryFmt=p;break;}
+    }
+  }
+
+  // build desired order: [primaryFmt, dungeon, ring, ...remaining primaries in original order]
+  const originalOrder=['commander','standard','simple','dungeon','ring'];
+  let desired;
+  if(primaryFmt){
+    const remaining=primaries.filter(p=>p!==primaryFmt);
+    desired=[primaryFmt,'dungeon','ring',...remaining];
+  } else {
+    desired=originalOrder;
+  }
+
+  // reorder DOM to match desired
+  const fmtToBtn={};
+  btns.forEach(btn=>{
+    const oc=btn.getAttribute('onclick')||'';
+    const match=oc.match(/'([^']+)'/);
+    if(match)fmtToBtn[match[1]]=btn;
+  });
+
+  // remove old divider
+  const existingDivider=group.querySelector('.fmt-divider');
+  if(existingDivider)existingDivider.remove();
+
+  // append in desired order
+  desired.forEach((f,i)=>{
+    if(fmtToBtn[f])group.appendChild(fmtToBtn[f]);
+    // insert divider between primary and dungeon/ring group if primaryFmt is set
+    if(primaryFmt&&i===0){
+      const div=document.createElement('div');div.className='fmt-divider';
+      group.appendChild(div);
+    }
+  });
+}
+
+// ── Ring functions ──
+function renderRing(){
+  for(let i=0;i<4;i++){
+    const el=document.getElementById('ringStage'+i);
+    if(!el)return;
+    el.classList.toggle('unlocked',i<=ringStage);
+  }
+  const status=document.getElementById('ringStatus');
+  const banner=document.getElementById('ringBanner');
+  const nameEl=document.getElementById('ringBearerName');
+  if(nameEl)nameEl.value=ringBearer;
+  if(ringStage===-1){status.textContent='Tap a stage as the Ring tempts you';banner.classList.remove('show');}
+  else if(ringStage===3){status.textContent='The Ring is fully powered — all 4 abilities unlocked';banner.classList.add('show');}
+  else{status.textContent='Stage '+(ringStage+1)+' of 4 unlocked';banner.classList.remove('show');}
+  updateActivityBadges();
+}
+function temptRing(i){
+  // tap unlocked stage to revert to previous, tap next stage to advance
+  if(i===ringStage)ringStage=i-1;
+  else if(i===ringStage+1)ringStage=i;
+  else if(i===0&&ringStage===-1)ringStage=0;
+  renderRing();
+}
+function resetRing(){ringStage=-1;ringBearer='';renderRing();}
+
+function setFormat(f,el){
+  saveState();
+  fmt=f;
+  document.querySelectorAll('.fmt-btn').forEach(b=>{
+    b.classList.remove('active');
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+f+"'"))b.classList.add('active');
+  });
+  loadState();
+  const simple=f==='simple';
+  const standard=f==='standard';
+  const dungeon=f==='dungeon';
+  const ring=f==='ring';
+  const fullscreen=dungeon||ring;
+  const mat=document.querySelector('.mat');
+  mat.classList.toggle('simple-mode',simple||fullscreen);
+  mat.classList.toggle('dungeon-mode',dungeon);
+  mat.classList.toggle('ring-mode',ring);
+  document.getElementById('rightCol').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('initCard').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('diceCard').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('goadedCard').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('monarchCard').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('cmdCard').style.display=(standard||fullscreen)?'none':'';
+  document.getElementById('standardCard').style.display=standard?'':'none';
+  applyDayNightUI();applyGoadedUI();
+  renderAll();
+  if(dungeon)renderDungeon();
+  if(ring)renderRing();
+  updateActivityBadges();
+}
+function applyDayNightUI(){
+  const btn=document.getElementById('dayNightBtn');
+  const icon=document.getElementById('dayNightIcon');
+  const lbl=document.getElementById('dayNightLabel');
+  if(!btn)return;
+  if(isDay){btn.style.borderColor='rgba(200,170,80,0.5)';btn.style.background='rgba(180,140,20,0.15)';icon.textContent='☀️';lbl.textContent='Day';lbl.style.color='#f0d080';}
+  else{btn.style.borderColor='rgba(100,100,200,0.5)';btn.style.background='rgba(40,40,120,0.25)';icon.textContent='🌙';lbl.textContent='Night';lbl.style.color='#b0a0e0';}
+}
+function applyGoadedUI(){
+  const card=document.getElementById('goadedCard');
+  const icon=document.getElementById('goadedIcon');
+  const lbl=document.getElementById('goadedLbl');
+  const state=document.getElementById('goadedState');
+  if(!card)return;
+  if(goaded){card.style.background='rgba(200,80,40,0.18)';card.style.borderColor='rgba(220,100,60,0.6)';icon.style.opacity='1';lbl.style.color='#f0a080';state.textContent='Active';state.style.color='rgba(240,140,100,0.8)';}
+  else{card.style.background='';card.style.borderColor='';icon.style.opacity='0.3';lbl.style.color='';state.textContent='None';state.style.color='';}
+}
+function resetAll(){
+  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false});
+  fmtState.commander={...defaultState(),life:40};
+  fmtState.standard={...defaultState()};
+  fmtState.simple={...defaultState()};
+  fmtState.dungeon={...defaultState(),dungeonId:null,currentRoom:-1,dungeonPath:[]};
+  fmtState.ring={...defaultState(),ringStage:-1,ringBearer:''};
+  primaryFmt=null;
+  dungeonId=null;currentRoom=-1;dungeonPath=[];
+  ringStage=-1;ringBearer='';
+  loadState();
+  applyDayNightUI();applyGoadedUI();
+  renderAll();
+  if(fmt==='dungeon')renderDungeon();
+  if(fmt==='ring')renderRing();
+  updateActivityBadges();
+}
+function renderAll(){adjLife(0);renderMana();renderCmd();adjPoison(0);document.getElementById('xpNum').textContent=xp;document.getElementById('energyNum').textContent=energy;const ic=document.getElementById('initCard');if(initiative)ic.classList.add('active');else ic.classList.remove('active');document.getElementById('initState').textContent=initiative?'Holding':'Not held';document.getElementById('diceFace').textContent=diceHist.length?diceHist[0].split(':')[1]:'—';document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');document.getElementById('stormFace').textContent=storm;applyMonarchUI();updateActivityBadges();}
 
 buildManaGrid();
 renderAll();
