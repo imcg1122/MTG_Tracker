@@ -88,10 +88,8 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 .simple-hidden{display:none!important;}
 .mat.simple-mode .main-grid{grid-template-columns:clamp(140px,20vw,220px) 1fr!important;}
-.mat.simple-mode .life-num{font-size:clamp(56px,9vw,88px);}
-.mat.simple-mode .lbtn{height:clamp(44px,6vh,60px);font-size:clamp(14px,2vw,18px);}
-.mat.simple-mode .pool-card{min-height:clamp(90px,12vh,130px);}
-.mat.simple-mode .pool-empty{min-height:clamp(90px,12vh,130px);}
+.mat.simple-mode .life-num{font-size:clamp(48px,7vw,72px);}
+.mat.simple-mode .lbtn{height:clamp(38px,5vh,52px);font-size:clamp(13px,1.8vw,17px);}
 .mat.simple-mode .mc-btn{padding:clamp(12px,2vh,18px) 4px clamp(10px,1.5vh,14px);}
 .mat.simple-mode .mana-btn-grid{gap:clamp(6px,1vw,10px);}
 .mat.simple-mode .bot-grid{grid-template-columns:1fr!important;}
@@ -146,16 +144,16 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 .mana-pool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
 .pool-slot{display:flex;flex-direction:column;align-items:center;gap:4px;}
-.pool-empty{border-radius:8px;border:1.5px dashed rgba(180,140,60,0.15);background:transparent;width:100%;min-height:84px;}
-.pool-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 4px 6px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s,opacity .2s;width:100%;min-height:84px;position:relative;}
+.pool-empty{border-radius:8px;border:1.5px dashed rgba(180,140,60,0.15);background:transparent;width:100%;min-height:140px;}
+.pool-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 4px 8px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s,opacity .2s;width:100%;min-height:140px;position:relative;}
 .pool-card:active{filter:brightness(1.3);transform:scale(.96);}
 .pool-card.spent-out{opacity:.28;cursor:default;}
 .pool-card.spent-out:active{transform:none;filter:none;}
-.pool-total{font-size:clamp(16px,2.2vw,22px);font-weight:500;line-height:1;font-family:Georgia,serif;}
-.pool-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.pool-icon svg{width:26px!important;height:26px!important;display:block;}
-.pool-name{font-size:8px;text-transform:uppercase;letter-spacing:.06em;text-align:center;line-height:1.2;}
-.pool-spent{font-size:8px;text-align:center;opacity:.55;line-height:1;}
+.pool-total{font-size:clamp(20px,2.8vw,30px);font-weight:500;line-height:1;font-family:Georgia,serif;}
+.pool-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pool-icon svg{width:38px!important;height:38px!important;display:block;}
+.pool-name{font-size:9px;text-transform:uppercase;letter-spacing:.06em;text-align:center;line-height:1.2;}
+.pool-spent{font-size:9px;text-align:center;opacity:.55;line-height:1;}
 .pool-untap{font-size:8px;padding:3px 6px;border-radius:4px;border:1px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);cursor:pointer;text-transform:uppercase;letter-spacing:.05em;user-select:none;width:100%;text-align:center;}
 .pool-untap:active{filter:brightness(1.2);}
 .pool-untap-ghost{font-size:8px;padding:3px 6px;visibility:hidden;border:1px solid transparent;width:100%;}
@@ -192,7 +190,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .initiative-card.active .init-state{color:rgba(240,200,80,0.7);}
 
 /* dice */
-.dice-compact-inner{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 5px;}
+.dice-compact-inner{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 5px;height:100%;justify-content:space-between;}
 .dice-result-row{display:flex;align-items:center;gap:7px;}
 .d20-svg{opacity:.3;flex-shrink:0;}
 .dice-face{font-size:clamp(22px,3vw,32px);font-weight:500;color:var(--c-gold);font-family:Georgia,serif;line-height:1;min-width:36px;text-align:center;}
@@ -222,13 +220,13 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .monarch-card.active .monarch-state{color:rgba(240,200,80,0.7);}
 
 /* add mana */
-.add-mana-card{padding:10px 12px;}
-.add-mana-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.add-mana-card{padding:10px 12px;display:flex;flex-direction:column;}
+.add-mana-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-shrink:0;}
 .clear-btn{font-size:9px;padding:3px 10px;border-radius:5px;border:1px solid rgba(200,80,60,0.35);background:transparent;color:rgba(220,100,80,0.6);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;user-select:none;}
 .clear-btn:active{background:rgba(200,80,60,0.18);}
-.mana-btn-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
-.mana-pair{display:flex;flex-direction:column;gap:4px;}
-.mc-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 3px 8px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s;background:rgba(0,0,0,0.22);}
+.mana-btn-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;flex:1;}
+.mana-pair{display:flex;flex-direction:column;gap:4px;flex:1;}
+.mc-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 3px 8px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s;background:rgba(0,0,0,0.22);flex:1;}
 .mc-btn:active{filter:brightness(1.35);transform:scale(.97);}
 .mc-btn-sign{font-size:15px;font-weight:500;line-height:1;}
 .mc-btn-icon{line-height:1;display:flex;align-items:center;justify-content:center;}
@@ -240,6 +238,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* ── LAYOUT: MOBILE LANDSCAPE + TABLET + DESKTOP (≥600px) ── */
 .main-grid{display:grid;gap:8px;margin-bottom:8px;align-items:stretch;}
+.main-grid > *:first-child{display:flex;flex-direction:column;}
 .bot-grid{display:grid;gap:8px;}
 
 /* Wide layout — tablet landscape, desktop */
@@ -250,10 +249,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .mat-inner{padding:clamp(10px,1.5vw,14px);}
 
   .main-grid{grid-template-columns:clamp(140px,16vw,200px) 1fr clamp(180px,22vw,240px);}
-  .bot-grid{grid-template-columns:clamp(90px,11vw,130px) clamp(110px,14vw,160px) 1fr;}
+  .bot-grid{grid-template-columns:clamp(140px,16vw,200px) 1fr;}
 
-  .pool-empty{min-height:clamp(80px,10vh,110px);}
-  .pool-card{min-height:clamp(80px,10vh,110px);}
+  .pool-empty{min-height:clamp(120px,14vh,160px);}
+  .pool-card{min-height:clamp(120px,14vh,160px);}
 
   .sec-label{font-size:clamp(8px,0.9vw,10px);}
   .fmt-btn,.reset-btn,.theme-btn{font-size:clamp(9px,0.9vw,11px);padding:clamp(3px,0.5vh,5px) clamp(8px,1vw,12px);}
@@ -264,8 +263,8 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .mc-btn-icon svg{width:26px!important;height:26px!important;}
   .mc-btn{padding:11px 4px 9px;gap:5px;}
   .mc-btn-name{font-size:8px;}
-  .pool-card{min-height:clamp(90px,11vh,120px);}
-  .pool-empty{min-height:clamp(90px,11vh,120px);}
+  .pool-card{min-height:clamp(130px,15vh,170px);}
+  .pool-empty{min-height:clamp(130px,15vh,170px);}
   .card{padding:10px 13px;}
   .mana-btn-grid{gap:7px;}
   .cbtn{height:26px;font-size:11px;}
@@ -274,8 +273,8 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* Large desktop — generous sizing */
 @media (min-width:1400px){
-  .pool-card{min-height:120px;}
-  .pool-empty{min-height:120px;}
+  .pool-card{min-height:170px;}
+  .pool-empty{min-height:170px;}
   .lbtn{height:52px;}
   .dbtn{padding:8px 0;font-size:10px;}
   .dice-btn-grid{gap:5px;}
@@ -285,9 +284,9 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 /* Only shown when not in portrait-blocked state */
 @media (max-width:599px) and (orientation:landscape){
   .main-grid{grid-template-columns:130px 1fr 185px;}
-  .bot-grid{grid-template-columns:88px 115px 1fr;}
-  .pool-card{min-height:76px;}
-  .pool-empty{min-height:76px;}
+  .bot-grid{grid-template-columns:130px 1fr;}
+  .pool-card{min-height:100px;}
+  .pool-empty{min-height:100px;}
   .life-num{font-size:46px;}
   .lbtn{height:36px;font-size:13px;}
   .sec-label{font-size:8px;}
@@ -362,17 +361,50 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   <!-- main 3-col grid -->
   <div class="main-grid">
 
-    <!-- life -->
-    <div class="card">
-      <div class="sec-label" style="text-align:center;">Life total</div>
-      <div class="life-num" id="lifeNum">40</div>
-      <div class="life-sub">points</div>
-      <div class="life-btns">
-        <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(-5)">−5</div>
-        <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(5)">+5</div>
-        <div class="lbtn" onclick="adjLife(-1)">−1</div>
-        <div class="lbtn" onclick="adjLife(1)">+1</div>
+    <!-- col1: life total (shrink-wrapped) + dice below, filling to bottom of mana pool -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+
+      <!-- life -->
+      <div class="card" style="flex:0 0 auto;">
+        <div class="sec-label" style="text-align:center;">Life total</div>
+        <div class="life-num" id="lifeNum">40</div>
+        <div class="life-sub">points</div>
+        <div class="life-btns">
+          <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(-5)">−5</div>
+          <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(5)">+5</div>
+          <div class="lbtn" onclick="adjLife(-1)">−1</div>
+          <div class="lbtn" onclick="adjLife(1)">+1</div>
+        </div>
       </div>
+
+      <!-- dice -->
+      <div class="card" id="diceCard" style="display:flex;flex-direction:column;flex:1;">
+        <div class="dice-compact-inner">
+          <div class="sec-label" style="margin-bottom:6px;">Dice</div>
+          <div class="dice-result-row" style="justify-content:center;gap:12px;padding:10px 0 6px;">
+            <svg class="d20-svg" width="40" height="40" viewBox="0 0 36 36" fill="none">
+              <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(210,170,90,0.45);"/>
+              <polygon points="18,2 34,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="18,2 2,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="34,10 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="2,10 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="18,34 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="18,34 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+            </svg>
+            <div class="dice-face" id="diceFace" style="font-size:clamp(28px,4vw,44px);min-width:48px;">—</div>
+          </div>
+          <div class="dice-hist" id="diceHist" style="margin-bottom:10px;"></div>
+          <div class="dice-btn-grid">
+            <div class="dbtn" onclick="roll(4)">d4</div>
+            <div class="dbtn" onclick="roll(6)">d6</div>
+            <div class="dbtn" onclick="roll(8)">d8</div>
+            <div class="dbtn" onclick="roll(10)">d10</div>
+            <div class="dbtn" onclick="roll(12)">d12</div>
+            <div class="dbtn" onclick="roll(20)">d20</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- mana pool -->
@@ -438,16 +470,21 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div class="card" style="padding:8px;display:flex;flex-direction:column;">
+      <div style="display:flex;flex-direction:column;gap:6px;flex:1;">
+        <div class="card" style="padding:8px;display:flex;flex-direction:column;flex:1;">
           <div class="counter-header">
             <div class="sec-label" style="margin-bottom:0;">Poison</div>
-            <div class="reset-icon" onclick="resetPoison()" title="Reset">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <div class="reset-icon" onclick="adjPoison(-1)" title="Subtract one">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <div class="reset-icon" onclick="resetPoison()" title="Reset">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              </div>
             </div>
           </div>
           <div class="counter-tap-btn" id="poisonBtn"
-            style="border-color:rgba(60,180,60,0.6);background:rgba(20,100,20,0.25);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;"
+            style="border-color:rgba(60,180,60,0.6);background:rgba(20,100,20,0.25);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;"
             onclick="adjPoison(1)">
             <div class="counter-num" id="poisonNum" style="color:#80e080;font-size:clamp(18px,2.2vw,24px);">0</div>
             <div class="counter-icon" style="width:22px;height:22px;">
@@ -461,7 +498,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
             <div class="counter-label" style="color:#80e080;flex:1;text-align:left;">tap to add</div>
           </div>
         </div>
-        <div class="card" style="padding:8px;display:flex;flex-direction:column;">
+        <div class="card" style="padding:8px;display:flex;flex-direction:column;flex:1;">
           <div class="counter-header">
             <div class="sec-label" style="margin-bottom:0;">Exp</div>
             <div style="display:flex;gap:4px;align-items:center;">
@@ -474,7 +511,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
             </div>
           </div>
           <div class="counter-tap-btn"
-            style="border-color:rgba(140,100,220,0.55);background:rgba(80,50,160,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;"
+            style="border-color:rgba(140,100,220,0.55);background:rgba(80,50,160,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;"
             onclick="adjXp(1)">
             <div class="counter-num" id="xpNum" style="color:#c0a0ff;font-size:clamp(18px,2.2vw,24px);">0</div>
             <div class="counter-icon" style="width:22px;height:22px;">
@@ -485,7 +522,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
             <div class="counter-label" style="color:rgba(180,150,255,0.65);flex:1;text-align:left;">tap to add</div>
           </div>
         </div>
-        <div class="card storm-card" id="stormCard" style="padding:8px;display:flex;flex-direction:column;">
+        <div class="card storm-card" id="stormCard" style="padding:8px;display:flex;flex-direction:column;flex:1;">
           <div class="counter-header">
             <div class="sec-label" style="margin-bottom:0;">Storm</div>
             <div style="display:flex;gap:4px;align-items:center;">
@@ -498,7 +535,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
             </div>
           </div>
           <div class="counter-tap-btn" onclick="adjStorm(1)"
-            style="border-color:rgba(100,160,240,0.6);background:rgba(40,80,180,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;">
+            style="border-color:rgba(100,160,240,0.6);background:rgba(40,80,180,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;">
             <div class="counter-num" id="stormFace" style="color:#90c8ff;font-size:clamp(18px,2.2vw,24px);">0</div>
             <div class="counter-icon" style="width:22px;height:22px;">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#90c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -576,10 +613,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     <div class="ring-complete-banner" id="ringBanner">💍 The Ring is fully powered</div>
   </div>
 
-  <!-- bottom grid: goaded+initiative | dice | add mana -->
+  <!-- bottom grid: goaded+initiative+monarch | add mana (aligned with mana pool) -->
   <div class="bot-grid" id="botGrid">
 
-    <!-- left sidebar: goaded above, initiative below -->
+    <!-- col1: goaded, initiative, monarch -->
     <div style="display:flex;flex-direction:column;gap:8px;">
 
       <!-- goaded toggle -->
@@ -595,7 +632,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
         </div>
       </div>
 
-      <!-- initiative (smaller) -->
+      <!-- initiative -->
       <div class="card initiative-card" id="initCard" onclick="toggleInit()" style="flex:1;">
         <div class="init-compact" style="padding:6px;gap:4px;">
           <div class="init-icon-el" style="font-size:16px;">⚔</div>
@@ -620,33 +657,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
     </div>
 
-    <div class="card" id="diceCard">
-      <div class="dice-compact-inner">
-        <div class="sec-label" style="margin-bottom:3px;">Dice</div>
-        <div class="dice-result-row">
-          <svg class="d20-svg" width="24" height="24" viewBox="0 0 36 36" fill="none">
-            <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(210,170,90,0.45);"/>
-            <polygon points="18,2 34,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-            <polygon points="18,2 2,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-            <polygon points="34,10 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-            <polygon points="2,10 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-            <polygon points="18,34 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-            <polygon points="18,34 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-          </svg>
-          <div class="dice-face" id="diceFace">—</div>
-        </div>
-        <div class="dice-hist" id="diceHist"></div>
-        <div class="dice-btn-grid">
-          <div class="dbtn" onclick="roll(4)">d4</div>
-          <div class="dbtn" onclick="roll(6)">d6</div>
-          <div class="dbtn" onclick="roll(8)">d8</div>
-          <div class="dbtn" onclick="roll(10)">d10</div>
-          <div class="dbtn" onclick="roll(12)">d12</div>
-          <div class="dbtn" onclick="roll(20)">d20</div>
-        </div>
-      </div>
-    </div>
-
+    <!-- col2: add mana — left edge aligns with mana pool -->
     <div class="card add-mana-card">
       <div class="add-mana-top">
         <div class="sec-label" style="margin-bottom:0;">Add mana</div>
@@ -1286,7 +1297,7 @@ function setFormat(f,el){
   mat.classList.toggle('ring-mode',ring);
   document.getElementById('rightCol').classList.toggle('simple-hidden',simple||fullscreen);
   document.getElementById('initCard').classList.toggle('simple-hidden',simple||fullscreen);
-  document.getElementById('diceCard').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('diceCard').classList.toggle('simple-hidden',fullscreen);
   document.getElementById('goadedCard').classList.toggle('simple-hidden',simple||fullscreen);
   document.getElementById('monarchCard').classList.toggle('simple-hidden',simple||fullscreen);
   document.getElementById('cmdCard').style.display=(standard||fullscreen)?'none':'';
