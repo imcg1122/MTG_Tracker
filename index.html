@@ -155,7 +155,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .pool-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .pool-icon svg{width:38px!important;height:38px!important;display:block;}
 .pool-name{font-size:9px;text-transform:uppercase;letter-spacing:.06em;text-align:center;line-height:1.2;}
-.pool-spent{font-size:9px;text-align:center;opacity:.55;line-height:1;}
+.pool-spent{font-size:9px;text-align:center;opacity:.85;line-height:1;font-weight:500;}
 .pool-untap{font-size:8px;padding:3px 6px;border-radius:4px;border:1px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);cursor:pointer;text-transform:uppercase;letter-spacing:.05em;user-select:none;width:100%;text-align:center;}
 .pool-untap:active{filter:brightness(1.2);}
 .pool-untap-ghost{font-size:8px;padding:3px 6px;visibility:hidden;border:1px solid transparent;width:100%;}
@@ -194,7 +194,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 /* dice */
 .dice-compact-inner{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 5px;height:100%;justify-content:space-between;}
 .dice-result-row{display:flex;align-items:center;gap:7px;}
-.d20-svg{opacity:.3;flex-shrink:0;}
+.d20-svg{opacity:.65;flex-shrink:0;}
 .dice-face{font-size:clamp(22px,3vw,32px);font-weight:500;color:var(--c-gold);font-family:Georgia,serif;line-height:1;min-width:36px;text-align:center;}
 .dice-rolling{animation:pop .28s ease-out;}
 @keyframes pop{0%{transform:scale(.45);opacity:.15;}100%{transform:scale(1);opacity:1;}}
@@ -202,6 +202,201 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .dbtn{font-size:9px;padding:6px 0;border-radius:5px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;user-select:none;text-align:center;transition:background .1s;}
 .dbtn:active{background:var(--c-btn-active);}
 .dice-hist{font-size:8px;color:var(--c-faint);text-align:center;}
+
+/* ── VISUAL EFFECTS ── */
+
+/* Goaded — rotating conic-gradient swirl border */
+@property --goaded-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes goaded-spin {
+  to { --goaded-angle: 360deg; }
+}
+@keyframes goaded-pulse {
+  0%,100%{box-shadow:0 0 8px 2px rgba(220,80,30,0.4);}
+  50%{box-shadow:0 0 18px 6px rgba(220,80,30,0.75);}
+}
+.goaded-active {
+  animation: goaded-spin 2s linear infinite, goaded-pulse 1.5s ease-in-out infinite;
+  background: conic-gradient(from var(--goaded-angle),
+    rgba(220,60,20,0.85) 0deg,
+    rgba(255,140,30,0.9) 60deg,
+    rgba(200,50,10,0.7) 120deg,
+    rgba(255,100,20,0.9) 180deg,
+    rgba(220,60,20,0.85) 240deg,
+    rgba(255,140,30,0.9) 300deg,
+    rgba(220,60,20,0.85) 360deg
+  ) border-box !important;
+  border-color: transparent !important;
+  position: relative;
+}
+.goaded-active::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 6px;
+  background: rgba(40,15,5,0.95);
+  z-index: 0;
+}
+.goaded-active > * { position: relative; z-index: 1; }
+
+/* Monarch — slow breathing golden glow */
+@keyframes monarch-breathe {
+  0%,100%{box-shadow:0 0 6px 1px rgba(220,180,40,0.3),inset 0 0 8px rgba(220,180,40,0.05);}
+  50%{box-shadow:0 0 20px 6px rgba(240,200,60,0.65),inset 0 0 16px rgba(240,200,60,0.12);}
+}
+.monarch-active {
+  animation: monarch-breathe 2.5s ease-in-out infinite;
+}
+
+/* Mana spend — color burst */
+@keyframes mana-burst {
+  0%   { transform:scale(0.6); opacity:0.9; }
+  60%  { transform:scale(1.5); opacity:0.5; }
+  100% { transform:scale(2.2); opacity:0; }
+}
+.mana-burst-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  pointer-events: none;
+  animation: mana-burst 0.45s ease-out forwards;
+  border: 3px solid currentColor;
+  z-index: 10;
+}
+
+/* Pool card — breathing inner glow */
+@keyframes pool-glow {
+  0%,100% { box-shadow: inset 0 0 6px 1px var(--glow-color, rgba(255,255,255,0.15)); }
+  50%     { box-shadow: inset 0 0 18px 4px var(--glow-color, rgba(255,255,255,0.35)); }
+}
+.pool-card:not(.spent-out) {
+  animation: pool-glow 4s ease-in-out infinite;
+}
+
+/* Life damage — red slash */
+@keyframes life-slash {
+  0%   { opacity:1; transform:translate(-50%,-50%) rotate(-20deg) scaleX(0); }
+  30%  { opacity:1; transform:translate(-50%,-50%) rotate(-20deg) scaleX(1); }
+  100% { opacity:0; transform:translate(-50%,-50%) rotate(-20deg) scaleX(1); }
+}
+.life-slash {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 110%; height: 4px;
+  background: linear-gradient(90deg, transparent, #ff4422, #ff6644, #ff4422, transparent);
+  border-radius: 2px;
+  pointer-events: none;
+  animation: life-slash 0.5s ease-out forwards;
+  box-shadow: 0 0 10px 3px rgba(255,60,30,0.6);
+  z-index: 10;
+}
+.life-slash::before, .life-slash::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 3px; height: 10px;
+  background: rgba(255,80,40,0.7);
+  border-radius: 1px;
+}
+.life-slash::before { left: 20%; transform: rotate(30deg); }
+.life-slash::after  { right: 20%; transform: rotate(-30deg); }
+
+/* Life heal — green plus float */
+@keyframes life-heal {
+  0%   { opacity:1; transform:translate(-50%,-50%) scale(0.6); }
+  40%  { opacity:1; transform:translate(-50%,-80%) scale(1.1); }
+  100% { opacity:0; transform:translate(-50%,-130%) scale(0.9); }
+}
+.life-heal {
+  position: absolute;
+  left: 50%; top: 50%;
+  font-size: 2.5em;
+  font-weight: 700;
+  color: #50ee80;
+  text-shadow: 0 0 12px rgba(60,220,100,0.8), 0 0 24px rgba(60,220,100,0.4);
+  pointer-events: none;
+  animation: life-heal 0.7s ease-out forwards;
+  z-index: 10;
+  white-space: nowrap;
+  font-family: Georgia, serif;
+}
+
+/* Life num container needs position:relative for overlays */
+.life-card-wrap { position: relative; }
+
+/* Initiative — electric blue full highlight */
+@keyframes initiative-pulse {
+  0%,100%{box-shadow:0 0 8px 2px rgba(80,160,255,0.45),inset 0 0 10px rgba(80,160,255,0.1);}
+  50%{box-shadow:0 0 22px 8px rgba(100,180,255,0.75),inset 0 0 20px rgba(100,180,255,0.2);}
+}
+@keyframes initiative-border-flash {
+  0%,100%{border-color:rgba(80,160,255,0.6);}
+  50%{border-color:rgba(160,210,255,0.95);}
+}
+.initiative-active {
+  animation: initiative-pulse 1.8s ease-in-out infinite, initiative-border-flash 1.8s ease-in-out infinite;
+  background: rgba(40,100,200,0.22) !important;
+}
+.initiative-active .init-icon-el { opacity:1 !important; color:#90c8ff; }
+.initiative-active .init-lbl { color:#90c8ff !important; }
+.initiative-active .init-state { color:rgba(140,200,255,0.8) !important; }
+
+/* Mana spend — fixed-position burst (survives DOM re-render) */
+@keyframes mana-burst-fixed {
+  0%   { transform:translate(-50%,-50%) scale(0.5); opacity:1; }
+  50%  { transform:translate(-50%,-50%) scale(1.6); opacity:0.6; }
+  100% { transform:translate(-50%,-50%) scale(2.4); opacity:0; }
+}
+.mana-burst-fixed {
+  position:fixed;
+  width:80px;height:80px;
+  border-radius:10px;
+  border:3px solid currentColor;
+  pointer-events:none;
+  animation:mana-burst-fixed 0.5s ease-out forwards;
+  z-index:9999;
+  box-shadow:0 0 14px 5px currentColor;
+}
+
+/* Counter pop-up effects */
+@keyframes counter-pop {
+  0%   { opacity:1; transform:translateX(-50%) translateY(0) scale(0.7); }
+  40%  { opacity:1; transform:translateX(-50%) translateY(-18px) scale(1.2); }
+  100% { opacity:0; transform:translateX(-50%) translateY(-50px) scale(0.9); }
+}
+.counter-pop {
+  position:absolute;
+  left:50%;
+  bottom:50%;
+  font-size:1.5em;
+  font-weight:700;
+  pointer-events:none;
+  animation:counter-pop 0.75s ease-out forwards;
+  z-index:20;
+  white-space:nowrap;
+  font-family:Georgia,serif;
+  text-shadow:0 0 10px currentColor;
+}
+
+/* Dice — spinning d20 during roll */
+@keyframes dice-spin {
+  0%   { transform:rotate(0deg) scale(1); }
+  25%  { transform:rotate(90deg) scale(1.12); }
+  50%  { transform:rotate(180deg) scale(0.88); }
+  75%  { transform:rotate(270deg) scale(1.12); }
+  100% { transform:rotate(360deg) scale(1); }
+}
+.dice-spinning { animation:dice-spin 0.28s linear infinite; }
+
+@keyframes dice-result-pop {
+  0%   { transform:scale(0.3); opacity:0; }
+  60%  { transform:scale(1.25); opacity:1; }
+  100% { transform:scale(1); opacity:1; }
+}
+.dice-result-appear { animation:dice-result-pop 0.32s ease-out forwards; }
 
 /* storm counter */
 .storm-card{padding:8px 10px;display:flex;flex-direction:column;gap:5px;}
@@ -368,14 +563,16 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
       <!-- life -->
       <div class="card" style="flex:0 0 auto;">
-        <div class="sec-label" style="text-align:center;">Life total</div>
-        <div class="life-num" id="lifeNum">40</div>
-        <div class="life-sub">points</div>
-        <div class="life-btns">
-          <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(-5)">−5</div>
-          <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(5)">+5</div>
-          <div class="lbtn" onclick="adjLife(-1)">−1</div>
-          <div class="lbtn" onclick="adjLife(1)">+1</div>
+        <div class="life-card-wrap">
+          <div class="sec-label" style="text-align:center;">Life total</div>
+          <div class="life-num" id="lifeNum">40</div>
+          <div class="life-sub">points</div>
+          <div class="life-btns">
+            <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(-5)">−5</div>
+            <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(5)">+5</div>
+            <div class="lbtn" onclick="adjLife(-1)">−1</div>
+            <div class="lbtn" onclick="adjLife(1)">+1</div>
+          </div>
         </div>
       </div>
 
@@ -512,7 +709,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
               </div>
             </div>
           </div>
-          <div class="counter-tap-btn"
+          <div class="counter-tap-btn" id="xpBtn"
             style="border-color:rgba(140,100,220,0.55);background:rgba(80,50,160,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;"
             onclick="adjXp(1)">
             <div class="counter-num" id="xpNum" style="color:#c0a0ff;font-size:clamp(18px,2.2vw,24px);">0</div>
@@ -536,7 +733,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
               </div>
             </div>
           </div>
-          <div class="counter-tap-btn" onclick="adjStorm(1)"
+          <div class="counter-tap-btn" id="stormBtn" onclick="adjStorm(1)"
             style="border-color:rgba(100,160,240,0.6);background:rgba(40,80,180,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;">
             <div class="counter-num" id="stormFace" style="color:#90c8ff;font-size:clamp(18px,2.2vw,24px);">0</div>
             <div class="counter-icon" style="width:22px;height:22px;">
@@ -776,11 +973,41 @@ function adjEnergy(d){energy=Math.max(0,energy+d);document.getElementById('energ
 function resetEnergy(){energy=0;document.getElementById('energyNum').textContent=0;}
 function toggleDayNight(){isDay=!isDay;applyDayNightUI();}
 function resetDayNight(){isDay=true;applyDayNightUI();}
-function adjPoison(d){poison=Math.max(0,poison+d);document.getElementById('poisonNum').textContent=poison;const btn=document.getElementById('poisonBtn');btn.style.background=poison>=10?'rgba(180,20,20,0.3)':poison>=7?'rgba(120,60,0,0.3)':'rgba(20,100,20,0.25)';btn.style.borderColor=poison>=10?'rgba(220,60,60,0.7)':poison>=7?'rgba(200,120,40,0.6)':'rgba(60,180,60,0.6)';document.getElementById('poisonNum').style.color=poison>=10?'#ff8080':poison>=7?'#ffb060':'#80e080';}
+function spawnPop(anchorId,emoji,color){
+  const anchor=document.getElementById(anchorId);
+  if(!anchor)return;
+  anchor.style.position='relative';
+  const pop=document.createElement('div');
+  pop.className='counter-pop';
+  pop.textContent=emoji;
+  pop.style.color=color;
+  anchor.appendChild(pop);
+  pop.addEventListener('animationend',()=>pop.remove());
+}
+function adjPoison(d){poison=Math.max(0,poison+d);document.getElementById('poisonNum').textContent=poison;const btn=document.getElementById('poisonBtn');btn.style.background=poison>=10?'rgba(180,20,20,0.3)':poison>=7?'rgba(120,60,0,0.3)':'rgba(20,100,20,0.25)';btn.style.borderColor=poison>=10?'rgba(220,60,60,0.7)':poison>=7?'rgba(200,120,40,0.6)':'rgba(60,180,60,0.6)';document.getElementById('poisonNum').style.color=poison>=10?'#ff8080':poison>=7?'#ffb060':'#80e080';if(d>0)spawnPop('poisonBtn','☠️','#80e080');}
 function resetPoison(){poison=0;adjPoison(0);}
-function adjXp(d){xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;}
+function adjXp(d){xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');}
 function resetXp(){xp=0;document.getElementById('xpNum').textContent=0;}
-function adjLife(d){life=Math.max(0,life+d);const el=document.getElementById('lifeNum');el.textContent=life;el.className='life-num'+(life<=5?' danger':'');}
+function adjLife(d){
+  life=Math.max(0,life+d);
+  const el=document.getElementById('lifeNum');
+  el.textContent=life;
+  el.className='life-num'+(life<=5?' danger':'');
+  const wrap=el.closest('.life-card-wrap');
+  if(!wrap)return;
+  if(d<0){
+    const slash=document.createElement('div');
+    slash.className='life-slash';
+    wrap.appendChild(slash);
+    slash.addEventListener('animationend',()=>slash.remove());
+  } else if(d>0){
+    const heal=document.createElement('div');
+    heal.className='life-heal';
+    heal.textContent='+'+d;
+    wrap.appendChild(heal);
+    heal.addEventListener('animationend',()=>heal.remove());
+  }
+}
 
 function eKey(t,a,b){return t==='mono'?a:'h:'+[a,b].sort().join('');}
 function addCol(c){const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}renderMana();}
@@ -806,19 +1033,44 @@ function renderMana(){
       const card=document.createElement('div');card.className='pool-card'+(avail===0?' spent-out':'');
       if(e.type==='hybrid'){
         card.style.borderColor='rgba(180,140,60,0.55)';card.style.background='transparent';
-        const hl=document.createElement('div');hl.className='hybrid-half-l';hl.style.background=CM[e.c1].bg+'bb';
-        const hr=document.createElement('div');hr.className='hybrid-half-r';hr.style.background=CM[e.c2].bg+'bb';
+        const hl=document.createElement('div');hl.className='hybrid-half-l';hl.style.background=CM[e.c1].bg;
+        const hr=document.createElement('div');hr.className='hybrid-half-r';hr.style.background=CM[e.c2].bg;
         card.appendChild(hl);card.appendChild(hr);
-        const inner=document.createElement('div');inner.className='pool-card-inner';inner.style.color='rgba(255,255,255,0.92)';
-        inner.innerHTML=`<div class="pool-total" style="color:rgba(255,255,255,0.92)">${avail}<span style="font-size:11px;opacity:.5;">/${e.total}</span></div><div class="pool-icon" style="color:rgba(255,255,255,0.92)">${ICONS.hybrid}</div><div class="pool-name" style="color:rgba(255,255,255,0.8)">${CM[e.c1].label}/${CM[e.c2].label}</div><div class="pool-spent" style="color:rgba(255,255,255,0.42)">${e.spent} spent</div>`;
+        const hybridHasWhite=e.c1==='w'||e.c2==='w';
+        if(hybridHasWhite)card.dataset.shimmer='dark';
+        // glow: use gold for white hybrids, blend border colors otherwise
+        const gc=hybridHasWhite?'rgba(200,160,40,0.55)':'rgba(200,180,255,0.3)';
+        card.style.setProperty('--glow-color',gc);
+        const htc=hybridHasWhite?'#1a1000':'rgba(255,255,255,0.92)';
+        const htcMuted=hybridHasWhite?'rgba(30,18,0,0.9)':'rgba(255,255,255,0.85)';
+        const htcSpent=hybridHasWhite?'rgba(30,18,0,0.85)':'rgba(255,255,255,0.8)';
+        const htcFrac=hybridHasWhite?'rgba(30,18,0,0.75)':'rgba(255,255,255,0.7)';
+        const inner=document.createElement('div');inner.className='pool-card-inner';inner.style.color=htc;
+        inner.innerHTML=`<div class="pool-total" style="color:${htc}">${avail}<span style="font-size:11px;color:${htcFrac};">/${e.total}</span></div><div class="pool-icon" style="color:${htc}">${ICONS.hybrid}</div><div class="pool-name" style="color:${htcMuted};font-weight:600;">${CM[e.c1].label}/${CM[e.c2].label}</div><div class="pool-spent" style="color:${htcSpent};">${e.spent} spent</div>`;
         card.appendChild(inner);
       } else {
         card.style.background=CM[e.color].bg;card.style.borderColor=CM[e.color].bc;
+        if(e.color==='w')card.dataset.shimmer='dark';
+        card.style.setProperty('--glow-color', e.color==='w'?'rgba(200,160,40,0.55)':hexToGlow(CM[e.color].bc,0.5));
         const tc=CM[e.color].text;
-        card.innerHTML=`<div class="pool-total" style="color:${tc}">${avail}<span style="font-size:11px;opacity:.5;">/${e.total}</span></div><div class="pool-icon" style="color:${tc}">${ICONS[e.color]}</div><div class="pool-name" style="color:${tc}">${CM[e.color].name}</div><div class="pool-spent" style="color:${tc};opacity:.5">${e.spent} spent</div>`;
+        card.innerHTML=`<div class="pool-total" style="color:${tc}">${avail}<span style="font-size:11px;opacity:.75;">/${e.total}</span></div><div class="pool-icon" style="color:${tc}">${ICONS[e.color]}</div><div class="pool-name" style="color:${tc}">${CM[e.color].name}</div><div class="pool-spent" style="color:${tc}">${e.spent} spent</div>`;
       }
-      if(avail>0){const idx=si;card.onclick=()=>{manaEntries[idx].spent++;renderMana();};}
-      slot.appendChild(card);
+      if(avail>0){
+        const idx=si;
+        card.onclick=()=>{
+          // Fixed-position burst — survives renderMana() DOM rebuild
+          const rect=card.getBoundingClientRect();
+          const burst=document.createElement('div');
+          burst.className='mana-burst-fixed';
+          burst.style.color=e.type==='hybrid'?'rgba(200,160,255,0.85)':CM[e.color].bc;
+          burst.style.left=(rect.left+rect.width/2)+'px';
+          burst.style.top=(rect.top+rect.height/2)+'px';
+          document.body.appendChild(burst);
+          burst.addEventListener('animationend',()=>burst.remove());
+          manaEntries[idx].spent++;
+          renderMana();
+        };
+      }      slot.appendChild(card);
       const ub=document.createElement('div');ub.className='pool-untap';ub.textContent='↺ Untap';
       const idx=si;ub.onclick=()=>untapEntry(idx);slot.appendChild(ub);
     }
@@ -857,13 +1109,57 @@ function renderCmd(){
     el.appendChild(row);
   });
 }
-function adjCmd(p,d){cmdDmg[p]=Math.max(0,(cmdDmg[p]||0)+d);renderCmd();}
+function adjCmd(p,d){
+  // find the cmd-val element for this player before DOM rebuild
+  const rows=document.getElementById('cmdRows');
+  const vals=rows?rows.querySelectorAll('.cmd-val'):[];
+  let targetEl=null;
+  vals.forEach(v=>{
+    const row=v.closest('.cmd-row');
+    if(row&&row.querySelector('.cmd-name')&&row.querySelector('.cmd-name').textContent===p)targetEl=v;
+  });
+  if(targetEl&&d!==0){
+    const rect=targetEl.getBoundingClientRect();
+    const cx=rect.left+rect.width/2;
+    const cy=rect.top+rect.height/2;
+    if(d<0){
+      const slash=document.createElement('div');
+      slash.className='life-slash';
+      slash.style.position='fixed';
+      slash.style.left=cx+'px';
+      slash.style.top=cy+'px';
+      slash.style.width='60px';
+      slash.style.transform='translate(-50%,-50%) rotate(-20deg)';
+      slash.style.animation='life-slash 0.5s ease-out forwards';
+      document.body.appendChild(slash);
+      slash.addEventListener('animationend',()=>slash.remove());
+    } else {
+      const heal=document.createElement('div');
+      heal.className='life-heal';
+      heal.style.position='fixed';
+      heal.style.left=cx+'px';
+      heal.style.top=cy+'px';
+      heal.style.fontSize='1.4em';
+      heal.textContent='+'+d;
+      document.body.appendChild(heal);
+      heal.addEventListener('animationend',()=>heal.remove());
+    }
+  }
+  cmdDmg[p]=Math.max(0,(cmdDmg[p]||0)+d);
+  renderCmd();
+}
 
-function toggleInit(){initiative=!initiative;document.getElementById('initCard').classList.toggle('active',initiative);document.getElementById('initState').textContent=initiative?'Holding':'Not held';}
+function toggleInit(){
+  initiative=!initiative;
+  const card=document.getElementById('initCard');
+  card.classList.toggle('active',initiative);
+  card.classList.toggle('initiative-active',initiative);
+  document.getElementById('initState').textContent=initiative?'Holding':'Not held';
+}
 function toggleGoaded(){goaded=!goaded;applyGoadedUI();}
 function resetGoaded(){goaded=false;applyGoadedUI();}
 
-function adjStorm(d){storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;}
+function adjStorm(d){storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;if(d>0)spawnPop('stormBtn','⚡','#90c8ff');}
 function resetStorm(){storm=0;document.getElementById('stormFace').textContent=0;}
 
 function toggleMonarch(){monarch=!monarch;applyMonarchUI();}
@@ -874,7 +1170,7 @@ function applyMonarchUI(){
   const state=document.getElementById('monarchState');
   if(!card)return;
   if(monarch){
-    card.classList.add('active');
+    card.classList.add('active','monarch-active');
     card.style.background='rgba(180,140,20,0.18)';
     card.style.borderColor='rgba(220,180,40,0.65)';
     icon.style.opacity='1';
@@ -882,7 +1178,7 @@ function applyMonarchUI(){
     state.textContent='Holding';
     state.style.color='rgba(240,200,80,0.75)';
   } else {
-    card.classList.remove('active');
+    card.classList.remove('active','monarch-active');
     card.style.background='';
     card.style.borderColor='';
     icon.style.opacity='0.3';
@@ -892,7 +1188,30 @@ function applyMonarchUI(){
   }
 }
 
-function roll(n){const result=Math.ceil(Math.random()*n);diceHist.unshift('d'+n+':'+result);if(diceHist.length>3)diceHist.pop();const el=document.getElementById('diceFace');el.className='dice-face';void el.offsetWidth;el.className='dice-face dice-rolling';el.textContent=result;document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');}
+function roll(n){
+  const result=Math.ceil(Math.random()*n);
+  diceHist.unshift('d'+n+':'+result);
+  if(diceHist.length>3)diceHist.pop();
+
+  const svg=document.querySelector('.d20-svg');
+  const face=document.getElementById('diceFace');
+  const hist=document.getElementById('diceHist');
+
+  // Show spinning d20, hide number
+  face.style.opacity='0';
+  hist.textContent='';
+  if(svg){svg.classList.add('dice-spinning');svg.style.opacity='0.9';}
+
+  setTimeout(()=>{
+    // Stop spinning, show result
+    if(svg){svg.classList.remove('dice-spinning');svg.style.opacity='0.65';}
+    face.style.opacity='1';
+    face.className='dice-face dice-result-appear';
+    face.textContent=result;
+    hist.textContent=diceHist.slice(1).join(' · ');
+    face.addEventListener('animationend',()=>{face.className='dice-face';},{ once:true });
+  },1500);
+}
 
 function openTheme(){buildThemeGrid();document.getElementById('themeOverlay').classList.add('open');}
 function closeTheme(){document.getElementById('themeOverlay').classList.remove('open');}
@@ -934,6 +1253,7 @@ function addManualHybrid(){if(manualSel.length!==2)return;if(hybridMode==='add')
 function h2r(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
 function r2h(r,g,b){return'#'+[r,g,b].map(x=>Math.round(Math.max(0,Math.min(255,x))).toString(16).padStart(2,'0')).join('');}
 function blendHex(hs){const rs=hs.filter(h=>h&&h.startsWith('#')).map(h=>h2r(h));if(!rs.length)return'#c8a050';const avg=rs[0].map((_,i)=>rs.reduce((s,r)=>s+r[i],0)/rs.length);return r2h(...avg);}
+function hexToGlow(h,a=0.5){const[r,g,b]=h2r(h);return`rgba(${r},${g},${b},${a})`;}
 function darken(h,a){const[r,g,b]=h2r(h);return r2h(r*a,g*a,b*a);}
 function ha(h,a){if(!h.startsWith('#'))return h;const[r,g,b]=h2r(h);return`rgba(${r},${g},${b},${a})`;}
 
@@ -1324,8 +1644,14 @@ function applyGoadedUI(){
   const lbl=document.getElementById('goadedLbl');
   const state=document.getElementById('goadedState');
   if(!card)return;
-  if(goaded){card.style.background='rgba(200,80,40,0.18)';card.style.borderColor='rgba(220,100,60,0.6)';icon.style.opacity='1';lbl.style.color='#f0a080';state.textContent='Active';state.style.color='rgba(240,140,100,0.8)';}
-  else{card.style.background='';card.style.borderColor='';icon.style.opacity='0.3';lbl.style.color='';state.textContent='None';state.style.color='';}
+  if(goaded){
+    card.classList.add('active','goaded-active');
+    icon.style.opacity='1';lbl.style.color='#f0a080';state.textContent='Active';state.style.color='rgba(240,140,100,0.8)';
+  } else {
+    card.classList.remove('active','goaded-active');
+    card.style.background='';card.style.borderColor='';
+    icon.style.opacity='0.3';lbl.style.color='';state.textContent='None';state.style.color='';
+  }
 }
 function resetAll(){
   const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false});
