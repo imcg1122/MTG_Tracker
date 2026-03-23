@@ -1,4 +1,4 @@
-# MTG Playmat
+# MTG Tracker
 
 A single-file, zero-dependency browser-based game companion for Magic: The Gathering. Open `index.html` in any modern browser — no install, no server, no account required.
 
