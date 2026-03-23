@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#221608">
+<link rel="manifest" href="manifest.json">
+<title>MTG Playmat</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-apple-system,sans-serif;}
+
+:root{
+  --c-bg:#221608;--c-border:#7a5c2e;--c-inner:rgba(245,230,190,0.04);
+  --c-inner-border:rgba(180,140,60,0.2);--c-card:rgba(245,225,175,0.05);
+  --c-card-border:rgba(180,140,60,0.28);--c-accent:rgba(180,140,60,0.22);
+  --c-accent-border:#c8a050;--c-gold:#f0d080;--c-muted:rgba(210,170,90,0.45);
+  --c-faint:rgba(210,170,90,0.25);--c-btn:rgba(180,140,60,0.12);
+  --c-btn-border:rgba(180,140,60,0.35);--c-btn-active:rgba(180,140,60,0.32);
+  --c-status:rgba(210,170,90,0.35);--c-divider:rgba(180,140,60,0.18);
+}
+
+/* ── PORTRAIT HINT (phones only) ── */
+.rotate-hint{
+  display:none;position:fixed;inset:0;background:#111;z-index:999;
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;color:rgba(210,170,90,0.65);font-size:13px;
+  text-transform:uppercase;letter-spacing:.1em;
+}
+.rotate-hint svg{opacity:.45;}
+
+/* Show rotate hint only on narrow portrait phones */
+@media (max-width:600px) and (orientation:portrait){
+  .rotate-hint{display:flex;}
+  body > .wrap{display:none;}
+}
+
+/* ── DUNGEON MODE ── */
+.dungeon-screen{display:none;width:100%;flex-direction:column;gap:10px;}
+.mat.dungeon-mode .dungeon-screen{display:flex;}
+.mat.dungeon-mode .main-grid,
+.mat.dungeon-mode .bot-grid{display:none!important;}
+.dungeon-picker{display:flex;gap:6px;flex-wrap:wrap;}
+.dungeon-pick-btn{font-size:10px;padding:6px 14px;border-radius:8px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;user-select:none;text-transform:uppercase;letter-spacing:.06em;transition:all .2s;flex:1;text-align:center;}
+.dungeon-pick-btn.active{border-color:var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);}
+.dungeon-pick-btn:active{filter:brightness(1.2);}
+.dungeon-map-wrap{background:rgba(0,0,0,0.35);border:1px solid var(--c-card-border);border-radius:10px;padding:16px;overflow-x:auto;}
+.dungeon-map-wrap svg{display:block;margin:0 auto;}
+.dungeon-complete-banner{padding:10px;border-radius:8px;border:1px solid rgba(200,170,40,0.5);background:rgba(160,130,20,0.2);color:#f0d080;font-size:11px;text-align:center;text-transform:uppercase;letter-spacing:.1em;display:none;}
+.dungeon-complete-banner.show{display:block;}
+.dungeon-footer{display:flex;align-items:center;justify-content:space-between;}
+.dungeon-status-txt{font-size:9px;color:var(--c-status);}
+.dungeon-reset-btn{font-size:9px;padding:3px 10px;border-radius:5px;border:1px solid rgba(200,80,60,0.35);background:transparent;color:rgba(220,100,80,0.6);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.dungeon-reset-btn:active{background:rgba(200,80,60,0.18);}
+.dungeon-placeholder{text-align:center;padding:40px 20px;color:var(--c-faint);font-size:11px;text-transform:uppercase;letter-spacing:.1em;}
+
+/* ── RING MODE ── */
+.ring-screen{display:none;width:100%;flex-direction:column;gap:12px;}
+.mat.ring-mode .ring-screen{display:flex;}
+.mat.ring-mode .main-grid,
+.mat.ring-mode .bot-grid{display:none!important;}
+.ring-emblem{background:rgba(0,0,0,0.4);border:2px solid rgba(160,120,40,0.5);border-radius:12px;padding:16px;position:relative;overflow:hidden;}
+.ring-emblem::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(200,160,40,0.08) 0%,transparent 70%);pointer-events:none;}
+.ring-title{font-size:13px;font-weight:700;color:#c8a030;text-transform:uppercase;letter-spacing:.15em;text-align:center;margin-bottom:4px;}
+.ring-subtitle{font-size:9px;color:rgba(200,160,40,0.45);text-transform:uppercase;letter-spacing:.1em;text-align:center;margin-bottom:14px;}
+.ring-stage{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;border:1.5px solid rgba(160,120,40,0.2);background:rgba(0,0,0,0.2);margin-bottom:6px;cursor:pointer;user-select:none;transition:all .2s;opacity:.35;}
+.ring-stage:last-child{margin-bottom:0;}
+.ring-stage.unlocked{opacity:1;border-color:rgba(200,160,40,0.55);background:rgba(160,120,20,0.15);}
+.ring-stage.unlocked:active{filter:brightness(1.15);}
+.ring-stage-num{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(160,120,40,0.4);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(200,160,40,0.4);flex-shrink:0;margin-top:1px;transition:all .2s;}
+.ring-stage.unlocked .ring-stage-num{background:rgba(200,160,40,0.25);border-color:#c8a030;color:#c8a030;}
+.ring-stage-body{flex:1;}
+.ring-stage-title{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:rgba(200,160,40,0.4);margin-bottom:3px;font-weight:600;transition:color .2s;}
+.ring-stage.unlocked .ring-stage-title{color:#c8a030;}
+.ring-stage-text{font-size:10px;color:rgba(200,160,40,0.3);line-height:1.45;transition:color .2s;}
+.ring-stage.unlocked .ring-stage-text{color:rgba(210,170,90,0.85);}
+.ring-bearer-row{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(160,120,40,0.3);border-radius:8px;padding:10px 12px;}
+.ring-bearer-label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:rgba(200,160,40,0.5);white-space:nowrap;}
+.ring-bearer-name{flex:1;background:transparent;border:none;outline:none;color:#c8a030;font-size:13px;font-family:Georgia,serif;font-weight:500;caret-color:#c8a030;}
+.ring-bearer-name::placeholder{color:rgba(200,160,40,0.25);font-style:italic;font-size:11px;}
+.ring-footer{display:flex;align-items:center;justify-content:space-between;}
+.ring-status{font-size:9px;color:var(--c-status);}
+.ring-reset-btn{font-size:9px;padding:3px 10px;border-radius:5px;border:1px solid rgba(200,80,60,0.35);background:transparent;color:rgba(220,100,80,0.6);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.ring-reset-btn:active{background:rgba(200,80,60,0.18);}
+.ring-complete-banner{padding:10px;border-radius:8px;border:1px solid rgba(200,160,40,0.5);background:rgba(160,120,20,0.2);color:#c8a030;font-size:11px;text-align:center;text-transform:uppercase;letter-spacing:.12em;display:none;}
+.ring-complete-banner.show{display:block;}
+
+
+.simple-hidden{display:none!important;}
+.mat.simple-mode .main-grid{grid-template-columns:clamp(140px,20vw,220px) 1fr!important;}
+.mat.simple-mode .life-num{font-size:clamp(48px,7vw,72px);}
+.mat.simple-mode .lbtn{height:clamp(38px,5vh,52px);font-size:clamp(13px,1.8vw,17px);}
+.mat.simple-mode .mc-btn{padding:clamp(12px,2vh,18px) 4px clamp(10px,1.5vh,14px);}
+.mat.simple-mode .mana-btn-grid{gap:clamp(6px,1vw,10px);}
+.mat.simple-mode .bot-grid{grid-template-columns:1fr!important;}
+
+/* ── WRAPPER ── */
+.wrap{
+  padding:10px;
+  display:flex;align-items:flex-start;justify-content:center;min-height:100vh;
+}
+.mat{
+  background:var(--c-bg);border:2px solid var(--c-border);border-radius:14px;
+  padding:10px;width:100%;max-width:1200px;
+  transition:background .4s,border-color .4s;
+}
+.mat-inner{
+  background:var(--c-inner);border:1px solid var(--c-inner-border);
+  border-radius:10px;padding:10px;position:relative;
+}
+
+/* ── SHARED COMPONENTS ── */
+.sec-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-muted);margin-bottom:5px;font-weight:500;}
+.card{background:var(--c-card);border:1px solid var(--c-card-border);border-radius:8px;padding:9px 11px;transition:background .3s,border-color .3s;}
+
+/* top strip */
+.top-strip{display:flex;gap:6px;margin-bottom:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+.fmt-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;user-select:none;transition:all .25s;position:relative;}
+.fmt-btn.active{background:var(--c-accent);border-color:var(--c-accent-border);color:var(--c-gold);}
+.fmt-btn.has-activity:not(.active){border-color:rgba(180,140,60,0.55);color:rgba(210,170,90,0.75);}
+.fmt-btn.has-activity:not(.active)::after{content:'';position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:#c8a030;}
+.fmt-divider{width:1px;height:16px;background:rgba(180,140,60,0.25);flex-shrink:0;transition:opacity .25s;}
+.fmt-divider.hidden{display:none;}
+.reset-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid rgba(200,80,60,0.4);color:rgba(220,100,80,0.65);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;background:transparent;user-select:none;}
+.reset-btn:active{background:rgba(200,80,60,0.18);}
+.theme-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;background:transparent;user-select:none;display:flex;align-items:center;gap:4px;}
+.theme-btn:active{background:var(--c-accent);}
+.theme-dots{display:flex;gap:2px;}
+.theme-dot{width:8px;height:8px;border-radius:50%;}
+
+/* life */
+.life-num{font-size:clamp(48px,7vw,72px);font-weight:500;color:var(--c-gold);text-align:center;line-height:1;font-family:Georgia,serif;}
+.life-num.danger{color:#e05040;}
+.life-sub{font-size:10px;color:var(--c-faint);text-align:center;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
+.life-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;}
+.lbtn{background:var(--c-btn);border:1px solid var(--c-btn-border);border-radius:7px;color:var(--c-gold);font-size:clamp(13px,2vw,17px);height:clamp(38px,5vh,50px);cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;transition:background .12s;}
+.lbtn:active{background:var(--c-btn-active);}
+
+/* mana pool */
+.mana-top{display:flex;align-items:center;margin-bottom:7px;gap:7px;flex-wrap:wrap;}
+.mana-status{font-size:9px;color:var(--c-status);margin-left:auto;}
+.untap-btn{font-size:9px;padding:3px 10px;border-radius:6px;border:1px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;white-space:nowrap;}
+.untap-btn:active{filter:brightness(1.2);}
+
+.mana-pool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.pool-slot{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.pool-empty{border-radius:8px;border:1.5px dashed rgba(180,140,60,0.15);background:transparent;width:100%;min-height:140px;}
+.pool-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 4px 8px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s,opacity .2s;width:100%;min-height:140px;position:relative;}
+.pool-card:active{filter:brightness(1.3);transform:scale(.96);}
+.pool-card.spent-out{opacity:.28;cursor:default;}
+.pool-card.spent-out:active{transform:none;filter:none;}
+.pool-total{font-size:clamp(20px,2.8vw,30px);font-weight:500;line-height:1;font-family:Georgia,serif;}
+.pool-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pool-icon svg{width:38px!important;height:38px!important;display:block;}
+.pool-name{font-size:9px;text-transform:uppercase;letter-spacing:.06em;text-align:center;line-height:1.2;}
+.pool-spent{font-size:9px;text-align:center;opacity:.55;line-height:1;}
+.pool-untap{font-size:8px;padding:3px 6px;border-radius:4px;border:1px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);cursor:pointer;text-transform:uppercase;letter-spacing:.05em;user-select:none;width:100%;text-align:center;}
+.pool-untap:active{filter:brightness(1.2);}
+.pool-untap-ghost{font-size:8px;padding:3px 6px;visibility:hidden;border:1px solid transparent;width:100%;}
+.hybrid-half-l{position:absolute;left:0;top:0;width:50%;height:100%;border-radius:6px 0 0 6px;}
+.hybrid-half-r{position:absolute;right:0;top:0;width:50%;height:100%;border-radius:0 6px 6px 0;}
+.pool-card-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;}
+
+/* right col */
+.right-col{display:flex;flex-direction:column;gap:7px;height:100%;}
+.cmd-row{display:flex;align-items:center;gap:3px;margin-bottom:5px;}
+.cmd-name{font-size:10px;color:var(--c-muted);width:24px;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;}
+.cmd-val{font-size:17px;font-weight:500;color:var(--c-gold);font-family:Georgia,serif;min-width:26px;text-align:center;}
+.cmd-val.danger{color:#e05040;}
+.cbtn{height:24px;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;padding:0 5px;white-space:nowrap;flex-shrink:0;}
+.cbtn:active{background:var(--c-btn-active);}
+
+.pt-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1;}
+.counter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.counter-tap-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;padding:10px 4px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s;}
+.counter-tap-btn:active{filter:brightness(1.3);transform:scale(.97);}
+.counter-num{font-size:clamp(20px,3vw,28px);font-weight:500;line-height:1;font-family:Georgia,serif;}
+.counter-icon{display:flex;align-items:center;justify-content:center;width:28px;height:28px;}
+.counter-label{font-size:8px;text-transform:uppercase;letter-spacing:.07em;opacity:.8;text-align:center;}
+.reset-icon{display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;}
+.reset-icon:active{background:rgba(200,80,60,0.18);}
+
+/* initiative */
+.init-compact{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 6px;cursor:pointer;user-select:none;text-align:center;height:100%;}
+.init-icon-el{font-size:22px;opacity:.3;transition:opacity .2s;line-height:1;}
+.initiative-card.active .init-icon-el{opacity:1;}
+.init-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted);}
+.initiative-card.active .init-lbl{color:var(--c-gold);}
+.init-state{font-size:9px;color:var(--c-faint);font-style:italic;}
+.initiative-card.active .init-state{color:rgba(240,200,80,0.7);}
+
+/* dice */
+.dice-compact-inner{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 5px;height:100%;justify-content:space-between;}
+.dice-result-row{display:flex;align-items:center;gap:7px;}
+.d20-svg{opacity:.3;flex-shrink:0;}
+.dice-face{font-size:clamp(22px,3vw,32px);font-weight:500;color:var(--c-gold);font-family:Georgia,serif;line-height:1;min-width:36px;text-align:center;}
+.dice-rolling{animation:pop .28s ease-out;}
+@keyframes pop{0%{transform:scale(.45);opacity:.15;}100%{transform:scale(1);opacity:1;}}
+.dice-btn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:100%;}
+.dbtn{font-size:9px;padding:6px 0;border-radius:5px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;user-select:none;text-align:center;transition:background .1s;}
+.dbtn:active{background:var(--c-btn-active);}
+.dice-hist{font-size:8px;color:var(--c-faint);text-align:center;}
+
+/* storm counter */
+.storm-card{padding:8px 10px;display:flex;flex-direction:column;gap:5px;}
+.storm-header{display:flex;align-items:center;justify-content:space-between;}
+.storm-controls{display:flex;gap:4px;align-items:center;}
+.storm-result-row{display:flex;align-items:center;justify-content:center;gap:8px;}
+.storm-face{font-size:clamp(22px,3vw,32px);font-weight:500;color:#90c8ff;font-family:Georgia,serif;line-height:1;min-width:36px;text-align:center;}
+.storm-icon{opacity:.35;flex-shrink:0;}
+
+/* monarch toggle */
+.monarch-card{cursor:pointer;user-select:none;transition:all .2s;}
+.monarch-compact{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px 4px;text-align:center;height:100%;}
+.monarch-icon-el{font-size:16px;opacity:.3;transition:opacity .2s;line-height:1;}
+.monarch-card.active .monarch-icon-el{opacity:1;}
+.monarch-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted);}
+.monarch-card.active .monarch-lbl{color:var(--c-gold);}
+.monarch-state{font-size:9px;color:var(--c-faint);font-style:italic;}
+.monarch-card.active .monarch-state{color:rgba(240,200,80,0.7);}
+
+/* add mana */
+.add-mana-card{padding:10px 12px;display:flex;flex-direction:column;}
+.add-mana-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-shrink:0;}
+.clear-btn{font-size:9px;padding:3px 10px;border-radius:5px;border:1px solid rgba(200,80,60,0.35);background:transparent;color:rgba(220,100,80,0.6);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;user-select:none;}
+.clear-btn:active{background:rgba(200,80,60,0.18);}
+.mana-btn-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;flex:1;}
+.mana-pair{display:flex;flex-direction:column;gap:4px;flex:1;}
+.mc-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 3px 8px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s;background:rgba(0,0,0,0.22);flex:1;}
+.mc-btn:active{filter:brightness(1.35);transform:scale(.97);}
+.mc-btn-sign{font-size:15px;font-weight:500;line-height:1;}
+.mc-btn-icon{line-height:1;display:flex;align-items:center;justify-content:center;}
+.mc-btn-icon svg{width:24px!important;height:24px!important;display:block;}
+.mc-btn-name{font-size:7px;text-transform:uppercase;letter-spacing:.06em;opacity:.85;text-align:center;line-height:1.2;}
+.mc-btn.sub-style{background:rgba(0,0,0,0.32);opacity:.82;}
+.mc-btn.sub-style:active{filter:brightness(1.3);transform:scale(.97);opacity:1;}
+.mc-btn.hybrid-style{border-color:rgba(180,120,240,0.55);background:rgba(100,60,180,0.15);}
+
+/* ── LAYOUT: MOBILE LANDSCAPE + TABLET + DESKTOP (≥600px) ── */
+.main-grid{display:grid;gap:8px;margin-bottom:8px;align-items:stretch;}
+.main-grid > *:first-child{display:flex;flex-direction:column;}
+.bot-grid{display:grid;gap:8px;}
+
+/* Wide layout — tablet landscape, desktop */
+@media (min-width:600px){
+  body{padding:clamp(8px,1.5vw,20px);}
+  .wrap{padding:clamp(8px,1.5vw,20px);}
+  .mat{padding:clamp(10px,1.5vw,16px);}
+  .mat-inner{padding:clamp(10px,1.5vw,14px);}
+
+  .main-grid{grid-template-columns:clamp(140px,16vw,200px) 1fr clamp(180px,22vw,240px);}
+  .bot-grid{grid-template-columns:clamp(140px,16vw,200px) 1fr;}
+
+  .pool-empty{min-height:clamp(120px,14vh,160px);}
+  .pool-card{min-height:clamp(120px,14vh,160px);}
+
+  .sec-label{font-size:clamp(8px,0.9vw,10px);}
+  .fmt-btn,.reset-btn,.theme-btn{font-size:clamp(9px,0.9vw,11px);padding:clamp(3px,0.5vh,5px) clamp(8px,1vw,12px);}
+}
+
+/* Desktop — more breathing room */
+@media (min-width:1024px){
+  .mc-btn-icon svg{width:26px!important;height:26px!important;}
+  .mc-btn{padding:11px 4px 9px;gap:5px;}
+  .mc-btn-name{font-size:8px;}
+  .pool-card{min-height:clamp(130px,15vh,170px);}
+  .pool-empty{min-height:clamp(130px,15vh,170px);}
+  .card{padding:10px 13px;}
+  .mana-btn-grid{gap:7px;}
+  .cbtn{height:26px;font-size:11px;}
+  .cmd-val{font-size:18px;}
+}
+
+/* Large desktop — generous sizing */
+@media (min-width:1400px){
+  .pool-card{min-height:170px;}
+  .pool-empty{min-height:170px;}
+  .lbtn{height:52px;}
+  .dbtn{padding:8px 0;font-size:10px;}
+  .dice-btn-grid{gap:5px;}
+}
+
+/* ── MOBILE PORTRAIT LAYOUT (portrait phones, <600px) ── */
+/* Only shown when not in portrait-blocked state */
+@media (max-width:599px) and (orientation:landscape){
+  .main-grid{grid-template-columns:130px 1fr 185px;}
+  .bot-grid{grid-template-columns:130px 1fr;}
+  .pool-card{min-height:100px;}
+  .pool-empty{min-height:100px;}
+  .life-num{font-size:46px;}
+  .lbtn{height:36px;font-size:13px;}
+  .sec-label{font-size:8px;}
+  .cmd-val{font-size:15px;}
+  .cbtn{height:22px;}
+}
+
+/* ── MODALS ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;padding:16px;}
+.overlay.open{display:flex;}
+.modal{background:#1a1208;border:1px solid var(--c-border);border-radius:14px;padding:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:12px;color:var(--c-gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;font-weight:500;}
+.modal-note{font-size:9px;color:var(--c-faint);margin-bottom:10px;font-style:italic;}
+.theme-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+.tpick{border-radius:8px;border:2px solid transparent;padding:8px;cursor:pointer;user-select:none;display:flex;align-items:center;gap:7px;transition:all .15s;background:rgba(0,0,0,0.2);}
+.tpick:hover{background:rgba(180,140,60,0.1);}
+.tpick.sel{border-color:var(--c-gold);background:rgba(180,140,60,0.18);}
+.tpick-swatch{width:20px;height:20px;border-radius:50%;border:2px solid;flex-shrink:0;}
+.tpick-name{font-size:10px;color:rgba(210,170,90,0.6);}
+.tpick.sel .tpick-name{color:var(--c-gold);}
+.tpick-check{width:14px;height:14px;border-radius:3px;border:1.5px solid rgba(180,140,60,0.4);margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--c-gold);}
+.tpick.sel .tpick-check{background:rgba(180,140,60,0.35);border-color:var(--c-gold);}
+.modal-foot{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px;}
+.modal-close{font-size:10px;padding:6px 12px;border-radius:7px;border:1px solid var(--c-btn-border);background:transparent;color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.modal-apply{font-size:10px;padding:6px 12px;border-radius:7px;border:1px solid rgba(100,180,80,0.45);background:rgba(60,140,40,0.15);color:rgba(150,220,120,0.85);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.modal-apply:active{background:rgba(60,140,40,0.32);}
+.modal-reset-btn{font-size:10px;padding:6px 12px;border-radius:7px;border:1px solid var(--c-btn-border);background:transparent;color:var(--c-faint);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;}
+.sel-note{font-size:9px;color:var(--c-faint);font-style:italic;margin-bottom:6px;}
+.divider{border:none;border-top:1px solid var(--c-divider);margin:8px 0;}
+.guild-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px;}
+.guild-btn{padding:7px 8px;border-radius:7px;border:1px solid var(--c-btn-border);background:var(--c-btn);font-size:10px;cursor:pointer;color:var(--c-muted);display:flex;align-items:center;gap:5px;user-select:none;}
+.guild-btn:active{background:var(--c-btn-active);}
+.c-dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.manual-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:8px;}
+.c-sel{width:28px;height:28px;border-radius:50%;border:2px solid rgba(180,140,60,0.3);cursor:pointer;user-select:none;opacity:.45;transition:opacity .1s;}
+.c-sel.selected{opacity:1;border-color:#f0d080;}
+</style>
+</head>
+<body>
+
+<!-- Portrait blocker — phones only -->
+<div class="rotate-hint">
+  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2"/>
+    <path d="M3 12h18M15 8l4 4-4 4"/>
+  </svg>
+  Rotate to landscape
+</div>
+
+<div class="wrap">
+<div class="mat">
+<div class="mat-inner">
+
+  <!-- top strip -->
+  <div class="top-strip">
+    <div style="display:flex;gap:5px;align-items:center;" id="fmtBtnGroup">
+      <div class="fmt-btn active" onclick="setFormat('commander',this)">Commander</div>
+      <div class="fmt-btn" onclick="setFormat('standard',this)">Standard</div>
+      <div class="fmt-btn" onclick="setFormat('simple',this)">Simple Mana</div>
+      <div class="fmt-btn" onclick="setFormat('dungeon',this)">Dungeon</div>
+      <div class="fmt-btn" onclick="setFormat('ring',this)">The Ring</div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <div class="theme-btn" onclick="openTheme()">
+        <div class="theme-dots" id="themeDots"><div class="theme-dot" style="background:#7a5c2e;"></div></div>
+        Theme
+      </div>
+      <div class="reset-btn" onclick="resetAll()">Reset game</div>
+    </div>
+  </div>
+
+  <!-- main 3-col grid -->
+  <div class="main-grid">
+
+    <!-- col1: life total (shrink-wrapped) + dice below, filling to bottom of mana pool -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+
+      <!-- life -->
+      <div class="card" style="flex:0 0 auto;">
+        <div class="sec-label" style="text-align:center;">Life total</div>
+        <div class="life-num" id="lifeNum">40</div>
+        <div class="life-sub">points</div>
+        <div class="life-btns">
+          <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(-5)">−5</div>
+          <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(5)">+5</div>
+          <div class="lbtn" onclick="adjLife(-1)">−1</div>
+          <div class="lbtn" onclick="adjLife(1)">+1</div>
+        </div>
+      </div>
+
+      <!-- dice -->
+      <div class="card" id="diceCard" style="display:flex;flex-direction:column;flex:1;">
+        <div class="dice-compact-inner">
+          <div class="sec-label" style="margin-bottom:6px;">Dice</div>
+          <div class="dice-result-row" style="justify-content:center;gap:12px;padding:10px 0 6px;">
+            <svg class="d20-svg" width="40" height="40" viewBox="0 0 36 36" fill="none">
+              <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(210,170,90,0.45);"/>
+              <polygon points="18,2 34,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="18,2 2,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="34,10 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="2,10 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="18,34 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="18,34 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+            </svg>
+            <div class="dice-face" id="diceFace" style="font-size:clamp(28px,4vw,44px);min-width:48px;">—</div>
+          </div>
+          <div class="dice-hist" id="diceHist" style="margin-bottom:10px;"></div>
+          <div class="dice-btn-grid">
+            <div class="dbtn" onclick="roll(4)">d4</div>
+            <div class="dbtn" onclick="roll(6)">d6</div>
+            <div class="dbtn" onclick="roll(8)">d8</div>
+            <div class="dbtn" onclick="roll(10)">d10</div>
+            <div class="dbtn" onclick="roll(12)">d12</div>
+            <div class="dbtn" onclick="roll(20)">d20</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- mana pool -->
+    <div class="card">
+      <div class="mana-top">
+        <div class="sec-label" style="margin-bottom:0;">Mana pool — tap to spend</div>
+        <div class="untap-btn" onclick="untapAll()">↺ Untap all</div>
+        <div class="mana-status" id="manaStatus"></div>
+      </div>
+      <div class="mana-pool-grid" id="manaPoolGrid"></div>
+    </div>
+
+
+    <!-- right col -->
+    <div class="right-col" id="rightCol">
+      <!-- commander damage — shown in commander mode -->
+      <div class="card" id="cmdCard">
+        <div class="sec-label">Commander damage</div>
+        <div id="cmdRows"></div>
+      </div>
+
+      <!-- day/night + energy — shown in standard mode -->
+      <div class="card" id="standardCard" style="display:none;flex:0 0 auto;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;height:100%;">
+
+          <!-- day/night toggle -->
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px;">
+              <div class="sec-label" style="margin-bottom:0;">Day / Night</div>
+            </div>
+            <div id="dayNightBtn" onclick="toggleDayNight()"
+              style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;padding:10px 4px;border-radius:8px;border:2px solid rgba(200,170,80,0.5);background:rgba(180,140,20,0.15);cursor:pointer;user-select:none;transition:all .25s;flex:1;">
+              <div id="dayNightIcon" style="font-size:28px;line-height:1;">☀️</div>
+              <div id="dayNightLabel" style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#f0d080;font-weight:500;">Day</div>
+              <div style="font-size:8px;color:rgba(210,170,90,0.45);text-transform:uppercase;letter-spacing:.06em;">tap to toggle</div>
+            </div>
+          </div>
+
+          <!-- energy counter -->
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px;">
+              <div class="sec-label" style="margin-bottom:0;">Energy</div>
+              <div style="display:flex;gap:4px;align-items:center;">
+                <div class="reset-icon" onclick="adjEnergy(-1)" title="Subtract one">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                <div class="reset-icon" onclick="resetEnergy()" title="Reset">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="counter-tap-btn" onclick="adjEnergy(1)"
+              style="border-color:rgba(100,160,240,0.6);background:rgba(40,80,180,0.2);flex:1;">
+              <div class="counter-num" id="energyNum" style="color:#a0c8ff;">0</div>
+              <div class="counter-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#a0c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              </div>
+              <div class="counter-label" style="color:#a0c8ff;">tap to add</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex:1;">
+        <div class="card" style="padding:8px;display:flex;flex-direction:column;flex:1;">
+          <div class="counter-header">
+            <div class="sec-label" style="margin-bottom:0;">Poison</div>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <div class="reset-icon" onclick="adjPoison(-1)" title="Subtract one">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <div class="reset-icon" onclick="resetPoison()" title="Reset">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="counter-tap-btn" id="poisonBtn"
+            style="border-color:rgba(60,180,60,0.6);background:rgba(20,100,20,0.25);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;"
+            onclick="adjPoison(1)">
+            <div class="counter-num" id="poisonNum" style="color:#80e080;font-size:clamp(18px,2.2vw,24px);">0</div>
+            <div class="counter-icon" style="width:22px;height:22px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#80e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 3 L9 8 C9 8 5 10 5 15 C5 19 8 21 12 21 C16 21 19 19 19 15 C19 10 15 8 15 8 L15 3"/>
+                <line x1="7" y1="3" x2="17" y2="3"/>
+                <ellipse cx="12" cy="15" rx="3" ry="3.5" fill="rgba(40,160,40,0.3)" stroke="#80e080" stroke-width="1.2"/>
+                <path d="M10.5 14 Q12 12.5 13.5 14" stroke="#80e080" stroke-width="1" fill="none"/>
+              </svg>
+            </div>
+            <div class="counter-label" style="color:#80e080;flex:1;text-align:left;">tap to add</div>
+          </div>
+        </div>
+        <div class="card" style="padding:8px;display:flex;flex-direction:column;flex:1;">
+          <div class="counter-header">
+            <div class="sec-label" style="margin-bottom:0;">Exp</div>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <div class="reset-icon" onclick="adjXp(-1)" title="Subtract one">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <div class="reset-icon" onclick="resetXp()" title="Reset">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="counter-tap-btn"
+            style="border-color:rgba(140,100,220,0.55);background:rgba(80,50,160,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;"
+            onclick="adjXp(1)">
+            <div class="counter-num" id="xpNum" style="color:#c0a0ff;font-size:clamp(18px,2.2vw,24px);">0</div>
+            <div class="counter-icon" style="width:22px;height:22px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c0a0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+              </svg>
+            </div>
+            <div class="counter-label" style="color:rgba(180,150,255,0.65);flex:1;text-align:left;">tap to add</div>
+          </div>
+        </div>
+        <div class="card storm-card" id="stormCard" style="padding:8px;display:flex;flex-direction:column;flex:1;">
+          <div class="counter-header">
+            <div class="sec-label" style="margin-bottom:0;">Storm</div>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <div class="reset-icon" onclick="adjStorm(-1)" title="Subtract one">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <div class="reset-icon" onclick="resetStorm()" title="Reset">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="counter-tap-btn" onclick="adjStorm(1)"
+            style="border-color:rgba(100,160,240,0.6);background:rgba(40,80,180,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;">
+            <div class="counter-num" id="stormFace" style="color:#90c8ff;font-size:clamp(18px,2.2vw,24px);">0</div>
+            <div class="counter-icon" style="width:22px;height:22px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#90c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 17H7a4 4 0 0 1-.5-7.96A5.5 5.5 0 0 1 18 11.5a3 3 0 0 1 2 5.5Z" fill="rgba(80,140,255,0.2)"/>
+                <line x1="9" y1="20" x2="8" y2="22"/>
+                <line x1="13" y1="20" x2="12" y2="22"/>
+                <line x1="17" y1="20" x2="16" y2="22"/>
+              </svg>
+            </div>
+            <div class="counter-label" style="color:#90c8ff;flex:1;text-align:left;">tap to add</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- dungeon screen — full layout replacement in dungeon mode -->
+  <div id="dungeonPanel" class="dungeon-screen">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div class="dungeon-picker" id="dungeonPicker" style="flex:1;"></div>
+      <div class="dungeon-reset-btn" onclick="resetDungeon()">Reset</div>
+    </div>
+    <div class="dungeon-map-wrap" id="dungeonMapWrap">
+      <div class="dungeon-placeholder">Choose a dungeon above to begin</div>
+    </div>
+    <div class="dungeon-footer">
+      <div class="dungeon-status-txt" id="dungeonStatus"></div>
+    </div>
+    <div class="dungeon-complete-banner" id="dungeonBanner">✦ Dungeon Completed ✦</div>
+  </div>
+
+  <!-- ring screen — full layout replacement in ring mode -->
+  <div id="ringPanel" class="ring-screen">
+    <div class="ring-footer">
+      <div class="ring-status" id="ringStatus">Tap a stage to tempt the Ring</div>
+      <div class="ring-reset-btn" onclick="resetRing()">Reset</div>
+    </div>
+    <div class="ring-emblem">
+      <div class="ring-title">The Ring</div>
+      <div class="ring-subtitle">Emblem — tap each stage as the Ring tempts you</div>
+      <div class="ring-stage" id="ringStage0" onclick="temptRing(0)">
+        <div class="ring-stage-num">I</div>
+        <div class="ring-stage-body">
+          <div class="ring-stage-title">First Temptation</div>
+          <div class="ring-stage-text">Your Ring-bearer is legendary and can't be blocked by creatures with greater power.</div>
+        </div>
+      </div>
+      <div class="ring-stage" id="ringStage1" onclick="temptRing(1)">
+        <div class="ring-stage-num">II</div>
+        <div class="ring-stage-body">
+          <div class="ring-stage-title">Second Temptation</div>
+          <div class="ring-stage-text">Whenever your Ring-bearer attacks, draw a card, then discard a card.</div>
+        </div>
+      </div>
+      <div class="ring-stage" id="ringStage2" onclick="temptRing(2)">
+        <div class="ring-stage-num">III</div>
+        <div class="ring-stage-body">
+          <div class="ring-stage-title">Third Temptation</div>
+          <div class="ring-stage-text">Whenever your Ring-bearer becomes blocked by a creature, that creature's controller sacrifices it at the end of combat.</div>
+        </div>
+      </div>
+      <div class="ring-stage" id="ringStage3" onclick="temptRing(3)">
+        <div class="ring-stage-num">IV</div>
+        <div class="ring-stage-body">
+          <div class="ring-stage-title">Fourth Temptation</div>
+          <div class="ring-stage-text">Whenever your Ring-bearer deals combat damage to a player, each opponent loses 3 life.</div>
+        </div>
+      </div>
+    </div>
+    <div class="ring-bearer-row">
+      <div class="ring-bearer-label">Ring-bearer:</div>
+      <input class="ring-bearer-name" id="ringBearerName" type="text" placeholder="choose a creature…" autocomplete="off" spellcheck="false" oninput="updateActivityBadges()"/>
+    </div>
+    <div class="ring-complete-banner" id="ringBanner">💍 The Ring is fully powered</div>
+  </div>
+
+  <!-- bottom grid: goaded+initiative+monarch | add mana (aligned with mana pool) -->
+  <div class="bot-grid" id="botGrid">
+
+    <!-- col1: goaded, initiative, monarch -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+
+      <!-- goaded toggle -->
+      <div class="card" id="goadedCard" onclick="toggleGoaded()" style="cursor:pointer;user-select:none;transition:all .2s;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px 0;">
+          <div id="goadedIcon" style="font-size:18px;line-height:1;opacity:.3;transition:opacity .2s;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:rgba(220,100,60,0.8);">
+              <path d="M12 2 L15 8 L22 9 L17 14 L18 21 L12 18 L6 21 L7 14 L2 9 L9 8 Z"/>
+            </svg>
+          </div>
+          <div class="init-lbl" id="goadedLbl">Goaded</div>
+          <div class="init-state" id="goadedState">None</div>
+        </div>
+      </div>
+
+      <!-- initiative -->
+      <div class="card initiative-card" id="initCard" onclick="toggleInit()" style="flex:1;">
+        <div class="init-compact" style="padding:6px;gap:4px;">
+          <div class="init-icon-el" style="font-size:16px;">⚔</div>
+          <div class="init-lbl">Initiative</div>
+          <div class="init-state" id="initState">Not held</div>
+        </div>
+      </div>
+
+      <!-- monarch toggle -->
+      <div class="card monarch-card" id="monarchCard" onclick="toggleMonarch()" style="flex:1;">
+        <div class="monarch-compact">
+          <div class="monarch-icon-el" id="monarchIcon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:rgba(240,200,80,0.9);">
+              <path d="M3 18 L5 10 L9 14 L12 6 L15 14 L19 10 L21 18 Z"/>
+              <line x1="3" y1="21" x2="21" y2="21"/>
+            </svg>
+          </div>
+          <div class="monarch-lbl" id="monarchLbl">Monarch</div>
+          <div class="monarch-state" id="monarchState">Not held</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- col2: add mana — left edge aligns with mana pool -->
+    <div class="card add-mana-card">
+      <div class="add-mana-top">
+        <div class="sec-label" style="margin-bottom:0;">Add mana</div>
+        <div class="clear-btn" onclick="clearMana()">Clear all</div>
+      </div>
+      <div class="mana-btn-grid" id="manaGrid"></div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- theme modal -->
+<div class="overlay" id="themeOverlay" onclick="closeOutside(event,'themeOverlay')">
+  <div class="modal">
+    <div class="modal-title">UI theme</div>
+    <div class="modal-note">Pick up to 3 colors for your deck's identity</div>
+    <div class="theme-grid" id="themeGrid"></div>
+    <div class="sel-note" id="themeSelNote">None selected — showing default</div>
+    <div class="modal-foot">
+      <div class="modal-reset-btn" onclick="resetTheme()">Default</div>
+      <div class="modal-close" onclick="closeTheme()">Cancel</div>
+      <div class="modal-apply" onclick="applyTheme()">Apply</div>
+    </div>
+  </div>
+</div>
+
+<!-- hybrid modal -->
+<div class="overlay" id="hybridOverlay" onclick="closeOutside(event,'hybridOverlay')">
+  <div class="modal">
+    <div class="modal-title">Hybrid mana</div>
+    <div style="font-size:9px;color:var(--c-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Guild presets</div>
+    <div class="guild-grid" id="guildGrid"></div>
+    <div class="divider"></div>
+    <div style="font-size:9px;color:var(--c-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Manual — pick two colors</div>
+    <div class="manual-row" id="manualRow"></div>
+    <div class="modal-foot">
+      <div class="modal-close" onclick="closeHybrid()">Cancel</div>
+      <div class="modal-apply" onclick="addManualHybrid()">Add pip</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FORMATS={commander:{life:40},standard:{life:20},simple:{life:20},dungeon:{life:20},ring:{life:20}};
+const ICONS={
+  w:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+  u:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 C12 2 6 8 6 14 a6 6 0 0 0 12 0 C18 8 12 2 12 2 Z"/></svg>`,
+  b:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6.8 20 Q8 14 12 14 Q16 14 17.2 20"/><path d="M3 20 Q4 13 7 11"/><path d="M21 20 Q20 13 17 11"/><line x1="3" y1="20" x2="21" y2="20"/></svg>`,
+  r:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 C10 6 7 8 7 12 C7 15 9 17 12 17 C15 17 17 15 17 12 C17 8 14 6 12 2 Z"/><path d="M9 21 C9 18 10.5 17 12 17 C13.5 17 15 18 15 21"/></svg>`,
+  g:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22 L12 8"/><path d="M12 8 C12 8 6 10 5 4 C5 4 11 3 12 8 Z"/><path d="M12 13 C12 13 18 11 19 5 C19 5 13 4 12 13 Z"/><path d="M9 22 L15 22"/></svg>`,
+  c:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L20 9 L17 20 L7 20 L4 9 Z"/><line x1="12" y1="3" x2="12" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/></svg>`,
+  hybrid:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3 C9 6 7 9 7 12 C7 15 9 18 12 21"/><path d="M12 3 C15 6 17 9 17 12 C17 15 15 18 12 21"/></svg>`
+};
+const CM={
+  w:{label:'White',name:'Plains',   bg:'#d4c98a',bc:'#c8b870',text:'#2a1e00',themeBg:'#1e1a08',themeBorder:'#c8b060',themeAccent:'#a89040',themeGold:'#f0d890'},
+  u:{label:'Blue', name:'Island',   bg:'#2a5fa8',bc:'#4a8fd8',text:'#d0e8ff',themeBg:'#08141e',themeBorder:'#4a8fd8',themeAccent:'#2a5fa8',themeGold:'#90ccff'},
+  b:{label:'Black',name:'Swamp',    bg:'#1a1018',bc:'#7a5090',text:'#d0a8f0',themeBg:'#100810',themeBorder:'#7a5090',themeAccent:'#5a3070',themeGold:'#d0a8f0'},
+  r:{label:'Red',  name:'Mountain', bg:'#c03020',bc:'#e06040',text:'#ffe0d0',themeBg:'#1e0808',themeBorder:'#e06040',themeAccent:'#a02818',themeGold:'#ffb890'},
+  g:{label:'Green',name:'Forest',   bg:'#1a6030',bc:'#40a060',text:'#c0f0c0',themeBg:'#081408',themeBorder:'#40a060',themeAccent:'#206030',themeGold:'#90e890'},
+  c:{label:'Colorless',name:'Wastes',bg:'#5a5450',bc:'#9a8a80',text:'#f0e8e0',themeBg:'#141210',themeBorder:'#9a8a80',themeAccent:'#6a6460',themeGold:'#e0d8d0'}
+};
+const MANA_KEYS=['w','u','b','r','g','c'];
+const GUILDS=[
+  {name:'Azorius',c1:'w',c2:'u'},{name:'Dimir',c1:'u',c2:'b'},
+  {name:'Rakdos',c1:'b',c2:'r'},{name:'Gruul',c1:'r',c2:'g'},
+  {name:'Selesnya',c1:'g',c2:'w'},{name:'Orzhov',c1:'w',c2:'b'},
+  {name:'Izzet',c1:'u',c2:'r'},{name:'Golgari',c1:'b',c2:'g'},
+  {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
+];
+const POOL_SLOTS=8;
+// ── Per-format saved state ──
+const fmtState={
+  commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false},
+  standard: {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false},
+  simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false},
+  dungeon:  {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,dungeonId:null,currentRoom:-1,dungeonPath:[],storm:0,monarch:false},
+  ring:     {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,ringStage:-1,ringBearer:'',storm:0,monarch:false}
+};
+
+function saveState(){
+  const s=fmtState[fmt];
+  s.life=life;s.poison=poison;s.xp=xp;s.energy=energy;
+  s.manaEntries=JSON.parse(JSON.stringify(manaEntries));
+  s.cmdDmg=JSON.parse(JSON.stringify(cmdDmg));
+  s.diceHist=[...diceHist];
+  s.initiative=initiative;s.goaded=goaded;s.isDay=isDay;s.storm=storm;s.monarch=monarch;
+  if(fmt==='dungeon'){s.dungeonId=dungeonId;s.currentRoom=currentRoom;s.dungeonPath=[...dungeonPath];}
+  if(fmt==='ring'){s.ringStage=ringStage;s.ringBearer=document.getElementById('ringBearerName')?document.getElementById('ringBearerName').value:ringBearer;}
+}
+function loadState(){
+  const s=fmtState[fmt];
+  life=s.life;poison=s.poison;xp=s.xp;energy=s.energy;
+  manaEntries=JSON.parse(JSON.stringify(s.manaEntries));
+  cmdDmg=JSON.parse(JSON.stringify(s.cmdDmg));
+  diceHist=[...s.diceHist];
+  initiative=s.initiative;goaded=s.goaded;isDay=s.isDay;storm=s.storm||0;monarch=s.monarch||false;
+  if(fmt==='dungeon'){dungeonId=s.dungeonId;currentRoom=s.currentRoom;dungeonPath=[...(s.dungeonPath||[])];}
+  else{dungeonId=null;currentRoom=-1;dungeonPath=[];}
+  if(fmt==='ring'){ringStage=s.ringStage!=null?s.ringStage:-1;ringBearer=s.ringBearer||'';}
+  else{ringStage=-1;ringBearer='';}
+}
+let cmdPlayers=['P2','P3','P4'],cmdDmg={};
+// ── Working variables (current format) ──
+let fmt='commander',life=40,poison=0,xp=0,energy=0,initiative=false,isDay=true,goaded=false,storm=0,monarch=false;
+let dungeonId=null,currentRoom=-1,dungeonPath=[];
+let ringStage=-1,ringBearer='';
+let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add';
+
+// ── Core game functions ──
+function adjEnergy(d){energy=Math.max(0,energy+d);document.getElementById('energyNum').textContent=energy;}
+function resetEnergy(){energy=0;document.getElementById('energyNum').textContent=0;}
+function toggleDayNight(){isDay=!isDay;applyDayNightUI();}
+function resetDayNight(){isDay=true;applyDayNightUI();}
+function adjPoison(d){poison=Math.max(0,poison+d);document.getElementById('poisonNum').textContent=poison;const btn=document.getElementById('poisonBtn');btn.style.background=poison>=10?'rgba(180,20,20,0.3)':poison>=7?'rgba(120,60,0,0.3)':'rgba(20,100,20,0.25)';btn.style.borderColor=poison>=10?'rgba(220,60,60,0.7)':poison>=7?'rgba(200,120,40,0.6)':'rgba(60,180,60,0.6)';document.getElementById('poisonNum').style.color=poison>=10?'#ff8080':poison>=7?'#ffb060':'#80e080';}
+function resetPoison(){poison=0;adjPoison(0);}
+function adjXp(d){xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;}
+function resetXp(){xp=0;document.getElementById('xpNum').textContent=0;}
+function adjLife(d){life=Math.max(0,life+d);const el=document.getElementById('lifeNum');el.textContent=life;el.className='life-num'+(life<=5?' danger':'');}
+
+function eKey(t,a,b){return t==='mono'?a:'h:'+[a,b].sort().join('');}
+function addCol(c){const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}renderMana();}
+function removeCol(c){const k=eKey('mono',c),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();}
+function addHybrid(c1,c2){const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0});}renderMana();}
+function removeHybrid(c1,c2){const k=eKey('hybrid',c1,c2),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();}
+function untapEntry(idx){manaEntries[idx].spent=0;renderMana();}
+function untapAll(){manaEntries.forEach((_,i)=>manaEntries[i].spent=0);renderMana();}
+function clearMana(){manaEntries=[];renderMana();}
+
+function renderMana(){
+  const grid=document.getElementById('manaPoolGrid');grid.innerHTML='';
+  let totalAvail=0,totalSpent=0;
+  for(let si=0;si<POOL_SLOTS;si++){
+    const slot=document.createElement('div');slot.className='pool-slot';
+    const e=manaEntries[si];
+    if(!e){
+      const ghost=document.createElement('div');ghost.className='pool-empty';
+      const ug=document.createElement('div');ug.className='pool-untap-ghost';ug.textContent='↺ Untap';
+      slot.appendChild(ghost);slot.appendChild(ug);
+    } else {
+      const avail=e.total-e.spent;totalAvail+=avail;totalSpent+=e.spent;
+      const card=document.createElement('div');card.className='pool-card'+(avail===0?' spent-out':'');
+      if(e.type==='hybrid'){
+        card.style.borderColor='rgba(180,140,60,0.55)';card.style.background='transparent';
+        const hl=document.createElement('div');hl.className='hybrid-half-l';hl.style.background=CM[e.c1].bg+'bb';
+        const hr=document.createElement('div');hr.className='hybrid-half-r';hr.style.background=CM[e.c2].bg+'bb';
+        card.appendChild(hl);card.appendChild(hr);
+        const inner=document.createElement('div');inner.className='pool-card-inner';inner.style.color='rgba(255,255,255,0.92)';
+        inner.innerHTML=`<div class="pool-total" style="color:rgba(255,255,255,0.92)">${avail}<span style="font-size:11px;opacity:.5;">/${e.total}</span></div><div class="pool-icon" style="color:rgba(255,255,255,0.92)">${ICONS.hybrid}</div><div class="pool-name" style="color:rgba(255,255,255,0.8)">${CM[e.c1].label}/${CM[e.c2].label}</div><div class="pool-spent" style="color:rgba(255,255,255,0.42)">${e.spent} spent</div>`;
+        card.appendChild(inner);
+      } else {
+        card.style.background=CM[e.color].bg;card.style.borderColor=CM[e.color].bc;
+        const tc=CM[e.color].text;
+        card.innerHTML=`<div class="pool-total" style="color:${tc}">${avail}<span style="font-size:11px;opacity:.5;">/${e.total}</span></div><div class="pool-icon" style="color:${tc}">${ICONS[e.color]}</div><div class="pool-name" style="color:${tc}">${CM[e.color].name}</div><div class="pool-spent" style="color:${tc};opacity:.5">${e.spent} spent</div>`;
+      }
+      if(avail>0){const idx=si;card.onclick=()=>{manaEntries[idx].spent++;renderMana();};}
+      slot.appendChild(card);
+      const ub=document.createElement('div');ub.className='pool-untap';ub.textContent='↺ Untap';
+      const idx=si;ub.onclick=()=>untapEntry(idx);slot.appendChild(ub);
+    }
+    grid.appendChild(slot);
+  }
+  const st=document.getElementById('manaStatus');
+  st.textContent=manaEntries.length?totalAvail+' avail · '+totalSpent+' spent':'';
+}
+
+function buildManaGrid(){
+  const g=document.getElementById('manaGrid');g.innerHTML='';
+  MANA_KEYS.forEach(c=>{
+    const m=CM[c];const pair=document.createElement('div');pair.className='mana-pair';
+    const add=document.createElement('div');add.className='mc-btn';add.style.borderColor=m.bc;add.style.color=m.text;add.style.background=m.bg;
+    add.innerHTML=`<div class="mc-btn-sign" style="color:${m.text}">+</div><div class="mc-btn-icon" style="color:${m.text}">${ICONS[c]}</div><div class="mc-btn-name" style="color:${m.text}">${m.name}</div>`;add.onclick=()=>addCol(c);
+    const sub=document.createElement('div');sub.className='mc-btn sub-style';sub.style.borderColor=m.bc;sub.style.color=m.text;sub.style.background=m.bg;
+    sub.innerHTML=`<div class="mc-btn-sign" style="color:${m.text}">−</div><div class="mc-btn-icon" style="color:${m.text}">${ICONS[c]}</div><div class="mc-btn-name" style="color:${m.text}">${m.name}</div>`;sub.onclick=()=>removeCol(c);
+    pair.appendChild(add);pair.appendChild(sub);g.appendChild(pair);
+  });
+  const hpair=document.createElement('div');hpair.className='mana-pair';
+  const hadd=document.createElement('div');hadd.className='mc-btn hybrid-style';hadd.style.color='rgba(210,180,255,0.9)';
+  hadd.innerHTML=`<div class="mc-btn-sign" style="color:rgba(210,180,255,0.9)">+</div><div class="mc-btn-icon" style="color:rgba(210,180,255,0.9)">${ICONS.hybrid}</div><div class="mc-btn-name" style="color:rgba(210,180,255,0.85)">Hybrid</div>`;hadd.onclick=()=>openHybrid('add');
+  const hsub=document.createElement('div');hsub.className='mc-btn sub-style hybrid-style';hsub.style.color='rgba(185,155,235,0.75)';
+  hsub.innerHTML=`<div class="mc-btn-sign" style="color:rgba(185,155,235,0.75)">−</div><div class="mc-btn-icon" style="color:rgba(185,155,235,0.75)">${ICONS.hybrid}</div><div class="mc-btn-name" style="color:rgba(185,155,235,0.75)">Hybrid</div>`;hsub.onclick=()=>openHybrid('remove');
+  hpair.appendChild(hadd);hpair.appendChild(hsub);g.appendChild(hpair);
+}
+
+function renderCmd(){
+  const el=document.getElementById('cmdRows');el.innerHTML='';
+  document.getElementById('cmdCard').style.opacity=fmt==='commander'?'1':'0.45';
+  cmdPlayers.forEach(p=>{
+    if(!cmdDmg[p])cmdDmg[p]=0;
+    const row=document.createElement('div');row.className='cmd-row';
+    const danger=cmdDmg[p]>=21;
+    row.innerHTML=`<div class="cmd-name">${p}</div><div class="cbtn" onclick="adjCmd('${p}',-5)">−5</div><div class="cbtn" onclick="adjCmd('${p}',-1)">−1</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div>`;
+    el.appendChild(row);
+  });
+}
+function adjCmd(p,d){cmdDmg[p]=Math.max(0,(cmdDmg[p]||0)+d);renderCmd();}
+
+function toggleInit(){initiative=!initiative;document.getElementById('initCard').classList.toggle('active',initiative);document.getElementById('initState').textContent=initiative?'Holding':'Not held';}
+function toggleGoaded(){goaded=!goaded;applyGoadedUI();}
+function resetGoaded(){goaded=false;applyGoadedUI();}
+
+function adjStorm(d){storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;}
+function resetStorm(){storm=0;document.getElementById('stormFace').textContent=0;}
+
+function toggleMonarch(){monarch=!monarch;applyMonarchUI();}
+function applyMonarchUI(){
+  const card=document.getElementById('monarchCard');
+  const icon=document.getElementById('monarchIcon');
+  const lbl=document.getElementById('monarchLbl');
+  const state=document.getElementById('monarchState');
+  if(!card)return;
+  if(monarch){
+    card.classList.add('active');
+    card.style.background='rgba(180,140,20,0.18)';
+    card.style.borderColor='rgba(220,180,40,0.65)';
+    icon.style.opacity='1';
+    lbl.style.color='#f0d080';
+    state.textContent='Holding';
+    state.style.color='rgba(240,200,80,0.75)';
+  } else {
+    card.classList.remove('active');
+    card.style.background='';
+    card.style.borderColor='';
+    icon.style.opacity='0.3';
+    lbl.style.color='';
+    state.textContent='Not held';
+    state.style.color='';
+  }
+}
+
+function roll(n){const result=Math.ceil(Math.random()*n);diceHist.unshift('d'+n+':'+result);if(diceHist.length>3)diceHist.pop();const el=document.getElementById('diceFace');el.className='dice-face';void el.offsetWidth;el.className='dice-face dice-rolling';el.textContent=result;document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');}
+
+function openTheme(){buildThemeGrid();document.getElementById('themeOverlay').classList.add('open');}
+function closeTheme(){document.getElementById('themeOverlay').classList.remove('open');}
+function closeOutside(e,id){if(e.target.id===id)document.getElementById(id).classList.remove('open');}
+
+function buildThemeGrid(){
+  const g=document.getElementById('themeGrid');g.innerHTML='';
+  MANA_KEYS.forEach(c=>{
+    const m=CM[c];const row=document.createElement('div');row.className='tpick'+(themeSel.includes(c)?' sel':'');row.dataset.color=c;
+    const sw=document.createElement('div');sw.className='tpick-swatch';sw.style.background=m.bg;sw.style.borderColor=m.bc;
+    const nm=document.createElement('div');nm.className='tpick-name';nm.textContent=m.label;
+    const chk=document.createElement('div');chk.className='tpick-check';chk.textContent=themeSel.includes(c)?'✓':'';
+    row.appendChild(sw);row.appendChild(nm);row.appendChild(chk);
+    row.addEventListener('click',function(){const col=this.dataset.color;if(themeSel.includes(col)){themeSel=themeSel.filter(x=>x!==col);}else if(themeSel.length<3){themeSel.push(col);}buildThemeGrid();updateSelNote();});
+    g.appendChild(row);
+  });
+  updateSelNote();
+}
+function updateSelNote(){const note=document.getElementById('themeSelNote');note.textContent=!themeSel.length?'None selected — will apply default':themeSel.map(c=>CM[c].label).join(' + ')+' selected';}
+
+function applyTheme(){
+  if(!themeSel.length){resetTheme();return;}
+  let bg,border,accent,gold;
+  if(themeSel.length===1){const m=CM[themeSel[0]];bg=m.themeBg;border=m.themeBorder;accent=m.themeAccent;gold=m.themeGold;}
+  else{bg=blendHex(themeSel.map(c=>CM[c].themeBg));border=blendHex(themeSel.map(c=>CM[c].themeBorder));accent=blendHex(themeSel.map(c=>CM[c].themeAccent));gold=blendHex(themeSel.map(c=>CM[c].themeGold));const[r,g2,b2]=h2r(bg);if((r*299+g2*587+b2*114)/1000>40){bg=darken(bg,0.35);}}
+  sv('--c-bg',bg);sv('--c-border',border);sv('--c-inner',ha(accent,0.08));sv('--c-inner-border',ha(border,0.25));sv('--c-card',ha(accent,0.08));sv('--c-card-border',ha(border,0.35));sv('--c-accent',ha(accent,0.3));sv('--c-accent-border',border);sv('--c-gold',gold);sv('--c-muted',ha(gold,0.58));sv('--c-faint',ha(gold,0.3));sv('--c-btn',ha(accent,0.14));sv('--c-btn-border',ha(border,0.4));sv('--c-btn-active',ha(accent,0.35));sv('--c-status',ha(gold,0.4));sv('--c-divider',ha(border,0.22));
+  updateDots();buildManaGrid();closeTheme();
+}
+function resetTheme(){themeSel=[];const d={'--c-bg':'#221608','--c-border':'#7a5c2e','--c-inner':'rgba(245,230,190,0.04)','--c-inner-border':'rgba(180,140,60,0.2)','--c-card':'rgba(245,225,175,0.05)','--c-card-border':'rgba(180,140,60,0.28)','--c-accent':'rgba(180,140,60,0.22)','--c-accent-border':'#c8a050','--c-gold':'#f0d080','--c-muted':'rgba(210,170,90,0.45)','--c-faint':'rgba(210,170,90,0.25)','--c-btn':'rgba(180,140,60,0.12)','--c-btn-border':'rgba(180,140,60,0.35)','--c-btn-active':'rgba(180,140,60,0.32)','--c-status':'rgba(210,170,90,0.35)','--c-divider':'rgba(180,140,60,0.18)'};Object.entries(d).forEach(([k,v])=>sv(k,v));updateDots();buildManaGrid();closeTheme();}
+function sv(n,v){document.documentElement.style.setProperty(n,v);}
+function updateDots(){const d=document.getElementById('themeDots');d.innerHTML='';if(!themeSel.length){const dot=document.createElement('div');dot.className='theme-dot';dot.style.background='#7a5c2e';d.appendChild(dot);}else{themeSel.forEach(c=>{const dot=document.createElement('div');dot.className='theme-dot';dot.style.cssText=`background:${CM[c].bg};border:1px solid ${CM[c].bc};`;d.appendChild(dot);});}}
+
+function openHybrid(mode){hybridMode=mode;manualSel=[];buildGuildGrid();buildManualRow();document.getElementById('hybridOverlay').classList.add('open');}
+function closeHybrid(){document.getElementById('hybridOverlay').classList.remove('open');}
+function buildGuildGrid(){const g=document.getElementById('guildGrid');g.innerHTML='';GUILDS.forEach(gu=>{const btn=document.createElement('div');btn.className='guild-btn';[gu.c1,gu.c2].forEach(c=>{const d=document.createElement('div');d.className='c-dot';d.style.cssText=`background:${CM[c].bg};border:1px solid ${CM[c].bc};`;btn.appendChild(d);});btn.appendChild(document.createTextNode(gu.name));btn.onclick=()=>{if(hybridMode==='add')addHybrid(gu.c1,gu.c2);else removeHybrid(gu.c1,gu.c2);closeHybrid();};g.appendChild(btn);});}
+function buildManualRow(){const row=document.getElementById('manualRow');row.innerHTML='';MANA_KEYS.forEach(c=>{const el=document.createElement('div');el.className='c-sel'+(manualSel.includes(c)?' selected':'');el.style.background=CM[c].bg;el.style.borderColor=CM[c].bc;el.onclick=()=>{if(manualSel.includes(c)){manualSel=manualSel.filter(x=>x!==c);}else if(manualSel.length<2){manualSel.push(c);}buildManualRow();};row.appendChild(el);});const note=document.createElement('div');note.style.cssText='font-size:9px;color:var(--c-faint);margin-left:4px;';note.textContent=manualSel.length===0?'Pick two':manualSel.length===1?'One more':'Ready';row.appendChild(note);}
+function addManualHybrid(){if(manualSel.length!==2)return;if(hybridMode==='add')addHybrid(manualSel[0],manualSel[1]);else removeHybrid(manualSel[0],manualSel[1]);closeHybrid();}
+
+function h2r(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function r2h(r,g,b){return'#'+[r,g,b].map(x=>Math.round(Math.max(0,Math.min(255,x))).toString(16).padStart(2,'0')).join('');}
+function blendHex(hs){const rs=hs.filter(h=>h&&h.startsWith('#')).map(h=>h2r(h));if(!rs.length)return'#c8a050';const avg=rs[0].map((_,i)=>rs.reduce((s,r)=>s+r[i],0)/rs.length);return r2h(...avg);}
+function darken(h,a){const[r,g,b]=h2r(h);return r2h(r*a,g*a,b*a);}
+function ha(h,a){if(!h.startsWith('#'))return h;const[r,g,b]=h2r(h);return`rgba(${r},${g},${b},${a})`;}
+
+// ── Dungeon data — accurate branching structure ──
+const DUNGEONS={
+  mad:{
+    name:'Mad Mage',color:'#5588cc',
+    nodes:[
+      {id:0,label:'Yawning Portal',    effect:'Gain 1 life',                                         x:50,  y:5},
+      {id:1,label:'Dungeon Level',     effect:'Scry 1',                                              x:50,  y:17},
+      {id:2,label:'Goblin Bazaar',     effect:'Create a Treasure token',                             x:25,  y:30},
+      {id:3,label:'Twisted Caverns',   effect:"Creature can't attack next turn",                     x:75,  y:30},
+      {id:4,label:'Lost Level',        effect:'Scry 2',                                              x:50,  y:43},
+      {id:5,label:'Runestone Caverns', effect:'Exile top 2, you may play them',                      x:25,  y:56},
+      {id:6,label:"Muiral's Graveyard",effect:'Create two 1/1 Skeleton tokens',                      x:75,  y:56},
+      {id:7,label:'Deep Mines',        effect:'Scry 3',                                              x:50,  y:69},
+      {id:8,label:"Mad Wizard's Lair", effect:'Draw 3, cast one without paying its mana cost',       x:50,  y:85}
+    ],
+    edges:[[0,1],[1,2],[1,3],[2,4],[3,4],[4,5],[4,6],[5,7],[6,7],[7,8]],
+    terminals:[8]
+  },
+  phandelver:{
+    name:'Lost Mine',color:'#55aa66',
+    nodes:[
+      {id:0,label:'Cave Entrance',        effect:'Scry 1',                               x:50, y:5},
+      {id:1,label:'Goblin Lair',          effect:'Create a 1/1 red Goblin token',        x:22, y:22},
+      {id:2,label:'Mine Tunnels',         effect:'Create a Treasure token',              x:78, y:22},
+      {id:3,label:'Storeroom',            effect:'Put a +1/+1 counter on a creature',    x:18, y:42},
+      {id:4,label:'Dark Pool',            effect:'Each opp loses 1 life, gain 1 life',   x:50, y:42},
+      {id:5,label:'Fungi Cavern',         effect:'Creature gets -4/-0 until next turn',  x:82, y:42},
+      {id:6,label:'Temple of Dumathoin',  effect:'Draw a card',                          x:50, y:65}
+    ],
+    edges:[[0,1],[0,2],[1,3],[1,4],[2,4],[2,5],[3,6],[4,6],[5,6]],
+    terminals:[6]
+  },
+  tomb:{
+    name:'Tomb of Annihilation',color:'#aa4444',
+    nodes:[
+      {id:0,label:'Trapped Entry',          effect:'Each player loses 1 life',                                   x:50, y:8},
+      {id:1,label:'Veils of Fear',          effect:'Each player loses 2 life unless they discard a card',        x:27, y:30},
+      {id:2,label:'Oubliette',              effect:'Discard a card, sacrifice a creature, artifact, and land',   x:73, y:30},
+      {id:3,label:'Sandfall Cell',          effect:'Each player loses 2 life unless they sacrifice a permanent', x:27, y:58},
+      {id:4,label:'Cradle of the Death God',effect:'Create The Atropal — 4/4 God Horror with deathtouch',       x:50, y:82}
+    ],
+    edges:[[0,1],[0,2],[1,3],[2,4],[3,4]],
+    terminals:[4]
+  },
+  undercity:{
+    name:'Undercity',color:'#7755aa',
+    nodes:[
+      {id:0,label:'Secret Entrance',       effect:'Search library for a basic land, put it in your hand, then shuffle', x:50, y:5},
+      {id:1,label:'Forge',                 effect:'Put two +1/+1 counters on target creature',                          x:22, y:19},
+      {id:2,label:'Lost Well',             effect:'Scry 2',                                                              x:78, y:19},
+      {id:3,label:'Trap!',                 effect:'Target player loses 5 life',                                          x:16, y:36},
+      {id:4,label:'Arena',                 effect:'Goad target creature',                                                x:50, y:36},
+      {id:5,label:'Stash',                 effect:'Create a Treasure token',                                             x:84, y:36},
+      {id:6,label:'Archives',              effect:'Draw a card',                                                         x:28, y:56},
+      {id:7,label:'Catacombs',             effect:'Create a 4/1 black Skeleton token with menace',                      x:72, y:56},
+      {id:8,label:'Throne of the Dead Three',effect:'Reveal top 10 cards, put a creature onto the battlefield with three +1/+1 counters and hexproof until your next turn', x:50, y:80}
+    ],
+    edges:[[0,1],[0,2],[1,3],[1,4],[2,4],[2,5],[3,6],[4,6],[4,7],[5,7],[6,8],[7,8]],
+    terminals:[8]
+  }
+};
+
+// ── SVG dungeon map renderer ──
+function wrapText(text,maxLen){
+  const words=text.split(' ');const lines=[];let line='';
+  words.forEach(w=>{
+    if((line+' '+w).trim().length>maxLen&&line){lines.push(line);line=w;}
+    else line=(line?line+' ':'')+w;
+  });
+  if(line)lines.push(line);return lines;
+}
+
+function renderDungeon(){
+  const picker=document.getElementById('dungeonPicker');
+  picker.innerHTML='';
+  Object.entries(DUNGEONS).forEach(([id,d])=>{
+    const btn=document.createElement('div');
+    btn.className='dungeon-pick-btn'+(dungeonId===id?' active':'');
+    btn.textContent=d.name;
+    btn.onclick=()=>{
+      if(dungeonId!==id){dungeonId=id;currentRoom=-1;dungeonPath=[];}
+      renderDungeon();
+    };
+    picker.appendChild(btn);
+  });
+
+  const wrap=document.getElementById('dungeonMapWrap');
+  const status=document.getElementById('dungeonStatus');
+  const banner=document.getElementById('dungeonBanner');
+
+  if(!dungeonId){
+    wrap.innerHTML='<div class="dungeon-placeholder">Choose a dungeon above to begin</div>';
+    status.textContent='';banner.classList.remove('show');return;
+  }
+
+  const d=DUNGEONS[dungeonId];
+  const nodes=d.nodes;
+  const edges=d.edges;
+  const isComplete=d.terminals.includes(currentRoom);
+
+  if(currentRoom===-1) status.textContent=d.name+' — tap a room to enter';
+  else if(isComplete) status.textContent=d.name+' — dungeon completed!';
+  else status.textContent=d.name+' — current: '+nodes[currentRoom].label;
+  banner.classList.toggle('show',isComplete);
+  updateActivityBadges();
+
+  // find reachable rooms from current position
+  function getReachable(from){
+    if(from===-1)return new Set([0]);
+    const r=new Set();
+    edges.forEach(([a,b])=>{if(a===from)r.add(b);});
+    return r;
+  }
+  // find all nodes on any path from root to given node
+  // visited = only nodes actually tapped, in order
+  const visited=new Set(dungeonPath);
+  if(currentRoom!==-1)visited.add(currentRoom);
+  const reachable=getReachable(currentRoom);
+
+  // SVG dimensions
+  const W=520,H=480,RW=128,RH=42,RX=RW/2,RY=RH/2;
+  const px=n=>({x:n.x/100*W, y:20+n.y/100*(H-40)});
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;font-family:system-ui,sans-serif;">`;
+
+  // defs for arrowhead markers
+  svg+=`<defs>
+    <marker id="arr-active" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="${d.color}"/>
+    </marker>
+    <marker id="arr-dim" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="rgba(180,140,60,0.2)"/>
+    </marker>
+  </defs>`;
+
+  // draw edges
+  edges.forEach(([a,b])=>{
+    const pa=px(nodes[a]),pb=px(nodes[b]);
+    // edge is traversed only if a→b are consecutive steps in actual path
+    const fullPath=[...dungeonPath];
+    if(currentRoom!==-1&&(fullPath.length===0||fullPath[fullPath.length-1]!==currentRoom))fullPath.push(currentRoom);
+    const isTraversed=fullPath.some((_,i)=>i>0&&fullPath[i-1]===a&&fullPath[i]===b);
+    const isActive=reachable.has(b)&&!isComplete;
+    const col=isTraversed?d.color:isActive?'rgba(180,140,60,0.45)':'rgba(180,140,60,0.15)';
+    const marker=isTraversed?'url(#arr-active)':'url(#arr-dim)';
+    // curve path
+    const cx=(pa.x+pb.x)/2,cy1=pa.y+RY+8,cy2=pb.y-RY-8;
+    svg+=`<path d="M${pa.x},${pa.y+RY} C${pa.x},${cy1} ${pb.x},${cy2} ${pb.x},${pb.y-RY}"
+      fill="none" stroke="${col}" stroke-width="${isTraversed?2:1.5}"
+      stroke-dasharray="${isTraversed?'none':'5 3'}"
+      marker-end="${marker}"/>`;
+  });
+
+  // draw nodes
+  nodes.forEach((n,i)=>{
+    const p=px(n);
+    const isCurrent=i===currentRoom;
+    const isVisited=visited.has(i)&&!isCurrent;
+    const isReachable=reachable.has(i)&&!isComplete;
+    const isTerminal=d.terminals.includes(i);
+    const clickable=(isReachable||isCurrent||i===0&&currentRoom===-1)&&!isComplete;
+
+    let fill,stroke,strokeW=1.5,textCol,opacity=1;
+    if(isCurrent){
+      fill=d.color;stroke=d.color;strokeW=2.5;textCol='#fff';
+    } else if(isVisited){
+      fill='rgba(40,60,40,0.6)';stroke='rgba(100,180,100,0.5)';textCol='rgba(180,220,180,0.65)';
+    } else if(isReachable){
+      fill='rgba(180,140,60,0.08)';stroke='rgba(180,140,60,0.55)';textCol='rgba(210,170,90,0.9)';
+    } else {
+      fill='rgba(0,0,0,0.3)';stroke='rgba(180,140,60,0.12)';textCol='rgba(180,140,60,0.25)';opacity=0.45;
+    }
+
+    svg+=`<g ${clickable?`onclick="ventureRoom(${i})" style="cursor:pointer"`:''}
+      opacity="${opacity}">`;
+
+    // glow ring for current
+    if(isCurrent){
+      svg+=`<rect x="${p.x-RX-4}" y="${p.y-RY-4}" width="${RW+8}" height="${RH+8}"
+        rx="11" fill="none" stroke="${d.color}" stroke-width="1" opacity="0.35"/>`;
+    }
+    // terminal double-border
+    if(isTerminal){
+      svg+=`<rect x="${p.x-RX-2}" y="${p.y-RY-2}" width="${RW+4}" height="${RH+4}"
+        rx="9" fill="none" stroke="${isCurrent||isVisited?'rgba(200,170,40,0.6)':'rgba(180,140,60,0.2)'}" stroke-width="1" stroke-dasharray="4 2"/>`;
+    }
+
+    svg+=`<rect x="${p.x-RX}" y="${p.y-RY}" width="${RW}" height="${RH}"
+      rx="8" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
+
+    // text
+    const nameLines=wrapText(n.label,15);
+    const effectLines=wrapText(n.effect,20);
+    const totalH=(nameLines.length+effectLines.length)*9.5;
+    let ty=p.y-totalH/2+6;
+
+    nameLines.forEach(line=>{
+      svg+=`<text x="${p.x}" y="${ty}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${textCol}">${line}</text>`;
+      ty+=10;
+    });
+    ty+=1;
+    effectLines.forEach(line=>{
+      svg+=`<text x="${p.x}" y="${ty}" text-anchor="middle" font-size="7.5" fill="${textCol}" opacity="0.85">${line}</text>`;
+      ty+=9;
+    });
+
+    svg+=`</g>`;
+  });
+
+  svg+=`</svg>`;
+  wrap.innerHTML=svg;
+}
+
+function ventureRoom(i){
+  if(i===currentRoom){
+    // deselect — pop back to previous room in path
+    if(dungeonPath.length>0){
+      currentRoom=dungeonPath[dungeonPath.length-1];
+      dungeonPath=dungeonPath.slice(0,-1);
+    } else {
+      currentRoom=-1;
+      dungeonPath=[];
+    }
+  } else {
+    // advance — push current to path before moving
+    if(currentRoom!==-1)dungeonPath.push(currentRoom);
+    else dungeonPath=[];
+    currentRoom=i;
+  }
+  renderDungeon();
+}
+function resetDungeon(){dungeonId=null;currentRoom=-1;dungeonPath=[];renderDungeon();}
+
+// ── Activity badge — highlight boards with active state ──
+function fmtHasActivity(f){
+  const s=fmtState[f];
+  if(!s)return false;
+  const defaultLife=FORMATS[f]?FORMATS[f].life:20;
+  if(s.life!==defaultLife)return true;
+  if(s.poison>0||s.xp>0||s.energy>0)return true;
+  if(s.manaEntries&&s.manaEntries.length>0)return true;
+  if(s.initiative||s.goaded||s.monarch)return true;
+  if(!s.isDay)return true;
+  if(s.cmdDmg&&Object.values(s.cmdDmg).some(v=>v>0))return true;
+  if(s.diceHist&&s.diceHist.length>0)return true;
+  if((s.storm||0)>0)return true;
+  if(f==='dungeon'&&s.dungeonId)return true;
+  if(f==='ring'&&(s.ringStage>-1||(s.ringBearer&&s.ringBearer.trim())))return true;
+  // check current working state if this is the active format
+  if(f===fmt){
+    if(life!==defaultLife||poison>0||xp>0||energy>0)return true;
+    if(manaEntries.length>0||initiative||goaded||monarch||!isDay)return true;
+    if(Object.values(cmdDmg).some(v=>v>0)||diceHist.length>0||storm>0)return true;
+    if(f==='dungeon'&&dungeonId)return true;
+    if(f==='ring'&&(ringStage>-1||(ringBearer&&ringBearer.trim())))return true;
+    const nameEl=document.getElementById('ringBearerName');
+    if(f==='ring'&&nameEl&&nameEl.value.trim())return true;
+  }
+  return false;
+}
+// ── Activity badge and stable ordering ──
+// primaryFmt: the first primary board interacted with — locks to far left
+let primaryFmt=null;
+
+function updateActivityBadges(){
+  const group=document.getElementById('fmtBtnGroup');
+  if(!group)return;
+  const btns=Array.from(group.querySelectorAll('.fmt-btn'));
+
+  // update has-activity class
+  btns.forEach(btn=>{
+    const oc=btn.getAttribute('onclick')||'';
+    const match=oc.match(/'([^']+)'/);
+    const f=match?match[1]:null;
+    if(f)btn.classList.toggle('has-activity',fmtHasActivity(f));
+  });
+
+  // detect primary board activity and lock it in
+  const primaries=['commander','standard','simple'];
+  if(!primaryFmt){
+    for(const p of primaries){
+      if(fmtHasActivity(p)){primaryFmt=p;break;}
+    }
+  }
+
+  // build desired order: [primaryFmt, dungeon, ring, ...remaining primaries in original order]
+  const originalOrder=['commander','standard','simple','dungeon','ring'];
+  let desired;
+  if(primaryFmt){
+    const remaining=primaries.filter(p=>p!==primaryFmt);
+    desired=[primaryFmt,'dungeon','ring',...remaining];
+  } else {
+    desired=originalOrder;
+  }
+
+  // reorder DOM to match desired
+  const fmtToBtn={};
+  btns.forEach(btn=>{
+    const oc=btn.getAttribute('onclick')||'';
+    const match=oc.match(/'([^']+)'/);
+    if(match)fmtToBtn[match[1]]=btn;
+  });
+
+  // remove old divider
+  const existingDivider=group.querySelector('.fmt-divider');
+  if(existingDivider)existingDivider.remove();
+
+  // append in desired order
+  desired.forEach((f,i)=>{
+    if(fmtToBtn[f])group.appendChild(fmtToBtn[f]);
+    // insert divider between primary and dungeon/ring group if primaryFmt is set
+    if(primaryFmt&&i===0){
+      const div=document.createElement('div');div.className='fmt-divider';
+      group.appendChild(div);
+    }
+  });
+}
+
+// ── Ring functions ──
+function renderRing(){
+  for(let i=0;i<4;i++){
+    const el=document.getElementById('ringStage'+i);
+    if(!el)return;
+    el.classList.toggle('unlocked',i<=ringStage);
+  }
+  const status=document.getElementById('ringStatus');
+  const banner=document.getElementById('ringBanner');
+  const nameEl=document.getElementById('ringBearerName');
+  if(nameEl)nameEl.value=ringBearer;
+  if(ringStage===-1){status.textContent='Tap a stage as the Ring tempts you';banner.classList.remove('show');}
+  else if(ringStage===3){status.textContent='The Ring is fully powered — all 4 abilities unlocked';banner.classList.add('show');}
+  else{status.textContent='Stage '+(ringStage+1)+' of 4 unlocked';banner.classList.remove('show');}
+  updateActivityBadges();
+}
+function temptRing(i){
+  // tap unlocked stage to revert to previous, tap next stage to advance
+  if(i===ringStage)ringStage=i-1;
+  else if(i===ringStage+1)ringStage=i;
+  else if(i===0&&ringStage===-1)ringStage=0;
+  renderRing();
+}
+function resetRing(){ringStage=-1;ringBearer='';renderRing();}
+
+function setFormat(f,el){
+  saveState();
+  fmt=f;
+  document.querySelectorAll('.fmt-btn').forEach(b=>{
+    b.classList.remove('active');
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+f+"'"))b.classList.add('active');
+  });
+  loadState();
+  const simple=f==='simple';
+  const standard=f==='standard';
+  const dungeon=f==='dungeon';
+  const ring=f==='ring';
+  const fullscreen=dungeon||ring;
+  const mat=document.querySelector('.mat');
+  mat.classList.toggle('simple-mode',simple||fullscreen);
+  mat.classList.toggle('dungeon-mode',dungeon);
+  mat.classList.toggle('ring-mode',ring);
+  document.getElementById('rightCol').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('initCard').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('diceCard').classList.toggle('simple-hidden',fullscreen);
+  document.getElementById('goadedCard').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('monarchCard').classList.toggle('simple-hidden',simple||fullscreen);
+  document.getElementById('cmdCard').style.display=(standard||fullscreen)?'none':'';
+  document.getElementById('standardCard').style.display=standard?'':'none';
+  applyDayNightUI();applyGoadedUI();
+  renderAll();
+  if(dungeon)renderDungeon();
+  if(ring)renderRing();
+  updateActivityBadges();
+}
+function applyDayNightUI(){
+  const btn=document.getElementById('dayNightBtn');
+  const icon=document.getElementById('dayNightIcon');
+  const lbl=document.getElementById('dayNightLabel');
+  if(!btn)return;
+  if(isDay){btn.style.borderColor='rgba(200,170,80,0.5)';btn.style.background='rgba(180,140,20,0.15)';icon.textContent='☀️';lbl.textContent='Day';lbl.style.color='#f0d080';}
+  else{btn.style.borderColor='rgba(100,100,200,0.5)';btn.style.background='rgba(40,40,120,0.25)';icon.textContent='🌙';lbl.textContent='Night';lbl.style.color='#b0a0e0';}
+}
+function applyGoadedUI(){
+  const card=document.getElementById('goadedCard');
+  const icon=document.getElementById('goadedIcon');
+  const lbl=document.getElementById('goadedLbl');
+  const state=document.getElementById('goadedState');
+  if(!card)return;
+  if(goaded){card.style.background='rgba(200,80,40,0.18)';card.style.borderColor='rgba(220,100,60,0.6)';icon.style.opacity='1';lbl.style.color='#f0a080';state.textContent='Active';state.style.color='rgba(240,140,100,0.8)';}
+  else{card.style.background='';card.style.borderColor='';icon.style.opacity='0.3';lbl.style.color='';state.textContent='None';state.style.color='';}
+}
+function resetAll(){
+  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false});
+  fmtState.commander={...defaultState(),life:40};
+  fmtState.standard={...defaultState()};
+  fmtState.simple={...defaultState()};
+  fmtState.dungeon={...defaultState(),dungeonId:null,currentRoom:-1,dungeonPath:[]};
+  fmtState.ring={...defaultState(),ringStage:-1,ringBearer:''};
+  primaryFmt=null;
+  dungeonId=null;currentRoom=-1;dungeonPath=[];
+  ringStage=-1;ringBearer='';
+  loadState();
+  applyDayNightUI();applyGoadedUI();
+  renderAll();
+  if(fmt==='dungeon')renderDungeon();
+  if(fmt==='ring')renderRing();
+  updateActivityBadges();
+}
+function renderAll(){adjLife(0);renderMana();renderCmd();adjPoison(0);document.getElementById('xpNum').textContent=xp;document.getElementById('energyNum').textContent=energy;const ic=document.getElementById('initCard');if(initiative)ic.classList.add('active');else ic.classList.remove('active');document.getElementById('initState').textContent=initiative?'Holding':'Not held';document.getElementById('diceFace').textContent=diceHist.length?diceHist[0].split(':')[1]:'—';document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');document.getElementById('stormFace').textContent=storm;applyMonarchUI();updateActivityBadges();}
+
+buildManaGrid();
+renderAll();
+
+// Register service worker for offline/PWA support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
