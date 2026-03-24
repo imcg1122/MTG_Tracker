@@ -101,44 +101,55 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   /* Hide dice card entirely */
   .mat.simple-mode #diceCard{display:none!important;}
   
-  /* Reduce wrapper padding for tight fit */
-  .wrap{padding:6px;}
-  .mat{padding:6px;}
-  .mat-inner{padding:6px;}
+  /* AGGRESSIVE: Minimize all padding and margins */
+  html, body{margin:0;padding:0;}
+  .wrap{padding:3px;}
+  .mat{padding:3px;border-width:1px;}
+  .mat-inner{padding:3px;}
   
-  /* Scale down life number */
-  .mat.simple-mode .life-num{font-size:40px;}
-  .mat.simple-mode .lbtn{height:36px;font-size:12px;}
+  /* Minimize top strip */
+  .top-strip{gap:2px;margin-bottom:3px;padding:0;}
+  .fmt-btn,.theme-btn,.reset-btn{font-size:8px;padding:2px 6px;height:26px;min-height:26px;}
   
-  /* Reduce mana card heights to fit without scrolling */
-  .mat.simple-mode .pool-card{min-height:70px;}
-  .mat.simple-mode .pool-empty{min-height:70px;}
-  .mat.simple-mode .pool-empty-tap{min-height:70px;}
+  /* Aggressive life sizing */
+  .mat.simple-mode .life-num{font-size:36px;line-height:1;}
+  .mat.simple-mode .lbtn{height:32px;font-size:11px;min-height:32px;}
+  .life-sub{font-size:8px;margin-top:1px;}
+  .life-btns{gap:4px;margin-top:6px;}
   
-  /* Tighten gaps */
-  .main-grid{gap:6px;margin-bottom:6px;}
+  /* Aggressive mana pool sizing */
+  .mat.simple-mode .pool-card{min-height:60px;padding:4px 2px;}
+  .mat.simple-mode .pool-empty{min-height:60px;}
+  .mat.simple-mode .pool-empty-tap{min-height:60px;}
+  .pool-card-inner{gap:1px;}
+  .pool-total{font-size:20px;}
+  .pool-icon{width:28px;height:28px;}
+  .pool-icon svg{width:26px!important;height:26px!important;}
+  .pool-name{font-size:7px;line-height:1.1;}
+  .pool-spent{font-size:7px;}
   
-  /* Ensure tap targets stay large */
-  .pool-card,.pool-empty-tap{display:flex;flex-direction:column;justify-content:center;}
-  .pool-card-inner{gap:2px;}
-  .pool-total{font-size:24px;}
-  .pool-icon{width:32px;height:32px;}
-  .pool-icon svg{width:30px!important;height:30px!important;}
-  .pool-name{font-size:8px;}
-  .pool-spent{font-size:8px;}
-  .pool-inline-btns{margin-top:3px;}
-  .pool-inline-btn{width:24px;font-size:9px;padding:3px 0;}
-  .pool-inline-btn-add{font-size:14px;padding:3px 0;}
+  /* Inline mana buttons */
+  .pool-inline-btns{gap:2px;margin-top:2px;}
+  .pool-inline-btn{width:22px;font-size:8px;padding:2px 0;height:22px;min-height:22px;}
+  .pool-inline-btn-add{font-size:12px;padding:2px 0;height:22px;min-height:22px;}
   
-  /* Life buttons tap targets */
-  .lbtn{min-height:44px;display:flex;align-items:center;justify-content:center;}
+  /* Tighten main grid gaps */
+  .main-grid{gap:4px;margin-bottom:3px;align-items:stretch;}
+  .main-grid > *:first-child{gap:4px;}
   
-  /* Top strip wrapping */
-  .top-strip{gap:4px;flex-wrap:wrap;}
-  .fmt-btn,.theme-btn,.reset-btn{font-size:9px;padding:3px 8px;}
+  /* Section labels */
+  .sec-label{font-size:7px;margin-bottom:2px;}
+  .card{padding:4px 6px;}
   
-  /* Reduce section label size */
-  .sec-label{font-size:8px;}
+  /* Mana status text */
+  .mana-status{font-size:7px;}
+  .untap-btn{font-size:8px;padding:2px 6px;height:24px;min-height:24px;}
+  
+  /* Life card wrapper */
+  .life-card-wrap{padding:0;}
+  
+  /* Viewport meta - ensure no default zoom */
+  html{scroll-behavior:auto;overflow-y:hidden;}
 }
 
 /* ── WRAPPER ── */
@@ -624,7 +635,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     <div style="display:flex;gap:5px;align-items:center;" id="fmtBtnGroup">
       <div class="fmt-btn active" onclick="setFormat('commander',this)">Commander</div>
       <div class="fmt-btn" onclick="setFormat('standard',this)">Standard</div>
-      <div class="fmt-btn" onclick="setFormat('simple',this)">Simple Mana</div>
+      <div class="fmt-btn" onclick="setFormat('simple',this)">Mobile</div>
       <div class="fmt-btn" onclick="setFormat('dungeon',this)">Dungeon</div>
       <div class="fmt-btn" onclick="setFormat('ring',this)">The Ring</div>
     </div>
