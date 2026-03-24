@@ -165,12 +165,17 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* right col */
 .right-col{display:flex;flex-direction:column;gap:7px;height:100%;}
-.cmd-row{display:flex;align-items:center;gap:3px;margin-bottom:5px;}
-.cmd-name{font-size:10px;color:var(--c-muted);width:24px;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;}
-.cmd-val{font-size:17px;font-weight:500;color:var(--c-gold);font-family:Georgia,serif;min-width:26px;text-align:center;}
+#cmdCard{display:flex;flex-direction:column;flex:0 0 auto;max-height:280px;overflow-y:auto;}
+#cmdCard .sec-label{margin-bottom:4px;}
+#cmdRows{display:flex;flex-direction:column;gap:4px;}
+.cmd-row{display:flex;align-items:center;gap:3px;padding:4px 6px;border-radius:6px;background:rgba(0,0,0,0.15);}
+.cmd-name{font-size:8px;color:var(--c-muted);width:24px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;font-weight:700;}
+.cmd-val{font-size:15px;font-weight:700;color:var(--c-gold);font-family:Georgia,serif;width:28px;text-align:center;line-height:1;}
 .cmd-val.danger{color:#e05040;}
-.cbtn{height:24px;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;padding:0 5px;white-space:nowrap;flex-shrink:0;}
+.cbtn{height:20px;min-width:32px;border-radius:3px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;padding:0 5px;white-space:nowrap;flex-shrink:0;font-weight:600;line-height:1;}
 .cbtn:active{background:var(--c-btn-active);}
+.reset-icon{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;transition:background .1s;}
+.reset-icon:active{background:rgba(200,80,60,0.18);}
 
 .pt-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1;}
 .counter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
@@ -179,8 +184,6 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .counter-num{font-size:clamp(20px,3vw,28px);font-weight:500;line-height:1;font-family:Georgia,serif;}
 .counter-icon{display:flex;align-items:center;justify-content:center;width:28px;height:28px;}
 .counter-label{font-size:8px;text-transform:uppercase;letter-spacing:.07em;opacity:.8;text-align:center;}
-.reset-icon{display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;}
-.reset-icon:active{background:rgba(200,80,60,0.18);}
 
 /* initiative */
 .init-compact{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 6px;cursor:pointer;user-select:none;text-align:center;height:100%;}
@@ -950,7 +953,7 @@ function loadState(){
   if(fmt==='ring'){ringStage=s.ringStage!=null?s.ringStage:-1;ringBearer=s.ringBearer||'';}
   else{ringStage=-1;ringBearer='';}
 }
-let cmdPlayers=['P2','P3','P4'],cmdDmg={};
+let cmdPlayers=['P1','P2','P3','P4'],cmdDmg={};
 // ── Working variables (current format) ──
 let fmt='commander',life=40,poison=0,xp=0,energy=0,initiative=false,isDay=true,goaded=false,storm=0,monarch=false;
 let dungeonId=null,currentRoom=-1,dungeonPath=[];
@@ -1045,7 +1048,9 @@ function renderMana(){
         if(e.color==='w')card.dataset.shimmer='dark';
         card.style.setProperty('--glow-color', e.color==='w'?'rgba(200,160,40,0.55)':hexToGlow(CM[e.color].bc,0.5));
         const tc=CM[e.color].text;
-        card.innerHTML=`<div class="pool-total" style="color:${tc}">${avail}<span style="font-size:11px;opacity:.75;">/${e.total}</span></div><div class="pool-icon" style="color:${tc}">${ICONS[e.color]}</div><div class="pool-name" style="color:${tc}">${CM[e.color].name}</div><div class="pool-spent" style="color:${tc}">${e.spent} spent</div>`;
+        const inner=document.createElement('div');inner.className='pool-card-inner';inner.style.color=tc;
+        inner.innerHTML=`<div class="pool-total" style="color:${tc}">${avail}<span style="font-size:11px;opacity:.75;">/${e.total}</span></div><div class="pool-icon" style="color:${tc}">${ICONS[e.color]}</div><div class="pool-name" style="color:${tc}">${CM[e.color].name}</div><div class="pool-spent" style="color:${tc}">${e.spent} spent</div>`;
+        card.appendChild(inner);
       }
       if(avail>0){
         const idx=si;
@@ -1134,7 +1139,16 @@ function renderCmd(){
     if(!cmdDmg[p])cmdDmg[p]=0;
     const row=document.createElement('div');row.className='cmd-row';
     const danger=cmdDmg[p]>=21;
-    row.innerHTML=`<div class="cmd-name">${p}</div><div class="cbtn" onclick="adjCmd('${p}',-5)">−5</div><div class="cbtn" onclick="adjCmd('${p}',-1)">−1</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div>`;
+    const isP1=p==='P1';
+    
+    // P1 gets special styling
+    if(isP1){
+      row.style.cssText='background:rgba(100,60,40,0.2);border:1px solid rgba(180,100,80,0.4);padding:4px 6px;border-radius:6px;';
+    }
+    
+    const playerLabel=isP1?'You':p;
+    const nameColor=isP1?'color:rgba(220,120,100,0.95);':'';
+    row.innerHTML=`<div class="cmd-name" style="${nameColor}">${playerLabel}</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div><div class="reset-icon" onclick="resetCmd('${p}')" title="Reset"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>`;
     el.appendChild(row);
   });
 }
@@ -1145,36 +1159,46 @@ function adjCmd(p,d){
   let targetEl=null;
   vals.forEach(v=>{
     const row=v.closest('.cmd-row');
-    if(row&&row.querySelector('.cmd-name')&&row.querySelector('.cmd-name').textContent===p)targetEl=v;
+    if(row&&row.querySelector('.cmd-name')){
+      const nameText=row.querySelector('.cmd-name').textContent;
+      const playerKey=(nameText==='You')?'P1':nameText;
+      if(playerKey===p)targetEl=v;
+    }
   });
   if(targetEl&&d!==0){
     const rect=targetEl.getBoundingClientRect();
     const cx=rect.left+rect.width/2;
     const cy=rect.top+rect.height/2;
-    if(d<0){
+    // Always show damage slash animation for positive values (taking damage)
+    if(d>0){
       const slash=document.createElement('div');
       slash.className='life-slash';
       slash.style.position='fixed';
       slash.style.left=cx+'px';
       slash.style.top=cy+'px';
-      slash.style.width='60px';
+      slash.style.width='50px';
       slash.style.transform='translate(-50%,-50%) rotate(-20deg)';
       slash.style.animation='life-slash 0.5s ease-out forwards';
       document.body.appendChild(slash);
       slash.addEventListener('animationend',()=>slash.remove());
-    } else {
-      const heal=document.createElement('div');
-      heal.className='life-heal';
-      heal.style.position='fixed';
-      heal.style.left=cx+'px';
-      heal.style.top=cy+'px';
-      heal.style.fontSize='1.4em';
-      heal.textContent='+'+d;
-      document.body.appendChild(heal);
-      heal.addEventListener('animationend',()=>heal.remove());
     }
   }
   cmdDmg[p]=Math.max(0,(cmdDmg[p]||0)+d);
+  // If P1 (self) takes damage, also deduct from life total
+  if(p==='P1'&&d!==0){
+    adjLife(-d);
+  }
+  renderCmd();
+}
+function resetCmd(p){
+  // If resetting P1 (self), also restore the commander damage amount to life total
+  if(p==='P1'){
+    const p1DamageTaken=cmdDmg['P1']||0;
+    if(p1DamageTaken>0){
+      adjLife(p1DamageTaken);  // Restore the life that was taken
+    }
+  }
+  cmdDmg[p]=0;
   renderCmd();
 }
 
