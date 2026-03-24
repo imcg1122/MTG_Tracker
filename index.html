@@ -94,7 +94,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .mat.simple-mode .lbtn{height:clamp(38px,5vh,52px);font-size:clamp(13px,1.8vw,17px);}
 .mat.simple-mode .mc-btn{padding:clamp(12px,2vh,18px) 4px clamp(10px,1.5vh,14px);}
 .mat.simple-mode .mana-btn-grid{gap:clamp(6px,1vw,10px);}
-.mat.simple-mode .bot-grid{grid-template-columns:1fr!important;}
+.mat.simple-mode .bot-grid{grid-template-columns:clamp(140px,20vw,220px)!important;}
 
 /* ── WRAPPER ── */
 .wrap{
@@ -433,7 +433,41 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .mc-btn.sub-style:active{filter:brightness(1.3);transform:scale(.97);opacity:1;}
 .mc-btn.hybrid-style{border-color:rgba(180,120,240,0.55);background:rgba(100,60,180,0.15);}
 
-/* ── LAYOUT: MOBILE LANDSCAPE + TABLET + DESKTOP (≥600px) ── */
+/* ── HORIZONTAL COUNTER/TOGGLE ROWS ── */
+.hrow{display:flex;flex-direction:row;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;user-select:none;flex:1;}
+.hrow-icon{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:20px;height:20px;}
+.hrow-num{font-size:clamp(16px,2vw,20px);font-weight:500;font-family:Georgia,serif;line-height:1;flex-shrink:0;min-width:24px;}
+.hrow-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--c-muted);flex:1;}
+.hrow-state{font-size:9px;color:var(--c-faint);font-style:italic;flex-shrink:0;}
+.hrow-btns{display:flex;gap:4px;align-items:center;flex-shrink:0;}
+
+/* ── 3x3 COUNTER GRID ── */
+.counter-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex:1;}
+.cg-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 4px;cursor:pointer;user-select:none;text-align:center;position:relative;}
+.cg-icon{font-size:14px;line-height:1;opacity:.35;transition:opacity .2s;}
+.cg-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.09em;color:var(--c-muted);transition:color .2s;}
+.cg-state{font-size:8px;color:var(--c-faint);font-style:italic;transition:color .2s;}
+.cg-num{font-size:clamp(16px,2vw,22px);font-weight:500;font-family:Georgia,serif;line-height:1;}
+.cg-controls{display:flex;gap:3px;align-items:center;margin-top:3px;}
+.cg-btn{font-size:9px;padding:2px 6px;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;line-height:1;}
+.cg-btn:active{background:var(--c-btn-active);}
+
+/* ── MANA PICKER MODAL ── */
+.mana-picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px;}
+.mpick{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 4px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .15s,transform .1s;}
+.mpick:active{filter:brightness(1.3);transform:scale(.96);}
+.mpick-name{font-size:8px;text-transform:uppercase;letter-spacing:.06em;text-align:center;}
+
+/* ── INLINE POOL CONTROLS ── */
+.pool-inline-btns{display:flex;gap:3px;width:100%;margin-top:4px;}
+.pool-inline-btn-add{flex:1;font-size:16px;font-weight:600;padding:5px 0;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;line-height:1;}
+.pool-inline-btn-add:active{background:var(--c-btn-active);}
+.pool-inline-btn{width:26px;font-size:10px;padding:5px 0;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;}
+.pool-inline-btn:active{background:var(--c-btn-active);}
+.pool-empty-tap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:8px;border:1.5px dashed rgba(180,140,60,0.25);background:transparent;width:100%;min-height:clamp(120px,14vh,160px);cursor:pointer;user-select:none;transition:border-color .2s,background .2s;}
+.pool-empty-tap:active{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.06);}
+.pool-empty-tap-icon{font-size:18px;opacity:.3;}
+.pool-empty-tap-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--c-faint);text-align:center;line-height:1.4;}
 .main-grid{display:grid;gap:8px;margin-bottom:8px;align-items:stretch;}
 .main-grid > *:first-child{display:flex;flex-direction:column;}
 .bot-grid{display:grid;gap:8px;}
@@ -446,7 +480,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .mat-inner{padding:clamp(10px,1.5vw,14px);}
 
   .main-grid{grid-template-columns:clamp(140px,16vw,200px) 1fr clamp(180px,22vw,240px);}
-  .bot-grid{grid-template-columns:clamp(140px,16vw,200px) 1fr;}
+  .bot-grid{grid-template-columns:clamp(140px,16vw,200px);}
 
   .pool-empty{min-height:clamp(120px,14vh,160px);}
   .pool-card{min-height:clamp(120px,14vh,160px);}
@@ -481,7 +515,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 /* Only shown when not in portrait-blocked state */
 @media (max-width:599px) and (orientation:landscape){
   .main-grid{grid-template-columns:130px 1fr 185px;}
-  .bot-grid{grid-template-columns:130px 1fr;}
+  .bot-grid{grid-template-columns:130px;}
   .pool-card{min-height:100px;}
   .pool-empty{min-height:100px;}
   .life-num{font-size:46px;}
@@ -558,7 +592,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   <!-- main 3-col grid -->
   <div class="main-grid">
 
-    <!-- col1: life total (shrink-wrapped) + dice below, filling to bottom of mana pool -->
+    <!-- col1: life total + dice below -->
     <div style="display:flex;flex-direction:column;gap:8px;">
 
       <!-- life -->
@@ -582,13 +616,13 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
           <div class="sec-label" style="margin-bottom:6px;">Dice</div>
           <div class="dice-result-row" style="justify-content:center;gap:12px;padding:10px 0 6px;">
             <svg class="d20-svg" width="40" height="40" viewBox="0 0 36 36" fill="none">
-              <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(210,170,90,0.45);"/>
-              <polygon points="18,2 34,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-              <polygon points="18,2 2,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-              <polygon points="34,10 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-              <polygon points="2,10 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-              <polygon points="18,34 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
-              <polygon points="18,34 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.25);"/>
+              <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(210,170,90,0.65);"/>
+              <polygon points="18,2 34,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.45);"/>
+              <polygon points="18,2 2,10 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.45);"/>
+              <polygon points="34,10 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.45);"/>
+              <polygon points="2,10 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.45);"/>
+              <polygon points="18,34 34,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.45);"/>
+              <polygon points="18,34 2,26 18,14" fill="none" stroke="currentColor" stroke-width="1" style="color:rgba(210,170,90,0.45);"/>
             </svg>
             <div class="dice-face" id="diceFace" style="font-size:clamp(28px,4vw,44px);min-width:48px;">—</div>
           </div>
@@ -617,7 +651,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     </div>
 
 
-    <!-- right col -->
+    <!-- right col: 3x3 grid of counters + toggles -->
     <div class="right-col" id="rightCol">
       <!-- commander damage — shown in commander mode -->
       <div class="card" id="cmdCard">
@@ -628,7 +662,6 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
       <!-- day/night + energy — shown in standard mode -->
       <div class="card" id="standardCard" style="display:none;flex:0 0 auto;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;height:100%;">
-
           <!-- day/night toggle -->
           <div style="display:flex;flex-direction:column;gap:6px;">
             <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px;">
@@ -641,7 +674,6 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
               <div style="font-size:8px;color:rgba(210,170,90,0.45);text-transform:uppercase;letter-spacing:.06em;">tap to toggle</div>
             </div>
           </div>
-
           <!-- energy counter -->
           <div style="display:flex;flex-direction:column;gap:6px;">
             <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px;">
@@ -666,87 +698,84 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
               <div class="counter-label" style="color:#a0c8ff;">tap to add</div>
             </div>
           </div>
-
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px;flex:1;">
-        <div class="card" style="padding:8px;display:flex;flex-direction:column;flex:1;">
-          <div class="counter-header">
-            <div class="sec-label" style="margin-bottom:0;">Poison</div>
-            <div style="display:flex;gap:4px;align-items:center;">
-              <div class="reset-icon" onclick="adjPoison(-1)" title="Subtract one">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </div>
-              <div class="reset-icon" onclick="resetPoison()" title="Reset">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-              </div>
-            </div>
-          </div>
-          <div class="counter-tap-btn" id="poisonBtn"
-            style="border-color:rgba(60,180,60,0.6);background:rgba(20,100,20,0.25);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;"
-            onclick="adjPoison(1)">
-            <div class="counter-num" id="poisonNum" style="color:#80e080;font-size:clamp(18px,2.2vw,24px);">0</div>
-            <div class="counter-icon" style="width:22px;height:22px;">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#80e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 3 L9 8 C9 8 5 10 5 15 C5 19 8 21 12 21 C16 21 19 19 19 15 C19 10 15 8 15 8 L15 3"/>
-                <line x1="7" y1="3" x2="17" y2="3"/>
-                <ellipse cx="12" cy="15" rx="3" ry="3.5" fill="rgba(40,160,40,0.3)" stroke="#80e080" stroke-width="1.2"/>
-                <path d="M10.5 14 Q12 12.5 13.5 14" stroke="#80e080" stroke-width="1" fill="none"/>
-              </svg>
-            </div>
-            <div class="counter-label" style="color:#80e080;flex:1;text-align:left;">tap to add</div>
+
+      <!-- horizontal rows: Poison, XP, Storm, Goaded, Initiative, Monarch -->
+      <div style="display:flex;flex-direction:column;gap:5px;flex:1;min-height:0;height:100%;">
+
+        <!-- Poison -->
+        <div class="card hrow" id="poisonBtn" onclick="adjPoison(1)" style="position:relative;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#80e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon">
+            <path d="M9 3 L9 8 C9 8 5 10 5 15 C5 19 8 21 12 21 C16 21 19 19 19 15 C19 10 15 8 15 8 L15 3"/>
+            <line x1="7" y1="3" x2="17" y2="3"/>
+            <ellipse cx="12" cy="15" rx="3" ry="3.5" fill="rgba(40,160,40,0.3)" stroke="#80e080" stroke-width="1.2"/>
+          </svg>
+          <span class="hrow-num" id="poisonNum" style="color:#80e080;">0</span>
+          <span class="hrow-lbl">Poison</span>
+          <div class="hrow-btns">
+            <div class="reset-icon" onclick="event.stopPropagation();adjPoison(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="reset-icon" onclick="event.stopPropagation();resetPoison()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
           </div>
         </div>
-        <div class="card" style="padding:8px;display:flex;flex-direction:column;flex:1;">
-          <div class="counter-header">
-            <div class="sec-label" style="margin-bottom:0;">Exp</div>
-            <div style="display:flex;gap:4px;align-items:center;">
-              <div class="reset-icon" onclick="adjXp(-1)" title="Subtract one">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </div>
-              <div class="reset-icon" onclick="resetXp()" title="Reset">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-              </div>
-            </div>
-          </div>
-          <div class="counter-tap-btn" id="xpBtn"
-            style="border-color:rgba(140,100,220,0.55);background:rgba(80,50,160,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;"
-            onclick="adjXp(1)">
-            <div class="counter-num" id="xpNum" style="color:#c0a0ff;font-size:clamp(18px,2.2vw,24px);">0</div>
-            <div class="counter-icon" style="width:22px;height:22px;">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c0a0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-              </svg>
-            </div>
-            <div class="counter-label" style="color:rgba(180,150,255,0.65);flex:1;text-align:left;">tap to add</div>
+
+        <!-- XP -->
+        <div class="card hrow" id="xpBtn" onclick="adjXp(1)" style="position:relative;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c0a0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon">
+            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+          </svg>
+          <span class="hrow-num" id="xpNum" style="color:#c0a0ff;">0</span>
+          <span class="hrow-lbl">Exp</span>
+          <div class="hrow-btns">
+            <div class="reset-icon" onclick="event.stopPropagation();adjXp(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="reset-icon" onclick="event.stopPropagation();resetXp()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
           </div>
         </div>
-        <div class="card storm-card" id="stormCard" style="padding:8px;display:flex;flex-direction:column;flex:1;">
-          <div class="counter-header">
-            <div class="sec-label" style="margin-bottom:0;">Storm</div>
-            <div style="display:flex;gap:4px;align-items:center;">
-              <div class="reset-icon" onclick="adjStorm(-1)" title="Subtract one">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </div>
-              <div class="reset-icon" onclick="resetStorm()" title="Reset">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-              </div>
-            </div>
-          </div>
-          <div class="counter-tap-btn" id="stormBtn" onclick="adjStorm(1)"
-            style="border-color:rgba(100,160,240,0.6);background:rgba(40,80,180,0.2);flex-direction:row;gap:10px;padding:6px 10px;margin-top:6px;flex:1;">
-            <div class="counter-num" id="stormFace" style="color:#90c8ff;font-size:clamp(18px,2.2vw,24px);">0</div>
-            <div class="counter-icon" style="width:22px;height:22px;">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#90c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 17H7a4 4 0 0 1-.5-7.96A5.5 5.5 0 0 1 18 11.5a3 3 0 0 1 2 5.5Z" fill="rgba(80,140,255,0.2)"/>
-                <line x1="9" y1="20" x2="8" y2="22"/>
-                <line x1="13" y1="20" x2="12" y2="22"/>
-                <line x1="17" y1="20" x2="16" y2="22"/>
-              </svg>
-            </div>
-            <div class="counter-label" style="color:#90c8ff;flex:1;text-align:left;">tap to add</div>
+
+        <!-- Storm -->
+        <div class="card hrow storm-card" id="stormCard" onclick="adjStorm(1)" style="position:relative;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#90c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon">
+            <path d="M20 17H7a4 4 0 0 1-.5-7.96A5.5 5.5 0 0 1 18 11.5a3 3 0 0 1 2 5.5Z" fill="rgba(80,140,255,0.15)"/>
+            <line x1="9" y1="20" x2="8" y2="22"/><line x1="13" y1="20" x2="12" y2="22"/><line x1="17" y1="20" x2="16" y2="22"/>
+          </svg>
+          <span class="hrow-num" id="stormFace" style="color:#90c8ff;">0</span>
+          <span class="hrow-lbl">Storm</span>
+          <div class="hrow-btns">
+            <div class="reset-icon" onclick="event.stopPropagation();adjStorm(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="reset-icon" onclick="event.stopPropagation();resetStorm()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
           </div>
         </div>
+
+        <!-- Goaded -->
+        <div class="card hrow" id="goadedCard" onclick="toggleGoaded()" style="cursor:pointer;user-select:none;transition:all .2s;">
+          <div class="hrow-icon" id="goadedIcon" style="opacity:.35;transition:opacity .2s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(220,100,60,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2 L15 8 L22 9 L17 14 L18 21 L12 18 L6 21 L7 14 L2 9 L9 8 Z"/>
+            </svg>
+          </div>
+          <span class="hrow-lbl" id="goadedLbl">Goaded</span>
+          <span class="hrow-state" id="goadedState">None</span>
+        </div>
+
+        <!-- Initiative -->
+        <div class="card hrow initiative-card" id="initCard" onclick="toggleInit()" style="cursor:pointer;user-select:none;">
+          <span class="hrow-icon init-icon-el" style="font-size:16px;opacity:.35;">⚔</span>
+          <span class="hrow-lbl init-lbl">Initiative</span>
+          <span class="hrow-state init-state" id="initState">Not held</span>
+        </div>
+
+        <!-- Monarch -->
+        <div class="card hrow monarch-card" id="monarchCard" onclick="toggleMonarch()" style="cursor:pointer;user-select:none;">
+          <div class="hrow-icon monarch-icon-el" id="monarchIcon" style="opacity:.35;transition:opacity .2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,200,80,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 18 L5 10 L9 14 L12 6 L15 14 L19 10 L21 18 Z"/>
+              <line x1="3" y1="21" x2="21" y2="21"/>
+            </svg>
+          </div>
+          <span class="hrow-lbl monarch-lbl" id="monarchLbl">Monarch</span>
+          <span class="hrow-state monarch-state" id="monarchState">Not held</span>
+        </div>
+
       </div>
     </div>
 
@@ -813,62 +842,22 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   </div>
 
   <!-- bottom grid: goaded+initiative+monarch | add mana (aligned with mana pool) -->
-  <div class="bot-grid" id="botGrid">
+  <!-- bottom: dice only, under life total column -->
 
-    <!-- col1: goaded, initiative, monarch -->
-    <div style="display:flex;flex-direction:column;gap:8px;">
+</div>
+</div>
+</div>
 
-      <!-- goaded toggle -->
-      <div class="card" id="goadedCard" onclick="toggleGoaded()" style="cursor:pointer;user-select:none;transition:all .2s;">
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px 0;">
-          <div id="goadedIcon" style="font-size:18px;line-height:1;opacity:.3;transition:opacity .2s;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:rgba(220,100,60,0.8);">
-              <path d="M12 2 L15 8 L22 9 L17 14 L18 21 L12 18 L6 21 L7 14 L2 9 L9 8 Z"/>
-            </svg>
-          </div>
-          <div class="init-lbl" id="goadedLbl">Goaded</div>
-          <div class="init-state" id="goadedState">None</div>
-        </div>
-      </div>
-
-      <!-- initiative -->
-      <div class="card initiative-card" id="initCard" onclick="toggleInit()" style="flex:1;">
-        <div class="init-compact" style="padding:6px;gap:4px;">
-          <div class="init-icon-el" style="font-size:16px;">⚔</div>
-          <div class="init-lbl">Initiative</div>
-          <div class="init-state" id="initState">Not held</div>
-        </div>
-      </div>
-
-      <!-- monarch toggle -->
-      <div class="card monarch-card" id="monarchCard" onclick="toggleMonarch()" style="flex:1;">
-        <div class="monarch-compact">
-          <div class="monarch-icon-el" id="monarchIcon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:rgba(240,200,80,0.9);">
-              <path d="M3 18 L5 10 L9 14 L12 6 L15 14 L19 10 L21 18 Z"/>
-              <line x1="3" y1="21" x2="21" y2="21"/>
-            </svg>
-          </div>
-          <div class="monarch-lbl" id="monarchLbl">Monarch</div>
-          <div class="monarch-state" id="monarchState">Not held</div>
-        </div>
-      </div>
-
+<!-- mana picker modal -->
+<div class="overlay" id="manaPickerOverlay" onclick="closeOutside(event,'manaPickerOverlay')">
+  <div class="modal">
+    <div class="modal-title">Add mana</div>
+    <div class="modal-note">Choose a mana type to add to this slot</div>
+    <div class="mana-picker-grid" id="manaPickerGrid"></div>
+    <div class="modal-foot">
+      <div class="modal-close" onclick="closeManaPicker()">Cancel</div>
     </div>
-
-    <!-- col2: add mana — left edge aligns with mana pool -->
-    <div class="card add-mana-card">
-      <div class="add-mana-top">
-        <div class="sec-label" style="margin-bottom:0;">Add mana</div>
-        <div class="clear-btn" onclick="clearMana()">Clear all</div>
-      </div>
-      <div class="mana-btn-grid" id="manaGrid"></div>
-    </div>
-
   </div>
-
-</div>
-</div>
 </div>
 
 <!-- theme modal -->
@@ -907,8 +896,8 @@ const FORMATS={commander:{life:40},standard:{life:20},simple:{life:20},dungeon:{
 const ICONS={
   w:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
   u:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 C12 2 6 8 6 14 a6 6 0 0 0 12 0 C18 8 12 2 12 2 Z"/></svg>`,
-  b:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6.8 20 Q8 14 12 14 Q16 14 17.2 20"/><path d="M3 20 Q4 13 7 11"/><path d="M21 20 Q20 13 17 11"/><line x1="3" y1="20" x2="21" y2="20"/></svg>`,
-  r:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 C10 6 7 8 7 12 C7 15 9 17 12 17 C15 17 17 15 17 12 C17 8 14 6 12 2 Z"/><path d="M9 21 C9 18 10.5 17 12 17 C13.5 17 15 18 15 21"/></svg>`,
+  b:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 22 L9 19 L15 19 L15 22"/><path d="M9 19 C9 17 7 16 7 14 C7 10 9.5 7 12 7 C14.5 7 17 10 17 14 C17 16 15 17 15 19"/><circle cx="10" cy="14" r="1.2" fill="currentColor"/><circle cx="14" cy="14" r="1.2" fill="currentColor"/><line x1="12" y1="16" x2="12" y2="18"/><path d="M8 8 C8 5 10 3 12 3 C14 3 16 5 16 8"/></svg>`,
+  r:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20 L8 10 L11 14 L14 8 L21 20 Z"/><path d="M3 20 L21 20"/></svg>`,
   g:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22 L12 8"/><path d="M12 8 C12 8 6 10 5 4 C5 4 11 3 12 8 Z"/><path d="M12 13 C12 13 18 11 19 5 C19 5 13 4 12 13 Z"/><path d="M9 22 L15 22"/></svg>`,
   c:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L20 9 L17 20 L7 20 L4 9 Z"/><line x1="12" y1="3" x2="12" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/></svg>`,
   hybrid:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3 C9 6 7 9 7 12 C7 15 9 18 12 21"/><path d="M12 3 C15 6 17 9 17 12 C17 15 15 18 12 21"/></svg>`
@@ -1025,7 +1014,10 @@ function renderMana(){
     const slot=document.createElement('div');slot.className='pool-slot';
     const e=manaEntries[si];
     if(!e){
-      const ghost=document.createElement('div');ghost.className='pool-empty';
+      // Empty slot — tap to open mana picker
+      const ghost=document.createElement('div');ghost.className='pool-empty-tap';
+      ghost.innerHTML=`<div class="pool-empty-tap-icon">＋</div><div class="pool-empty-tap-lbl">Tap to add mana</div>`;
+      const slotIdx=si;ghost.onclick=()=>openManaPicker(slotIdx);
       const ug=document.createElement('div');ug.className='pool-untap-ghost';ug.textContent='↺ Untap';
       slot.appendChild(ghost);slot.appendChild(ug);
     } else {
@@ -1058,7 +1050,6 @@ function renderMana(){
       if(avail>0){
         const idx=si;
         card.onclick=()=>{
-          // Fixed-position burst — survives renderMana() DOM rebuild
           const rect=card.getBoundingClientRect();
           const burst=document.createElement('div');
           burst.className='mana-burst-fixed';
@@ -1070,9 +1061,24 @@ function renderMana(){
           manaEntries[idx].spent++;
           renderMana();
         };
-      }      slot.appendChild(card);
-      const ub=document.createElement('div');ub.className='pool-untap';ub.textContent='↺ Untap';
-      const idx=si;ub.onclick=()=>untapEntry(idx);slot.appendChild(ub);
+      }
+      slot.appendChild(card);
+
+      // Inline +/− and untap row
+      const inlineRow=document.createElement('div');inlineRow.className='pool-inline-btns';
+      const addBtn=document.createElement('div');addBtn.className='pool-inline-btn-add';addBtn.textContent='+';
+      const rmBtn=document.createElement('div');rmBtn.className='pool-inline-btn';rmBtn.textContent='−';
+      const utBtn=document.createElement('div');utBtn.className='pool-inline-btn';utBtn.textContent='↺';
+      const idx2=si;
+      addBtn.onclick=()=>{manaEntries[idx2].total++;renderMana();};
+      rmBtn.onclick=()=>{
+        if(manaEntries[idx2].total>1){manaEntries[idx2].total--;if(manaEntries[idx2].spent>manaEntries[idx2].total)manaEntries[idx2].spent=manaEntries[idx2].total;}
+        else manaEntries.splice(idx2,1);
+        renderMana();
+      };
+      utBtn.onclick=()=>untapEntry(idx2);
+      inlineRow.appendChild(addBtn);inlineRow.appendChild(rmBtn);inlineRow.appendChild(utBtn);
+      slot.appendChild(inlineRow);
     }
     grid.appendChild(slot);
   }
@@ -1080,22 +1086,45 @@ function renderMana(){
   st.textContent=manaEntries.length?totalAvail+' avail · '+totalSpent+' spent':'';
 }
 
-function buildManaGrid(){
-  const g=document.getElementById('manaGrid');g.innerHTML='';
+function buildManaGrid(){} // no longer needed — kept for safety
+
+let manaPickerSlot=-1;
+function openManaPicker(slotIdx){
+  manaPickerSlot=slotIdx;
+  const g=document.getElementById('manaPickerGrid');g.innerHTML='';
+  // Mono colors
   MANA_KEYS.forEach(c=>{
-    const m=CM[c];const pair=document.createElement('div');pair.className='mana-pair';
-    const add=document.createElement('div');add.className='mc-btn';add.style.borderColor=m.bc;add.style.color=m.text;add.style.background=m.bg;
-    add.innerHTML=`<div class="mc-btn-sign" style="color:${m.text}">+</div><div class="mc-btn-icon" style="color:${m.text}">${ICONS[c]}</div><div class="mc-btn-name" style="color:${m.text}">${m.name}</div>`;add.onclick=()=>addCol(c);
-    const sub=document.createElement('div');sub.className='mc-btn sub-style';sub.style.borderColor=m.bc;sub.style.color=m.text;sub.style.background=m.bg;
-    sub.innerHTML=`<div class="mc-btn-sign" style="color:${m.text}">−</div><div class="mc-btn-icon" style="color:${m.text}">${ICONS[c]}</div><div class="mc-btn-name" style="color:${m.text}">${m.name}</div>`;sub.onclick=()=>removeCol(c);
-    pair.appendChild(add);pair.appendChild(sub);g.appendChild(pair);
+    const m=CM[c];
+    const btn=document.createElement('div');btn.className='mpick';
+    btn.style.borderColor=m.bc;btn.style.background=m.bg;btn.style.color=m.text;
+    btn.innerHTML=`<div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;">${ICONS[c]}</div><div class="mpick-name" style="color:${m.text}">${m.name}</div>`;
+    btn.onclick=()=>{addColToSlot(c,slotIdx);closeManaPicker();};
+    g.appendChild(btn);
   });
-  const hpair=document.createElement('div');hpair.className='mana-pair';
-  const hadd=document.createElement('div');hadd.className='mc-btn hybrid-style';hadd.style.color='rgba(210,180,255,0.9)';
-  hadd.innerHTML=`<div class="mc-btn-sign" style="color:rgba(210,180,255,0.9)">+</div><div class="mc-btn-icon" style="color:rgba(210,180,255,0.9)">${ICONS.hybrid}</div><div class="mc-btn-name" style="color:rgba(210,180,255,0.85)">Hybrid</div>`;hadd.onclick=()=>openHybrid('add');
-  const hsub=document.createElement('div');hsub.className='mc-btn sub-style hybrid-style';hsub.style.color='rgba(185,155,235,0.75)';
-  hsub.innerHTML=`<div class="mc-btn-sign" style="color:rgba(185,155,235,0.75)">−</div><div class="mc-btn-icon" style="color:rgba(185,155,235,0.75)">${ICONS.hybrid}</div><div class="mc-btn-name" style="color:rgba(185,155,235,0.75)">Hybrid</div>`;hsub.onclick=()=>openHybrid('remove');
-  hpair.appendChild(hadd);hpair.appendChild(hsub);g.appendChild(hpair);
+  // Hybrid
+  const hbtn=document.createElement('div');hbtn.className='mpick hybrid-style';
+  hbtn.style.borderColor='rgba(180,120,240,0.55)';hbtn.style.background='rgba(100,60,180,0.15)';
+  hbtn.innerHTML=`<div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:rgba(210,180,255,0.9)">${ICONS.hybrid}</div><div class="mpick-name" style="color:rgba(210,180,255,0.85)">Hybrid</div>`;
+  hbtn.onclick=()=>{closeManaPicker();openHybrid('add');};
+  g.appendChild(hbtn);
+  document.getElementById('manaPickerOverlay').classList.add('open');
+}
+function closeManaPicker(){document.getElementById('manaPickerOverlay').classList.remove('open');}
+function addColToSlot(c,slotIdx){
+  const k=eKey('mono',c);
+  // If this slot already has an entry, replace it; otherwise add to that position
+  if(slotIdx<manaEntries.length){
+    // slot occupied — shouldn't happen from empty tap but handle gracefully
+    const existing=manaEntries.find(x=>x.key===k);
+    if(existing){existing.total++;}
+    else{manaEntries.splice(slotIdx,0,{key:k,type:'mono',color:c,total:1,spent:0});}
+  } else {
+    // fill empty slots up to slotIdx then add
+    const existing=manaEntries.find(x=>x.key===k);
+    if(existing){existing.total++;}
+    else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}
+  }
+  renderMana();
 }
 
 function renderCmd(){
@@ -1154,6 +1183,8 @@ function toggleInit(){
   const card=document.getElementById('initCard');
   card.classList.toggle('active',initiative);
   card.classList.toggle('initiative-active',initiative);
+  const icon=card.querySelector('.init-icon-el');
+  if(icon)icon.style.opacity=initiative?'1':'0.35';
   document.getElementById('initState').textContent=initiative?'Holding':'Not held';
 }
 function toggleGoaded(){goaded=!goaded;applyGoadedUI();}
@@ -1173,18 +1204,15 @@ function applyMonarchUI(){
     card.classList.add('active','monarch-active');
     card.style.background='rgba(180,140,20,0.18)';
     card.style.borderColor='rgba(220,180,40,0.65)';
-    icon.style.opacity='1';
-    lbl.style.color='#f0d080';
-    state.textContent='Holding';
-    state.style.color='rgba(240,200,80,0.75)';
+    if(icon)icon.style.opacity='1';
+    if(lbl)lbl.style.color='#f0d080';
+    if(state){state.textContent='Holding';state.style.color='rgba(240,200,80,0.75)';}
   } else {
     card.classList.remove('active','monarch-active');
-    card.style.background='';
-    card.style.borderColor='';
-    icon.style.opacity='0.3';
-    lbl.style.color='';
-    state.textContent='Not held';
-    state.style.color='';
+    card.style.background='';card.style.borderColor='';
+    if(icon)icon.style.opacity='0.35';
+    if(lbl)lbl.style.color='';
+    if(state){state.textContent='Not held';state.style.color='';}
   }
 }
 
@@ -1618,10 +1646,7 @@ function setFormat(f,el){
   mat.classList.toggle('dungeon-mode',dungeon);
   mat.classList.toggle('ring-mode',ring);
   document.getElementById('rightCol').classList.toggle('simple-hidden',simple||fullscreen);
-  document.getElementById('initCard').classList.toggle('simple-hidden',simple||fullscreen);
   document.getElementById('diceCard').classList.toggle('simple-hidden',fullscreen);
-  document.getElementById('goadedCard').classList.toggle('simple-hidden',simple||fullscreen);
-  document.getElementById('monarchCard').classList.toggle('simple-hidden',simple||fullscreen);
   document.getElementById('cmdCard').style.display=(standard||fullscreen)?'none':'';
   document.getElementById('standardCard').style.display=standard?'':'none';
   applyDayNightUI();applyGoadedUI();
@@ -1646,11 +1671,15 @@ function applyGoadedUI(){
   if(!card)return;
   if(goaded){
     card.classList.add('active','goaded-active');
-    icon.style.opacity='1';lbl.style.color='#f0a080';state.textContent='Active';state.style.color='rgba(240,140,100,0.8)';
+    if(icon)icon.style.opacity='1';
+    if(lbl)lbl.style.color='#f0a080';
+    if(state){state.textContent='Active';state.style.color='rgba(240,140,100,0.8)';}
   } else {
     card.classList.remove('active','goaded-active');
     card.style.background='';card.style.borderColor='';
-    icon.style.opacity='0.3';lbl.style.color='';state.textContent='None';state.style.color='';
+    if(icon)icon.style.opacity='0.35';
+    if(lbl)lbl.style.color='';
+    if(state){state.textContent='None';state.style.color='';}
   }
 }
 function resetAll(){
@@ -1670,7 +1699,18 @@ function resetAll(){
   if(fmt==='ring')renderRing();
   updateActivityBadges();
 }
-function renderAll(){adjLife(0);renderMana();renderCmd();adjPoison(0);document.getElementById('xpNum').textContent=xp;document.getElementById('energyNum').textContent=energy;const ic=document.getElementById('initCard');if(initiative)ic.classList.add('active');else ic.classList.remove('active');document.getElementById('initState').textContent=initiative?'Holding':'Not held';document.getElementById('diceFace').textContent=diceHist.length?diceHist[0].split(':')[1]:'—';document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');document.getElementById('stormFace').textContent=storm;applyMonarchUI();updateActivityBadges();}
+function renderAll(){
+  adjLife(0);renderMana();renderCmd();adjPoison(0);
+  document.getElementById('xpNum').textContent=xp;
+  document.getElementById('energyNum').textContent=energy;
+  const ic=document.getElementById('initCard');
+  if(ic){ic.classList.toggle('active',initiative);ic.classList.toggle('initiative-active',initiative);}
+  document.getElementById('initState').textContent=initiative?'Holding':'Not held';
+  document.getElementById('diceFace').textContent=diceHist.length?diceHist[0].split(':')[1]:'—';
+  document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');
+  document.getElementById('stormFace').textContent=storm;
+  applyMonarchUI();applyGoadedUI();updateActivityBadges();
+}
 
 buildManaGrid();
 renderAll();
