@@ -90,6 +90,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 .simple-hidden{display:none!important;}
 .mat.simple-mode .main-grid{grid-template-columns:clamp(140px,20vw,220px) 1fr!important;}
+.mat.simple-mode #diceCard{display:none!important;}
 .mat.simple-mode .life-num{font-size:clamp(48px,7vw,72px);}
 .mat.simple-mode .lbtn{height:clamp(38px,5vh,52px);font-size:clamp(13px,1.8vw,17px);}
 .mat.simple-mode .mc-btn{padding:clamp(12px,2vh,18px) 4px clamp(10px,1.5vh,14px);}
@@ -98,58 +99,54 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* ── SIMPLE MANA MOBILE OPTIMIZATION (<480px) ── */
 @media (max-width:479px) and (orientation:landscape){
-  /* Hide dice card entirely */
-  .mat.simple-mode #diceCard{display:none!important;}
-  
-  /* AGGRESSIVE: Minimize all padding and margins */
-  html, body{margin:0;padding:0;}
-  .wrap{padding:3px;}
-  .mat{padding:3px;border-width:1px;}
-  .mat-inner{padding:3px;}
+  /* AGGRESSIVE: Minimize all padding and margins to fit red line */
+  html, body{margin:0;padding:0;overflow:hidden;}
+  .wrap{padding:2px;}
+  .mat{padding:2px;border-width:1px;max-height:100vh;overflow:hidden;}
+  .mat-inner{padding:2px;display:flex;flex-direction:column;}
   
   /* Minimize top strip */
-  .top-strip{gap:2px;margin-bottom:3px;padding:0;}
-  .fmt-btn,.theme-btn,.reset-btn{font-size:8px;padding:2px 6px;height:26px;min-height:26px;}
+  .top-strip{gap:2px;margin-bottom:2px;padding:0;min-height:28px;}
+  .fmt-btn,.theme-btn,.reset-btn{font-size:8px;padding:2px 6px;height:24px;min-height:24px;}
   
   /* Aggressive life sizing */
-  .mat.simple-mode .life-num{font-size:36px;line-height:1;}
-  .mat.simple-mode .lbtn{height:32px;font-size:11px;min-height:32px;}
-  .life-sub{font-size:8px;margin-top:1px;}
-  .life-btns{gap:4px;margin-top:6px;}
-  
-  /* Aggressive mana pool sizing */
-  .mat.simple-mode .pool-card{min-height:60px;padding:4px 2px;}
-  .mat.simple-mode .pool-empty{min-height:60px;}
-  .mat.simple-mode .pool-empty-tap{min-height:60px;}
-  .pool-card-inner{gap:1px;}
-  .pool-total{font-size:20px;}
-  .pool-icon{width:28px;height:28px;}
-  .pool-icon svg{width:26px!important;height:26px!important;}
-  .pool-name{font-size:7px;line-height:1.1;}
-  .pool-spent{font-size:7px;}
-  
-  /* Inline mana buttons */
-  .pool-inline-btns{gap:2px;margin-top:2px;}
-  .pool-inline-btn{width:22px;font-size:8px;padding:2px 0;height:22px;min-height:22px;}
-  .pool-inline-btn-add{font-size:12px;padding:2px 0;height:22px;min-height:22px;}
-  
-  /* Tighten main grid gaps */
-  .main-grid{gap:4px;margin-bottom:3px;align-items:stretch;}
-  .main-grid > *:first-child{gap:4px;}
-  
-  /* Section labels */
-  .sec-label{font-size:7px;margin-bottom:2px;}
-  .card{padding:4px 6px;}
-  
-  /* Mana status text */
-  .mana-status{font-size:7px;}
-  .untap-btn{font-size:8px;padding:2px 6px;height:24px;min-height:24px;}
-  
-  /* Life card wrapper */
+  .mat.simple-mode .life-num{font-size:32px;line-height:1;}
+  .mat.simple-mode .lbtn{height:28px;font-size:10px;min-height:28px;}
+  .life-sub{font-size:7px;margin-top:0;}
+  .life-btns{gap:3px;margin-top:4px;}
   .life-card-wrap{padding:0;}
   
-  /* Viewport meta - ensure no default zoom */
-  html{scroll-behavior:auto;overflow-y:hidden;}
+  /* Aggressive mana pool sizing */
+  .mat.simple-mode .pool-card{min-height:50px;padding:3px 2px;}
+  .mat.simple-mode .pool-empty{min-height:50px;}
+  .mat.simple-mode .pool-empty-tap{min-height:50px;}
+  .pool-card-inner{gap:1px;}
+  .pool-total{font-size:18px;}
+  .pool-icon{width:24px;height:24px;}
+  .pool-icon svg{width:22px!important;height:22px!important;}
+  .pool-name{font-size:6px;line-height:1;}
+  .pool-spent{font-size:6px;}
+  
+  /* Inline mana buttons — tighter */
+  .pool-inline-btns{gap:1px;margin-top:1px;}
+  .pool-inline-btn{width:18px;font-size:7px;padding:2px 0;height:18px;min-height:18px;}
+  .pool-inline-btn-add{font-size:10px;padding:2px 0;height:18px;min-height:18px;}
+  
+  /* Tighten main grid gaps */
+  .main-grid{gap:2px;margin-bottom:0;align-items:stretch;flex:1;overflow-y:auto;}
+  .main-grid > *:first-child{gap:2px;}
+  
+  /* Section labels */
+  .sec-label{font-size:6px;margin-bottom:1px;}
+  .card{padding:3px 4px;}
+  
+  /* Mana status text */
+  .mana-status{font-size:6px;}
+  .untap-btn{font-size:7px;padding:2px 6px;height:22px;min-height:22px;white-space:nowrap;}
+  
+  /* Viewport — no scrollbars */
+  html{scroll-behavior:auto;overflow:hidden;}
+  body{overflow:hidden;}
 }
 
 /* ── WRAPPER ── */
