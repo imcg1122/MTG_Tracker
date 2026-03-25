@@ -88,6 +88,150 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .ring-complete-banner.show{display:block;}
 
 
+/* ── LEXICON MODE ── */
+.lexicon-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:1;}
+.mat.lexicon-mode .lexicon-screen{display:flex;}
+.mat.lexicon-mode .main-grid,
+.mat.lexicon-mode .bot-grid,
+.mat.lexicon-mode .top-strip .theme-btn,
+.mat.lexicon-mode .top-strip .reset-btn{display:none!important;}
+.mat.lexicon-mode .top-strip{margin-bottom:12px;}
+
+.lexicon-search{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+.lexicon-input{flex:1;min-width:200px;padding:10px 14px;border-radius:9px;border:1px solid var(--c-btn-border);background:rgba(0,0,0,0.2);color:var(--c-gold);font-size:13px;font-family:system-ui,-apple-system,sans-serif;}
+.lexicon-input::placeholder{color:rgba(210,170,90,0.45);font-style:italic;}
+.lexicon-input:focus{outline:none;border-color:var(--c-accent-border);background:rgba(180,140,60,0.08);}
+.lexicon-clear-btn{font-size:9px;padding:8px 12px;border-radius:7px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;transition:all .2s;}
+.lexicon-filter-btn{font-size:9px;padding:6px 12px;border-radius:6px;border:1px solid rgba(180,140,60,0.25);background:transparent;color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.05em;user-select:none;transition:all .2s;}
+.lexicon-filter-btn:hover{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.08);}
+.lexicon-filter-btn.active{border-color:var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);}
+.lexicon-jump-btn{padding:3px 6px;border-radius:4px;border:1px solid rgba(180,140,60,0.2);background:transparent;color:var(--c-muted);cursor:pointer;user-select:none;transition:all .15s;}
+.lexicon-jump-btn:hover{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.08);}
+
+/* ── RULES MODE ── */
+.rules-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:1;}
+.mat.rules-mode .rules-screen{display:flex;}
+.mat.rules-mode .main-grid,
+.mat.rules-mode .bot-grid{display:none!important;}
+.mat.rules-mode .top-strip{margin-bottom:12px;}
+
+/* ── TOKENS MODE ── */
+.tokens-screen{display:none;width:100%;flex-direction:column;gap:12px;}
+.mat.tokens-mode .tokens-screen{display:flex;}
+.mat.tokens-mode .main-grid,
+.mat.tokens-mode .bot-grid{display:none!important;}
+.tokens-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.tokens-title{font-size:12px;font-weight:700;color:var(--c-gold);text-transform:uppercase;letter-spacing:.12em;}
+.untap-tokens-btn{font-size:9px;padding:6px 12px;border-radius:7px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;transition:all .2s;}
+.untap-tokens-btn:active{background:var(--c-btn-active);}
+.mode-btn{font-size:9px;padding:6px 12px;border-radius:6px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;transition:all .2s;font-weight:600;}
+.mode-btn.active{background:var(--c-accent);border-color:var(--c-accent-border);color:var(--c-gold);}
+.mode-btn:active{filter:brightness(1.1);}
+.tokens-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+@media (max-width:1024px){
+  .tokens-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media (max-width:768px){
+  .tokens-grid{grid-template-columns:repeat(2,1fr);}
+}
+.token-slot{min-height:140px;border:1px dashed var(--c-inner-border);border-radius:10px;background:rgba(0,0,0,0.15);padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;}
+.token-slot:hover{border-color:var(--c-accent-border);background:rgba(180,140,60,0.06);}
+.token-add-prompt{font-size:13px;color:var(--c-muted);text-align:center;font-weight:500;text-transform:uppercase;letter-spacing:.08em;}
+.token-add-plus{font-size:22px;color:rgba(180,140,60,0.4);margin-bottom:4px;}
+.token-card{width:100%;height:100%;background:rgba(0,0,0,0.3);border:1px solid var(--c-card-border);border-radius:8px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;gap:8px;}
+.token-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(180,140,60,0.08) 0%,transparent 60%);pointer-events:none;}
+.token-card.tapped{opacity:0.6;transform:none;}
+.token-card:hover:not(.tapped){border-color:var(--c-accent-border);}
+.token-info{position:relative;z-index:1;}
+.token-pt{font-size:18px;font-weight:700;color:var(--c-gold);text-align:center;margin-bottom:4px;font-family:Georgia,serif;text-shadow:0 1px 3px rgba(0,0,0,0.5);background:rgba(0,0,0,0.25);padding:4px 8px;border-radius:4px;}
+.token-keywords{font-size:8px;color:rgba(210,170,90,0.85);text-align:center;line-height:1.3;text-transform:uppercase;letter-spacing:.05em;text-shadow:0 1px 2px rgba(0,0,0,0.3);background:rgba(0,0,0,0.2);padding:3px 6px;border-radius:3px;}
+.token-controls{display:flex;gap:6px;justify-content:center;position:relative;z-index:2;}
+.token-btn{flex:0 0 auto;width:28px;height:28px;border-radius:5px;border:1px solid rgba(0,0,0,0.5);background:rgba(0,0,0,0.4);color:#f0d080;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;transition:all .15s;font-weight:700;box-shadow:0 2px 4px rgba(0,0,0,0.6);}
+.token-btn:active{background:rgba(0,0,0,0.6);box-shadow:0 1px 2px rgba(0,0,0,0.8);}
+.token-btn.plus{font-weight:700;}
+.token-color-indicator{width:8px;height:8px;border-radius:50%;margin-left:4px;}
+.token-damage-display{background:rgba(0,0,0,0.2);border:1px solid var(--c-card-border);border-radius:10px;padding:12px;margin-bottom:12px;}
+.token-damage-title{font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:600;}
+.token-damage-main{font-size:20px;font-weight:700;color:var(--c-gold);margin-bottom:6px;}
+.token-damage-breakdown{font-size:9px;color:rgba(210,170,90,0.75);line-height:1.4;}
+
+/* Token Config Modal */
+.token-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.token-modal.open{display:flex;}
+.token-modal-content{background:var(--c-bg);border:1px solid var(--c-border);border-radius:12px;padding:24px;max-width:400px;width:100%;max-height:80vh;overflow-y:auto;}
+.token-modal-title{font-size:14px;font-weight:700;color:var(--c-gold);margin-bottom:16px;text-transform:uppercase;letter-spacing:.12em;}
+.token-form-group{margin-bottom:16px;}
+.token-form-label{font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:block;font-weight:600;}
+.token-form-input{width:100%;padding:10px 12px;border-radius:7px;border:1px solid var(--c-btn-border);background:rgba(0,0,0,0.3);color:var(--c-gold);font-size:13px;font-family:system-ui,-apple-system,sans-serif;}
+.token-form-input:focus{outline:none;border-color:var(--c-accent-border);background:rgba(180,140,60,0.08);}
+.token-pt-inputs{display:flex;gap:12px;}
+.token-pt-inputs input{flex:1;}
+.token-pt-btn{width:36px;height:36px;border-radius:7px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;transition:all .15s;}
+.token-pt-btn:active{background:var(--c-btn-active);}
+.token-color-picker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.token-color-btn{width:40px;height:40px;border-radius:7px;border:3px solid transparent;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 2px 4px rgba(0,0,0,0.3);position:relative;}
+.token-color-btn.selected{border:3px solid #000;box-shadow:0 0 0 2px #c8a050, 0 2px 8px rgba(0,0,0,0.5);}
+.token-color-btn.selected::after{content:'✓';position:absolute;font-size:18px;font-weight:900;text-shadow:0 0 4px rgba(0,0,0,0.8);color:#c8a050;}
+.token-keywords-picker{display:flex;flex-wrap:wrap;gap:6px;}
+.token-keyword-checkbox{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:6px;border:1px solid var(--c-btn-border);background:var(--c-btn);cursor:pointer;user-select:none;font-size:9px;color:var(--c-muted);transition:all .2s;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.token-keyword-checkbox input{cursor:pointer;}
+.token-keyword-checkbox.checked{border-color:var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);}
+.token-modal-buttons{display:flex;gap:8px;margin-top:20px;}
+.token-modal-btn{flex:1;padding:10px;border-radius:7px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;transition:all .2s;}
+.token-modal-btn.confirm{background:rgba(100,150,100,0.25);border-color:rgba(100,180,100,0.4);color:rgba(150,220,150,0.85);}
+.token-modal-btn.confirm:active{background:rgba(100,150,100,0.4);}
+.token-modal-btn.cancel:active{background:var(--c-btn-active);}
+
+.rules-header{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.rules-tab-btn{font-size:10px;padding:8px 14px;border-radius:8px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;transition:all .2s;}
+.rules-tab-btn.active{background:var(--c-accent);border-color:var(--c-accent-border);color:var(--c-gold);}
+
+.rules-content{border:1px solid var(--c-card-border);border-radius:10px;background:var(--c-inner);padding:16px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px;}
+.rules-section{display:none;}
+.rules-section.active{display:block;}
+.rules-title{font-size:14px;font-weight:700;color:var(--c-gold);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;}
+.rules-text{font-size:11px;line-height:1.6;color:rgba(210,170,90,0.9);margin-bottom:10px;}
+.rules-rule{background:rgba(0,0,0,0.2);border-left:3px solid var(--c-accent-border);padding:10px 12px;border-radius:6px;margin-bottom:8px;font-size:10px;line-height:1.5;color:rgba(210,170,90,0.85);}
+.rules-rule strong{color:var(--c-gold);font-weight:600;}
+.lexicon-clear-btn:active{background:var(--c-btn-active);}
+
+.lexicon-content{display:grid;grid-template-columns:280px 1fr;gap:12px;flex:1;overflow:hidden;}
+.lexicon-list{border:1px solid var(--c-card-border);border-radius:10px;background:var(--c-inner);overflow-y:auto;display:flex;flex-direction:column;}
+.lexicon-item{padding:11px 12px;border-bottom:1px solid rgba(180,140,60,0.15);cursor:pointer;user-select:none;transition:all .15s;color:var(--c-muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-left:3px solid transparent;}
+.lexicon-item:last-child{border-bottom:none;}
+.lexicon-item:hover{background:rgba(180,140,60,0.1);}
+.lexicon-item.active{background:rgba(180,140,60,0.18);border-left-color:var(--c-gold);color:var(--c-gold);font-weight:600;}
+.lexicon-item.hidden{display:none;}
+
+.lexicon-detail{border:1px solid var(--c-card-border);border-radius:10px;background:var(--c-inner);padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;}
+.lexicon-detail.empty{align-items:center;justify-content:center;color:var(--c-faint);text-align:center;min-height:300px;}
+.lexicon-detail-title{font-size:16px;font-weight:700;color:var(--c-gold);letter-spacing:.05em;}
+.lexicon-detail-type{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted);background:rgba(180,140,60,0.1);padding:4px 8px;border-radius:5px;display:inline-block;width:fit-content;}
+.lexicon-detail-text{font-size:11px;line-height:1.65;color:rgba(210,170,90,0.9);text-align:left;}
+.lexicon-detail-example{background:rgba(0,0,0,0.25);border-left:3px solid var(--c-accent-border);padding:10px 12px;border-radius:6px;font-size:10px;color:rgba(210,170,90,0.85);font-style:italic;line-height:1.5;}
+.lexicon-detail-scenario{background:rgba(0,0,0,0.25);border-left:3px solid var(--c-accent-border);padding:10px 12px;border-radius:6px;font-size:10px;color:rgba(210,170,90,0.85);font-style:italic;line-height:1.5;}
+.lexicon-detail-note{background:rgba(180,140,60,0.08);border:1px solid rgba(180,140,60,0.25);padding:8px 10px;border-radius:6px;font-size:9px;color:rgba(210,170,90,0.8);line-height:1.5;}
+.lexicon-count{font-size:9px;color:var(--c-faint);padding:10px 12px;border-top:1px solid rgba(180,140,60,0.15);text-align:center;background:rgba(0,0,0,0.2);}
+
+.lexicon-no-results{padding:40px 20px;text-align:center;color:var(--c-faint);font-size:12px;text-transform:uppercase;letter-spacing:.1em;}
+
+/* Mobile lexicon layout */
+@media (max-width:959px){
+  .lexicon-content{grid-template-columns:1fr;gap:12px;}
+  .lexicon-list{max-height:200px;}
+  .lexicon-detail{max-height:350px;}
+}
+
+/* Tablet lexicon */
+@media (max-width:599px) and (orientation:landscape){
+  .lexicon-content{grid-template-columns:200px 1fr;gap:8px;}
+  .lexicon-list{max-height:none;}
+  .lexicon-item{font-size:9px;padding:9px 10px;}
+  .lexicon-detail{padding:12px;gap:8px;}
+  .lexicon-detail-title{font-size:14px;}
+}
+
+
 .simple-hidden{display:none!important;}
 .mat.simple-mode .main-grid{grid-template-columns:clamp(140px,20vw,220px) 1fr!important;}
 .mat.simple-mode #diceCard{display:none!important;}
@@ -633,12 +777,16 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
   <!-- top strip -->
   <div class="top-strip">
-    <div style="display:flex;gap:5px;align-items:center;" id="fmtBtnGroup">
+    <div style="display:flex;gap:5px;align-items:center;flex:1;" id="fmtBtnGroup">
       <div class="fmt-btn active" onclick="setFormat('commander',this)">Commander</div>
       <div class="fmt-btn" onclick="setFormat('standard',this)">Standard</div>
       <div class="fmt-btn" onclick="setFormat('simple',this)">Mobile</div>
+      <div class="fmt-btn" onclick="setFormat('tokens',this)">Tokens</div>
       <div class="fmt-btn" onclick="setFormat('dungeon',this)">Dungeon</div>
       <div class="fmt-btn" onclick="setFormat('ring',this)">The Ring</div>
+      <div class="fmt-divider" style="margin-left:auto;"></div>
+      <div class="fmt-btn" onclick="setFormat('lexicon',this)" style="margin-left:6px;">Lexicon</div>
+      <div class="fmt-btn" onclick="setFormat('rules',this)">Rules</div>
     </div>
     <div style="display:flex;gap:6px;align-items:center;">
       <div class="theme-btn" onclick="openTheme()">
@@ -901,6 +1049,77 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     <div class="ring-complete-banner" id="ringBanner">💍 The Ring is fully powered</div>
   </div>
 
+  <!-- lexicon screen — keyword lookup -->
+  <div id="lexiconPanel" class="lexicon-screen">
+    <div class="lexicon-search">
+      <input class="lexicon-input" id="lexiconSearchInput" type="text" placeholder="Search keywords (e.g., Vigilance, Haste)…" oninput="filterLexicon()" autocomplete="off" spellcheck="false"/>
+      <div class="lexicon-clear-btn" onclick="clearLexiconSearch()">Clear</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding:0 4px;">
+      <div class="lexicon-filter-btn active" onclick="filterByCategory(null)">All</div>
+      <div class="lexicon-filter-btn" onclick="filterByCategory('Combat')">Combat</div>
+      <div class="lexicon-filter-btn" onclick="filterByCategory('Mechanics')">Mechanics</div>
+      <div class="lexicon-filter-btn" onclick="filterByCategory('Casting')">Casting</div>
+      <div class="lexicon-filter-btn" onclick="filterByCategory('Resources')">Resources</div>
+    </div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;padding:0 4px;font-size:9px;">
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('A')">A</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('B')">B</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('C')">C</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('D')">D</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('E')">E</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('F')">F</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('G')">G</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('H')">H</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('K')">K</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('L')">L</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('M')">M</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('P')">P</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('R')">R</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('S')">S</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('T')">T</div>
+      <div class="lexicon-jump-btn" onclick="jumpToLetter('V')">V</div>
+    </div>
+    <div class="lexicon-content">
+      <div class="lexicon-list" id="lexiconList"></div>
+      <div class="lexicon-detail empty" id="lexiconDetail">
+        <div style="font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--c-muted);margin-bottom:6px;">Select a keyword</div>
+        <div style="font-size:10px;color:var(--c-faint);">Search, filter, or browse the list to learn about Magic abilities</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- format rules board — next to lexicon -->
+  <div id="rulesPanel" class="rules-screen">
+    <div class="rules-header">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <div class="rules-tab-btn active" onclick="switchRulesTab('standard')">Standard</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('modern')">Modern</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('commander')">Commander</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('faq')">FAQ</div>
+      </div>
+    </div>
+    <div class="rules-content" id="rulesContent"></div>
+  </div>
+
+  <!-- tokens screen — create and track token creatures -->
+  <div id="tokensPanel" class="tokens-screen">
+    <div class="token-damage-display" id="tokenDamageDisplay">
+      <div class="token-damage-title" id="tokenDamageTitle">Attacking Damage</div>
+      <div class="token-damage-main" id="tokenDamageAmount">0</div>
+      <div class="token-damage-breakdown" id="tokenDamageBreakdown"></div>
+    </div>
+    <div class="tokens-header">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="tokens-title">Token Pool</div>
+        <button class="mode-btn active" id="attackBtn" onclick="setTokenMode('attack')">⚔ Attack</button>
+        <button class="mode-btn" id="blockBtn" onclick="setTokenMode('block')">🛡 Block</button>
+      </div>
+      <button class="untap-tokens-btn" onclick="untapAllTokens()">↺ Untap All</button>
+    </div>
+    <div class="tokens-grid" id="tokensGrid"></div>
+  </div>
+
   <!-- bottom grid: goaded+initiative+monarch | add mana (aligned with mana pool) -->
   <!-- bottom: dice only, under life total column -->
 
@@ -951,8 +1170,101 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   </div>
 </div>
 
+<!-- token config modal -->
+<div class="token-modal" id="tokenModal" onclick="closeOutside(event,'tokenModal')">
+  <div class="token-modal-content">
+    <div class="token-modal-title">Create Token</div>
+    
+    <div class="token-form-group">
+      <label class="token-form-label">Power / Toughness</label>
+      <div style="display:flex;gap:20px;align-items:center;justify-content:center;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;">Power</div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button class="token-pt-btn" onclick="adjTokenPower(-1)">−</button>
+            <div id="tokenPowerDisplay" style="font-size:28px;font-weight:700;color:var(--c-gold);width:40px;text-align:center;font-family:Georgia,serif;">1</div>
+            <button class="token-pt-btn" onclick="adjTokenPower(1)">+</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;">Toughness</div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button class="token-pt-btn" onclick="adjTokenToughness(-1)">−</button>
+            <div id="tokenToughnessDisplay" style="font-size:28px;font-weight:700;color:var(--c-gold);width:40px;text-align:center;font-family:Georgia,serif;">1</div>
+            <button class="token-pt-btn" onclick="adjTokenToughness(1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="token-form-group">
+      <label class="token-form-label">Name (Optional)</label>
+      <input type="text" class="token-form-input" id="tokenName" placeholder="e.g., Soldier, Zombie, Goblin…" autocomplete="off" spellcheck="false"/>
+    </div>
+
+    <div class="token-form-group">
+      <label class="token-form-label">Color (Select 1-2)</label>
+      <div class="token-color-picker" id="tokenColorPicker">
+        <button class="token-color-btn selected" data-color="w" onclick="toggleTokenColor('w',event)"></button>
+        <button class="token-color-btn" data-color="u" onclick="toggleTokenColor('u',event)"></button>
+        <button class="token-color-btn" data-color="b" onclick="toggleTokenColor('b',event)"></button>
+        <button class="token-color-btn" data-color="r" onclick="toggleTokenColor('r',event)"></button>
+        <button class="token-color-btn" data-color="g" onclick="toggleTokenColor('g',event)"></button>
+        <button class="token-color-btn" data-color="c" onclick="toggleTokenColor('c',event)"></button>
+      </div>
+    </div>
+
+    <div class="token-form-group">
+      <label class="token-form-label">Abilities</label>
+      <div class="token-keywords-picker" id="tokenKeywordsPicker">
+        <label class="token-keyword-checkbox">
+          <input type="checkbox" value="flying" onchange="updateTokenKeywords()"/>
+          <span>Flying</span>
+        </label>
+        <label class="token-keyword-checkbox">
+          <input type="checkbox" value="deathtouch" onchange="updateTokenKeywords()"/>
+          <span>Deathtouch</span>
+        </label>
+        <label class="token-keyword-checkbox">
+          <input type="checkbox" value="lifelink" onchange="updateTokenKeywords()"/>
+          <span>Lifelink</span>
+        </label>
+        <label class="token-keyword-checkbox">
+          <input type="checkbox" value="trample" onchange="updateTokenKeywords()"/>
+          <span>Trample</span>
+        </label>
+        <label class="token-keyword-checkbox">
+          <input type="checkbox" value="haste" onchange="updateTokenKeywords()"/>
+          <span>Haste</span>
+        </label>
+        <label class="token-keyword-checkbox">
+          <input type="checkbox" value="vigilance" onchange="updateTokenKeywords()"/>
+          <span>Vigilance</span>
+        </label>
+        <label class="token-keyword-checkbox">
+          <input type="checkbox" value="menace" onchange="updateTokenKeywords()"/>
+          <span>Menace</span>
+        </label>
+        <label class="token-keyword-checkbox">
+          <input type="checkbox" value="reach" onchange="updateTokenKeywords()"/>
+          <span>Reach</span>
+        </label>
+        <label class="token-keyword-checkbox">
+          <input type="checkbox" value="doublestrike" onchange="updateTokenKeywords()"/>
+          <span>Double Strike</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="token-modal-buttons">
+      <button class="token-modal-btn cancel" onclick="closeTokenModal()">Cancel</button>
+      <button class="token-modal-btn confirm" onclick="confirmTokenCreate()">Create Token</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const FORMATS={commander:{life:40},standard:{life:20},simple:{life:20},dungeon:{life:20},ring:{life:20}};
+const FORMATS={commander:{life:40},standard:{life:20},simple:{life:20},tokens:{life:20},dungeon:{life:20},ring:{life:20},lexicon:{life:0},rules:{life:0}};
 const ICONS={
   w:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
   u:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 C12 2 6 8 6 14 a6 6 0 0 0 12 0 C18 8 12 2 12 2 Z"/></svg>`,
@@ -981,11 +1293,14 @@ const GUILDS=[
 const POOL_SLOTS=8;
 // ── Per-format saved state ──
 const fmtState={
-  commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false},
-  standard: {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false},
-  simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false},
-  dungeon:  {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,dungeonId:null,currentRoom:-1,dungeonPath:[],storm:0,monarch:false},
-  ring:     {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,ringStage:-1,ringBearer:'',storm:0,monarch:false}
+  commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack'},
+  standard: {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack'},
+  simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack'},
+  tokens:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack'},
+  dungeon:  {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,dungeonId:null,currentRoom:-1,dungeonPath:[],storm:0,monarch:false,tokenPool:[],tokenMode:'attack'},
+  ring:     {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,ringStage:-1,ringBearer:'',storm:0,monarch:false,tokenPool:[],tokenMode:'attack'},
+  lexicon:  {life:0,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,searchQuery:'',selectedTerm:null,filterCategory:null,tokenPool:[],tokenMode:'attack'},
+  rules:    {life:0,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,activeTab:'standard',tokenPool:[],tokenMode:'attack'}
 };
 
 function saveState(){
@@ -995,17 +1310,21 @@ function saveState(){
   s.cmdDmg=JSON.parse(JSON.stringify(cmdDmg));
   s.diceHist=[...diceHist];
   s.initiative=initiative;s.goaded=goaded;s.isDay=isDay;s.storm=storm;s.monarch=monarch;
+  s.tokenPool=JSON.parse(JSON.stringify(tokenPool));
+  s.tokenMode=tokenMode;
   if(fmt==='dungeon'){s.dungeonId=dungeonId;s.currentRoom=currentRoom;s.dungeonPath=[...dungeonPath];}
   if(fmt==='ring'){s.ringStage=ringStage;s.ringBearer=document.getElementById('ringBearerName')?document.getElementById('ringBearerName').value:ringBearer;}
 }
 function loadState(){
   const s=fmtState[fmt];
-  life=s.life;poison=s.poison;xp=s.xp;energy=s.energy;
-  manaEntries=JSON.parse(JSON.stringify(s.manaEntries));
-  cmdDmg=JSON.parse(JSON.stringify(s.cmdDmg));
-  diceHist=[...s.diceHist];
-  initiative=s.initiative;goaded=s.goaded;isDay=s.isDay;storm=s.storm||0;monarch=s.monarch||false;
-  if(fmt==='dungeon'){dungeonId=s.dungeonId;currentRoom=s.currentRoom;dungeonPath=[...(s.dungeonPath||[])];}
+  life=s.life;poison=s.poison||0;xp=s.xp||0;energy=s.energy||0;
+  manaEntries=s.manaEntries?JSON.parse(JSON.stringify(s.manaEntries)):[];
+  cmdDmg=s.cmdDmg?JSON.parse(JSON.stringify(s.cmdDmg)):{};
+  diceHist=[...(s.diceHist||[])];
+  initiative=s.initiative||false;goaded=s.goaded||false;isDay=s.isDay!==false;storm=s.storm||0;monarch=s.monarch||false;
+  tokenPool=s.tokenPool?JSON.parse(JSON.stringify(s.tokenPool)):[];
+  tokenMode=s.tokenMode||'attack';
+  if(fmt==='dungeon'){dungeonId=s.dungeonId;currentRoom=s.currentRoom||0;dungeonPath=[...(s.dungeonPath||[])];}
   else{dungeonId=null;currentRoom=-1;dungeonPath=[];}
   if(fmt==='ring'){ringStage=s.ringStage!=null?s.ringStage:-1;ringBearer=s.ringBearer||'';}
   else{ringStage=-1;ringBearer='';}
@@ -1016,6 +1335,7 @@ let fmt='commander',life=40,poison=0,xp=0,energy=0,initiative=false,isDay=true,g
 let dungeonId=null,currentRoom=-1,dungeonPath=[];
 let ringStage=-1,ringBearer='';
 let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add';
+let tokenPool=[]; // Array of token objects: {power, toughness, color, keywords: [], tapped: false}
 
 // ── Core game functions ──
 function adjEnergy(d){energy=Math.max(0,energy+d);document.getElementById('energyNum').textContent=energy;}
@@ -1033,10 +1353,10 @@ function spawnPop(anchorId,emoji,color){
   anchor.appendChild(pop);
   pop.addEventListener('animationend',()=>pop.remove());
 }
-function adjPoison(d){poison=Math.max(0,poison+d);document.getElementById('poisonNum').textContent=poison;const btn=document.getElementById('poisonBtn');btn.style.background=poison>=10?'rgba(180,20,20,0.3)':poison>=7?'rgba(120,60,0,0.3)':'rgba(20,100,20,0.25)';btn.style.borderColor=poison>=10?'rgba(220,60,60,0.7)':poison>=7?'rgba(200,120,40,0.6)':'rgba(60,180,60,0.6)';document.getElementById('poisonNum').style.color=poison>=10?'#ff8080':poison>=7?'#ffb060':'#80e080';if(d>0)spawnPop('poisonBtn','☠️','#80e080');}
-function resetPoison(){poison=0;adjPoison(0);}
-function adjXp(d){xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');}
-function resetXp(){xp=0;document.getElementById('xpNum').textContent=0;}
+function adjPoison(d){poison=Math.max(0,poison+d);const num=document.getElementById('poisonNum');const btn=document.getElementById('poisonBtn');const lbl=btn.querySelector('.hrow-lbl');if(poison>=10){num.textContent='DEAD';num.style.color='#ff4444';btn.style.background='rgba(180,50,50,0.35)';btn.style.borderColor='rgba(220,80,80,0.65)';if(lbl)lbl.style.color='#ff6666';}else{num.textContent=poison;num.style.color='#80e080';btn.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';btn.style.borderColor='';if(lbl)lbl.style.color='';}if(d>0)spawnPop('poisonBtn','☠️','#80e080');}
+function resetPoison(){poison=0;const btn=document.getElementById('poisonBtn');const num=document.getElementById('poisonNum');const lbl=btn.querySelector('.hrow-lbl');if(btn){btn.style.background='transparent';btn.style.borderColor='';}num.textContent=0;num.style.color='#80e080';if(lbl)lbl.style.color='';}
+function adjXp(d){xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;const btn=document.getElementById('xpBtn');btn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');}
+function resetXp(){xp=0;const btn=document.getElementById('xpBtn');if(btn)btn.style.background='transparent';document.getElementById('xpNum').textContent=0;}
 function adjLife(d){
   life=Math.max(0,life+d);
   const el=document.getElementById('lifeNum');
@@ -1271,8 +1591,8 @@ function toggleInit(){
 function toggleGoaded(){goaded=!goaded;applyGoadedUI();}
 function resetGoaded(){goaded=false;applyGoadedUI();}
 
-function adjStorm(d){storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;if(d>0)spawnPop('stormBtn','⚡','#90c8ff');}
-function resetStorm(){storm=0;document.getElementById('stormFace').textContent=0;}
+function adjStorm(d){storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;const btn=document.getElementById('stormCard');btn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(d>0)spawnPop('stormCard','⚡','#90c8ff');}
+function resetStorm(){storm=0;const btn=document.getElementById('stormCard');if(btn)btn.style.background='transparent';document.getElementById('stormFace').textContent=0;}
 
 function toggleMonarch(){monarch=!monarch;applyMonarchUI();}
 function applyMonarchUI(){
@@ -1366,7 +1686,226 @@ function hexToGlow(h,a=0.5){const[r,g,b]=h2r(h);return`rgba(${r},${g},${b},${a})
 function darken(h,a){const[r,g,b]=h2r(h);return r2h(r*a,g*a,b*a);}
 function ha(h,a){if(!h.startsWith('#'))return h;const[r,g,b]=h2r(h);return`rgba(${r},${g},${b},${a})`;}
 
-// ── Dungeon data — accurate branching structure ──
+// ── Lexicon database — comprehensive MTG keywords ──
+const LEXICON=[
+  // Combat keywords
+  {name:'Haste',type:'Ability',icon:'⚡',desc:'This creature can attack the turn it enters the battlefield.',example:'Goblin Guide has haste and attacks immediately.',scenario:'You play a 2/2 creature with haste on turn 3. It attacks that same turn before your opponent can respond.',category:'Combat'},
+  {name:'Vigilance',type:'Ability',icon:'👁',desc:'This creature does not tap when it attacks.',example:'Wrath of God targets all creatures, even vigilant ones.',scenario:'Your 3/3 creature with vigilance attacks. It doesn\'t tap, so it\'s still available to block your opponent\'s creatures later.',category:'Combat'},
+  {name:'First Strike',type:'Ability',icon:'⚔',desc:'During combat, this creature deals its combat damage before creatures without first strike.',example:'A creature with first strike can kill a blocker before it deals damage back.',scenario:'Your 2/2 first strike creature fights their 3/3. Yours deals 2 damage first, killing the 3/3 before it can hit back.',category:'Combat'},
+  {name:'Double Strike',type:'Ability',icon:'⚔⚔',desc:'This creature deals combat damage twice each combat.',example:'A creature with double strike can deal damage twice in one turn.',scenario:'Your 2/2 creature with double strike deals 2 damage, then deals 2 more damage in the same combat. Total: 4 damage.',category:'Combat'},
+  {name:'Flying',type:'Ability',icon:'✈',desc:'This creature can be blocked only by creatures with flying or reach.',example:'A flying creature can attack over ground-based defenses.',scenario:'You have a flying 2/1. Your opponent has 4 creatures on the ground with no flying. Your flyer attacks safely.',category:'Combat'},
+  {name:'Trample',type:'Ability',icon:'🐘',desc:'Excess combat damage can be assigned to the defending player.',example:'A trampling creature can deal damage to the player even if blocked.',scenario:'Your 5/2 trampler is blocked by a 2/2. You deal 2 damage to the creature and 3 "trample damage" to the opponent.',category:'Combat'},
+  {name:'Menace',type:'Ability',icon:'😠',desc:'This creature can be blocked only by two or more creatures.',example:'A menacing creature requires multiple blockers.',scenario:'Your 3/3 creature with menace attacks. Your opponent must use 2+ creatures to block, or take 3 damage.',category:'Combat'},
+  {name:'Reach',type:'Ability',icon:'🌳',desc:'This creature can block creatures with flying.',example:'A creature with reach can block flying creatures from the ground.',scenario:'Your opponent\'s flying creature attacks. Your creature with reach blocks it safely from the ground.',category:'Combat'},
+  {name:'Deathtouch',type:'Ability',icon:'💀',desc:'Any amount of damage this creature deals to a creature is enough to kill it.',example:'A 1/1 creature with deathtouch can kill any creature in combat.',scenario:'You block their 8/8 with your 1/1 creature with deathtouch. Both creatures die, trading favorably.',category:'Combat'},
+  {name:'Lifelink',type:'Ability',icon:'❤',desc:'Whenever this creature deals damage, you gain that much life.',example:'A creature with lifelink that deals 3 damage heals you 3 life.',scenario:'Your 3/3 creature with lifelink attacks. It deals 3 damage to opponent, and you gain 3 life (swing of 6 life).',category:'Combat'},
+  {name:'Infect',type:'Ability',icon:'☠',desc:'This creature\'s combat damage is dealt as poison counters instead of life loss.',example:'Infect creatures count toward the poison 10 win condition.',scenario:'You attack with a 3/1 infect creature. Opponent gets 3 poison counters (not life loss). 10 poison = loss.',category:'Combat'},
+  {name:'Unblockable',type:'Ability',icon:'👻',desc:'This creature cannot be blocked. (Like shadow or flying variations)',example:'A creature with evasion abilities cannot be blocked by most creatures.',scenario:'Your unblockable creature attacks your opponent with 10 creatures on the field. It bypasses all of them.',category:'Combat'},
+  {name:'Landwalk',type:'Ability',icon:'🏜',desc:'This creature is unblockable as long as the defending player controls a land of the specified type.',example:'Swampwalk is unblockable if the opponent controls a Swamp.',scenario:'Your creature has swampwalk. Your opponent controls a Swamp. Your creature attacks unblocked.',category:'Combat'},
+
+  // Evasion keywords
+  {name:'Shadow',type:'Ability',icon:'👻',desc:'This creature can only be blocked by creatures with shadow.',example:'Only shadow creatures can block shadow creatures.',scenario:'You control a shadow creature. Only creatures with shadow can block it. Normal creatures cannot.',category:'Combat'},
+  {name:'Shroud',type:'Ability',icon:'🛡',desc:'This creature cannot be targeted by spells or abilities.',example:'A creature with shroud is immune to targeted removal.',scenario:'You cast a spell to kill your opponent\'s creature with shroud. It fizzles—shroud prevents it.',category:'Combat'},
+  {name:'Hexproof',type:'Ability',icon:'🛡',desc:'This creature cannot be targeted by spells or abilities your opponents control.',example:'Hexproof creatures are protected from your opponents\' targeting spells.',scenario:'Your opponent wants to kill your hexproof creature with a removal spell. They can\'t—it\'s hexproof.',category:'Combat'},
+
+  // Card draw and advantage
+  {name:'Draw',type:'Action',icon:'📚',desc:'Retrieve cards from the top of your library into your hand.',example:'Most spells that say "draw a card" or "draw two cards".',scenario:'You cast a spell that says "draw 2 cards." You look at the top 2 cards of your deck and put them in hand.',category:'Advantage'},
+  {name:'Scry',type:'Action',icon:'🔮',desc:'Look at the top N cards of your library, then put them back in any order.',example:'Scry 2 means look at the top 2 cards and rearrange them.',scenario:'You scry 2. Top card is a land, bottom card is a creature spell. You put the creature on top, land on bottom.',category:'Advantage'},
+  {name:'Mill',type:'Action',icon:'♻',desc:'Put cards from the top of a library directly into the graveyard.',example:'Mill 3 cards means put 3 cards from your deck into your graveyard.',scenario:'Your opponent casts a mill spell: you put the top 3 cards of your deck into the graveyard.',category:'Advantage'},
+  {name:'Tutor',type:'Action',icon:'🎯',desc:'Search your library for a card, usually of a specific type, and put it in your hand.',example:'Demonic Tutor lets you search for any card in your library.',scenario:'You cast a spell that says "tutor a forest." You search your deck for a forest and add it to your hand.',category:'Advantage'},
+
+  // Resource generation
+  {name:'Ramp',type:'Action',icon:'💰',desc:'Accelerate your mana production, usually by playing extra lands or mana sources.',example:'Green ramp spells like Llanowar Elves generate extra mana.',scenario:'Turn 2, play an elf that taps for mana. Turn 3, use that extra mana to cast a big creature early.',category:'Resources'},
+  {name:'Token',type:'Permanent',icon:'👥',desc:'A token is a type of creature, artifact, or other permanent that isn\'t a card.',example:'Create a 1/1 white Soldier token for each attacking creature.',scenario:'You create three 1/1 Soldier tokens from a spell. They act like real creatures but aren\'t cards.',category:'Resources'},
+  {name:'Treasure',type:'Permanent',icon:'💎',desc:'A token that can be sacrificed for one mana of any color.',example:'Treasure tokens are created by many modern cards.',scenario:'You get 2 Treasure tokens. Sacrifice one to pay for a spell that costs 1 red mana. Still have 1 left.',category:'Resources'},
+  {name:'Food',type:'Permanent',icon:'🍎',desc:'A token artifact that can be sacrificed to gain 3 life.',example:'Many Zendikar cards create Food tokens.',scenario:'You get a Food token. Later, sacrifice it to gain 3 life when your health is low.',category:'Resources'},
+  {name:'Clue',type:'Permanent',icon:'?',desc:'A token artifact that can be sacrificed to draw a card.',example:'Investigation tokens help you draw cards.',scenario:'You create a Clue token. Later, sacrifice it to draw a card for card advantage.',category:'Resources'},
+
+  // Costs and mechanics
+  {name:'Sacrifice',type:'Mechanic',icon:'⚔',desc:'Put a permanent you control into the graveyard.',example:'Sacrifice a creature to draw a card.',scenario:'Your creature spell says "when this dies or is sacrificed, draw a card." You sacrifice it to trigger the effect.',category:'Mechanics'},
+  {name:'Discard',type:'Mechanic',icon:'📄',desc:'Put cards from your hand into the graveyard, usually chosen randomly or by opponent.',example:'Discard a card, then draw a card.',scenario:'Opponent casts a spell that makes you discard. You put a card from your hand into the graveyard.',category:'Mechanics'},
+  {name:'Exile',type:'Mechanic',icon:'💫',desc:'Remove a card from the game, typically put into a separate exile zone.',example:'Exile the top card of your library.',scenario:'You cast a spell that exiles 3 cards. Those cards are gone and can\'t be cast again (unless the spell says otherwise).',category:'Mechanics'},
+  {name:'Tap',type:'Mechanic',icon:'➡',desc:'Turn a permanent sideways to indicate it has been used (commonly for mana).',example:'Tap a land to add one mana of that color.',scenario:'You tap your forest (rotate it sideways) to produce 1 green mana to cast a spell.',category:'Mechanics'},
+  {name:'Untap',type:'Mechanic',icon:'⬅',desc:'Return a tapped permanent to an untapped state.',example:'Untap all your lands.',scenario:'You cast a spell that untaps all your lands. The next turn starts with fresh, untapped lands.',category:'Mechanics'},
+  {name:'Counter',type:'Mechanic',icon:'❌',desc:'Prevent a spell from having any of its effects. (Or a marker on permanents)',example:'Mana Leak counters a spell for {1}{u}.',scenario:'Your opponent casts a spell. You cast a counterspell. Their spell goes to the graveyard and never resolves.',category:'Mechanics'},
+  {name:'Bounce',type:'Mechanic',icon:'🪀',desc:'Return a permanent from the battlefield to its owner\'s hand.',example:'Return target creature to its owner\'s hand.',scenario:'Your opponent plays a powerful creature. You cast a bounce spell. It goes back to their hand.',category:'Mechanics'},
+  {name:'Destroy',type:'Mechanic',icon:'💥',desc:'Put a permanent into its owner\'s graveyard.',example:'Destroy all creatures.',scenario:'You cast a board wipe that destroys all creatures. Everything dies and goes to graveyards.',category:'Mechanics'},
+  {name:'Regenerate',type:'Mechanic',icon:'🔄',desc:'Instead of being destroyed, a creature is tapped and remains in play.',example:'Regenerate target creature.',scenario:'Your creature would be destroyed. You use a regeneration spell. It stays on the field but tapped.',category:'Mechanics'},
+  {name:'Protection',type:'Mechanic',icon:'🛡',desc:'Protection from something means a creature can\'t be blocked, damaged, enchanted, or otherwise targeted by that source.',example:'Protection from red means the creature can\'t be damaged by red spells.',scenario:'Your creature has protection from red. Red spells can\'t target it, block it, or damage it.',category:'Mechanics'},
+
+  // Casting keywords
+  {name:'Convoke',type:'Mechanic',icon:'👥',desc:'You may tap creatures you control to help pay for this spell\'s cost.',example:'Each creature you tap reduces the cost by one mana.',scenario:'A spell costs 4 mana with convoke. You tap 2 creatures. You only need 2 more mana to cast it.',category:'Casting'},
+  {name:'Cascade',type:'Mechanic',icon:'⬇',desc:'When this spell resolves, exile cards from the top of your deck until you find one that costs less. You may cast it.',example:'Cascade lets you "chain" into cheaper spells.',scenario:'You cast a 5-mana spell with cascade. You exile until you find a 4-mana spell, then cast it for free.',category:'Mechanics'},
+  {name:'Mutate',type:'Mechanic',icon:'🧬',desc:'If you cast this spell for its mutate cost, put it onto a creature you control. (Advanced mechanic)',example:'Multiple mutated creatures stack abilities.',scenario:'You mutate a 2/2 creature onto your existing 3/3. Now you have a 5/5 with all their abilities stacked.',category:'Casting'},
+  {name:'Flashback',type:'Mechanic',icon:'📖',desc:'You may cast this card from your graveyard by paying its flashback cost.',example:'Flashback {1}{r} means you can cast it from your graveyard for that cost.',scenario:'A spell is in your graveyard. Later you pay its flashback cost and cast it again from the graveyard.',category:'Casting'},
+  {name:'Overload',type:'Mechanic',icon:'💥',desc:'If you pay the overload cost, change targets of "target" to "each".',example:'Overload makes a targeted spell affect all targets.',scenario:'A spell says "destroy target creature." With overload, you pay more and destroy ALL creatures instead.',category:'Casting'},
+  {name:'Split Second',type:'Mechanic',icon:'⏱',desc:'While on the stack, this spell cannot be countered by spells or abilities.',example:'Split second prevents responses.',scenario:'You cast a split second spell. Opponent can\'t respond with counters or abilities while it\'s on the stack.',category:'Casting'},
+  {name:'Evoke',type:'Mechanic',icon:'👻',desc:'You may cast this creature for its evoke cost, and it\'s sacrificed when it enters.',example:'Evoke creatures trigger abilities when they enter, then die.',scenario:'You evoke a creature for less mana. It triggers its effect immediately, then sacrifices itself.',category:'Casting'},
+  {name:'Kicker',type:'Mechanic',icon:'⬆',desc:'A cost you can pay in addition to the spell\'s casting cost to get a bonus effect.',example:'Spell with kicker {2r} can be cast with or without the extra mana.',scenario:'A 2-mana spell with kicker {1}. Cast for 2 mana normally, or pay 3 total for the kicker bonus.',category:'Mechanics'},
+  {name:'Madness',type:'Mechanic',icon:'😵',desc:'You may cast this card from your graveyard by discarding it, paying an alternative cost.',example:'Madness lets you cast cards you\'re forced to discard.',scenario:'Opponent forces you to discard. Instead, pay madness cost and cast the card immediately.',category:'Mechanics'},
+  {name:'Proliferate',type:'Mechanic',icon:'🌱',desc:'For each type of counter on permanents you control, put one counter on a permanent.',example:'Proliferate spreads your counters across multiple permanents.',scenario:'You have 2 +1/+1 counters on one creature and 3 loyalty on a planeswalker. Proliferate adds 1 of each.',category:'Mechanics'},
+  {name:'Foretell',type:'Mechanic',icon:'🔮',desc:'You may pay and exile this card from your hand during your upkeep. Later, cast it from exile.',example:'Foretell lets you prepare spells in advance.',scenario:'During upkeep, pay foretell cost to exile a spell face-down. Later, cast it for free from exile.',category:'Casting'},
+  {name:'Channel',type:'Mechanic',icon:'⚡',desc:'You may discard this card to activate its channel ability even if you couldn\'t normally activate it.',example:'Channel abilities offer alternative uses for cards in hand.',scenario:'A creature has a channel ability. Discard it from hand to activate the ability (no casting required).',category:'Casting'},
+
+  // Tribal keywords
+  {name:'Tribal',type:'Type',icon:'👥',desc:'A card with a creature type that isn\'t a creature itself (usually an enchantment).',example:'Tribal Enchantment — Vampire',scenario:'You play a Tribal Enchantment that gives all Vampires +1/+1. Your opponent\'s vampires also get the bonus.',category:'Types'},
+  {name:'Lord',type:'Mechanic',icon:'👑',desc:'A creature that gives bonuses to other creatures of its type.',example:'A Goblin Lord gives all other Goblins +1/+1.',scenario:'You control 3 Goblins (1/1 each). Play Goblin Lord. All your Goblins become 2/2, making them much stronger.',category:'Mechanics'},
+
+  // Damage and life
+  {name:'Damage',type:'Action',icon:'💥',desc:'Reduce a player\'s life total or a creature\'s toughness.',example:'This spell deals 3 damage to target player.',scenario:'You cast a spell that deals 3 damage. Opponent goes from 20 to 17 life.',category:'Combat'},
+  {name:'Drain',type:'Action',icon:'📍',desc:'Deal damage to target opponent and you gain that much life.',example:'Drain effects give you life while hurting opponents.',scenario:'Cast drain for 3. Opponent loses 3 life, you gain 3. A swing of 6 in your favor.',category:'Life'},
+  {name:'Burn',type:'Action',icon:'🔥',desc:'Instant or sorcery spells that deal direct damage.',example:'Burn spells are the main source of damage in red.',scenario:'Red deck casts multiple burn spells dealing 4, 3, and 2 damage. Total 9 damage over several turns.',category:'Combat'},
+  {name:'Lifegain',type:'Action',icon:'❤',desc:'Increase your life total.',example:'Gain 3 life.',scenario:'You\'re at 10 life. Cast a spell that says "gain 5 life." You\'re now at 15 life.',category:'Life'},
+  {name:'Poison',type:'Mechanic',icon:'☠',desc:'Poison counters represent an alternate win condition (10 poison counters = loss).',example:'Infect creatures give poison counters instead of normal damage.',scenario:'Opponent reaches 10 poison counters and loses immediately, even if they still have 20 life.',category:'Mechanics'},
+
+  // Legendary and special rules
+  {name:'Legendary',type:'Rule',icon:'👑',desc:'You can only control one legendary permanent with the same name.',example:'You can\'t control two copies of Jace, the Mind Sculptor.',scenario:'You control one legendary planeswalker. If you play another copy, you must sacrifice one.',category:'Rules'},
+  {name:'Planeswalker',type:'Permanent',icon:'✨',desc:'A special type of permanent with loyalty abilities instead of attacking.',example:'Planeswalkers activate abilities to affect the game.',scenario:'Your planeswalker has +2, -3, and ultimate abilities. Activate one per turn.',category:'Permanents'},
+  {name:'Enchantment',type:'Permanent',icon:'✨',desc:'A continuous spell that stays on the battlefield.',example:'Auras enchant creatures, global enchantments affect the battlefield.',scenario:'You cast an aura on opponent\'s creature. While enchanted, the creature gets -2/-2.',category:'Permanents'},
+  {name:'Artifact',type:'Permanent',icon:'⚙',desc:'A colorless permanent that often produces mana or has special effects.',example:'Mana rocks like Sol Ring are artifacts.',scenario:'You play an artifact that taps for 2 mana. Use it to accelerate into bigger spells.',category:'Permanents'},
+  {name:'Land',type:'Permanent',icon:'🏜',desc:'A basic permanent type that taps for mana.',example:'Plains, Island, Swamp, Mountain, and Forest are basic lands.',scenario:'Turn 1 play a land. Each turn after, play one land and tap lands for mana to cast spells.',category:'Permanents'},
+
+  // Timing and phases
+  {name:'Stack',type:'Mechanic',icon:'📚',desc:'The zone where spells and abilities wait to resolve.',example:'Spells go on the stack and can be responded to.',scenario:'You cast a spell. It goes on the stack. Opponent has a chance to respond with instants before it resolves.',category:'Mechanics'},
+  {name:'Resolve',type:'Mechanic',icon:'✓',desc:'A spell or ability on the stack moves to resolve and have its effects happen.',example:'When a spell resolves, it does what it says.',scenario:'Your spell is on the stack. Nobody responds. It resolves and the effect happens.',category:'Mechanics'},
+  {name:'Priority',type:'Mechanic',icon:'👉',desc:'The right to cast spells and activate abilities, passed around in turn order.',example:'You have priority after you cast a spell.',scenario:'You cast a spell and pass priority. Opponent can respond with an instant, then priority returns to you.',category:'Mechanics'},
+  {name:'Combat Phase',type:'Timing',icon:'⚔',desc:'The phase where creatures attack and combat happens.',example:'During the combat phase, you declare which creatures attack.',scenario:'During your combat phase, declare 3 creatures attacking. Opponent decides which ones to block.',category:'Timing'},
+  {name:'Main Phase',type:'Timing',icon:'🎯',desc:'The phase where you can cast spells and play lands.',example:'There are two main phases in a turn (before and after combat).',scenario:'Main phase 1: play a land and cast a creature. After combat, main phase 2: play another spell.',category:'Timing'},
+  {name:'Beginning Phase',type:'Timing',icon:'🌅',desc:'The first phase of a turn where untap and upkeep happen.',example:'Creatures untap in the beginning phase.',scenario:'Start of your turn: untap all permanents. Upkeep triggers happen. Then proceed to main phase.',category:'Timing'},
+  {name:'Ending Phase',type:'Timing',icon:'🌙',desc:'The last phase of a turn where cleanup happens.',example:'Discard effects happen at the end step.',scenario:'End of your turn: discard down to 7 cards if needed. Damage resets.',category:'Timing'},
+
+  // Advanced mechanics
+  {name:'Entwine',type:'Mechanic',icon:'🔗',desc:'Choose one mode or pay the entwine cost to choose both.',example:'You get to pick between two effects or pay extra for both.',scenario:'A spell has entwine. Pay normal cost for effect A OR pay {2} extra and get both A and B.',category:'Mechanics'},
+  {name:'Prowess',type:'Mechanic',icon:'💪',desc:'Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.',example:'Creature with prowess grows when you cast spells.',scenario:'Your creature has prowess. You cast 2 spells this turn. It becomes +2/+2 until end of turn.',category:'Mechanics'},
+  {name:'Goad',type:'Mechanic',icon:'➡',desc:'Goad a creature means it must attack if able and it can\'t be blocked by more than one creature.',example:'Goaded creatures are forced to attack.',scenario:'You goad opponent\'s creature. Next turn, it must attack (if able) and can only be blocked by 1 creature.',category:'Combat'},
+  {name:'Emerge',type:'Mechanic',icon:'🌊',desc:'You may cast this spell by sacrificing a creature and paying the alternative cost.',example:'Emerge is like an alternative casting cost.',scenario:'Spell costs 6 with emerge. Sacrifice a creature and pay 2 instead of the normal 6 mana.',category:'Casting'},
+  {name:'Venture',type:'Mechanic',icon:'🗺',desc:'Explore a dungeon in Magic (D&D themed mechanic).',example:'Venture into a dungeon card to progress through rooms.',scenario:'You venture into a dungeon, progressing through rooms and gaining effects from each room.',category:'Mechanics'},
+
+  // Additional combat keywords
+  {name:'Absorb',type:'Mechanic',icon:'🛡',desc:'Prevent the next X damage that would be dealt to this creature.',example:'Absorb 2 prevents the next 2 damage.',scenario:'Your creature has absorb 2. Opponent deals 3 damage. Only 1 damage gets through.',category:'Combat'},
+  {name:'Rampage',type:'Ability',icon:'⚔',desc:'This creature gets +X/+X for each creature blocking it beyond the first.',example:'A creature with rampage 2 gets +2/+2 for each extra blocker.',scenario:'Your rampage creature is blocked by 3 creatures. It gets +4/+4 (2 extra blockers × 2).',category:'Combat'},
+  {name:'Flanking',type:'Ability',icon:'⚔',desc:'Creatures blocking this one get -1/-1 until end of turn.',example:'Flanking creatures damage blockers.',scenario:'Your flanking creature attacks. Opponent blocks with a 2/2. That creature becomes 1/1 until end of turn.',category:'Combat'},
+  {name:'Wither',type:'Ability',icon:'💀',desc:'Damage dealt by this creature is dealt as -1/-1 counters instead.',example:'A creature with wither damages other creatures differently.',scenario:'Your creature with wither deals 2 damage. The target gets two -1/-1 counters instead of taking damage.',category:'Combat'},
+
+  // Evasion and protection
+  {name:'Flash',type:'Ability',icon:'⚡',desc:'You may cast this spell any time you could cast an instant.',example:'Flash creatures can be played at instant speed.',scenario:'It\'s not your turn. Opponent attacks. You cast a flash creature with flash to block.',category:'Combat'},
+  {name:'Horsemanship',type:'Ability',icon:'🐴',desc:'This creature can only be blocked by creatures with horsemanship.',example:'Horsemanship acts similarly to flying.',scenario:'Your horsemanship creature attacks. Only horsemanship creatures can block it.',category:'Combat'},
+
+  // Graveyard interactions
+  {name:'Flashback',type:'Mechanic',icon:'🪦',desc:'You may cast this spell from your graveyard by paying the flashback cost instead of mana.',example:'Flashback lets you cast spells twice.',scenario:'You cast a spell, it goes to graveyard. Later, pay flashback cost to cast it again from the graveyard.',category:'Mechanics'},
+  {name:'Dredge',type:'Mechanic',icon:'🪦',desc:'Instead of drawing a card, you may put the top X cards of your library into your graveyard and return this from the graveyard to your hand.',example:'Dredge is a graveyard recursion mechanic.',scenario:'You would draw a card. Instead, dredge: mill 3 cards and return dredge card to hand.',category:'Mechanics'},
+  {name:'Unearth',type:'Mechanic',icon:'🪦',desc:'Return this card from your graveyard to the battlefield. It gains haste. Exile it at the end of turn.',example:'Unearth lets you reuse creatures once.',scenario:'Creature dies. Pay unearth cost. It returns to field for one turn with haste, then exiles.',category:'Mechanics'},
+  {name:'Persist',type:'Mechanic',icon:'🪦',desc:'If this creature has no -1/-1 counters on it, when it dies, return it to the field with a -1/-1 counter.',example:'Persist creatures return with a downside.',scenario:'Your persist creature dies with no -1/-1 counters. It returns tapped with one -1/-1 counter.',category:'Mechanics'},
+  {name:'Embalm',type:'Mechanic',icon:'🪦',desc:'You may exile this card from your graveyard and create a zombie token copy.',example:'Embalm is a graveyard recursion for creatures.',scenario:'Creature dies. Pay embalm cost. A zombie copy enters the field.',category:'Mechanics'},
+
+  // Casting cost mechanics
+  {name:'Kicker',type:'Mechanic',icon:'💰',desc:'You may pay an additional cost when casting this spell to get an additional effect.',example:'Kicker gives you a choice between two effects.',scenario:'Spell costs 2 with kicker 1. Pay 2 and get effect A, or pay 3 and get both A and B.',category:'Casting'},
+  {name:'Multikicker',type:'Mechanic',icon:'💰',desc:'Similar to kicker but can be paid multiple times.',example:'Multikicker lets you scale the effect.',scenario:'Spell has multikicker 1. You pay 5 total (1 base + 4 kicker). You get 4 iterations of the effect.',category:'Casting'},
+  {name:'Buyback',type:'Mechanic',icon:'🔁',desc:'You may pay an additional cost to return this spell to your hand instead of putting it in the graveyard.',example:'Buyback lets you reuse spells.',scenario:'You cast a spell with buyback 2. Pay 2 extra. Spell resolves and returns to your hand instead of the graveyard.',category:'Casting'},
+  {name:'Convoke',type:'Mechanic',icon:'👥',desc:'You may tap creatures you control to help pay the cost of this spell.',example:'Convoke lets creatures pay mana.',scenario:'Spell costs 3. You have 3 creatures. Tap them all. Spell costs 0. Convoke paid for it.',category:'Casting'},
+  {name:'Splice',type:'Mechanic',icon:'🔗',desc:'As you cast a spell with a specific type, you may reveal this from your hand and add its effect to that spell.',example:'Splice merges abilities onto other spells.',scenario:'You cast an arcane spell. Splice card in hand. Its effect is added to the spell for splice cost.',category:'Casting'},
+  {name:'Foretell',type:'Mechanic',icon:'🔮',desc:'Pay 2 generic mana and exile this card face down. Cast it later for its foretell cost.',example:'Foretell is a way to hide spell timing.',scenario:'Pay 2 and foretell this card. Later, cast it face-down from exile for its foretell cost.',category:'Casting'},
+
+  // Creature interaction
+  {name:'Devour',type:'Mechanic',icon:'🐍',desc:'As this creature enters the battlefield, you may sacrifice creatures. It enters with +1/+1 counters for each sacrificed.',example:'Devour rewards sacrificing creatures.',scenario:'Spell costs 3. You have a devour creature. Sacrifice 2 creatures as it enters. It gets 2 +1/+1 counters.',category:'Mechanics'},
+  {name:'Evolve',type:'Mechanic',icon:'📈',desc:'Whenever a creature with greater power or toughness enters under your control, put a +1/+1 counter on this.',example:'Evolve counters bigger creatures.',scenario:'You control a creature with evolve. You play a 4/4. The evolve creature gets a +1/+1 counter.',category:'Mechanics'},
+  {name:'Modular',type:'Mechanic',icon:'🔧',desc:'This creature enters with +1/+1 counters. When it dies, move all its counters to another artifact creature.',example:'Modular transfers power between artifacts.',scenario:'Modular creature with 3 counters dies. Move all 3 counters to another artifact creature you control.',category:'Mechanics'},
+  {name:'Graft',type:'Mechanic',icon:'🌱',desc:'This creature enters with +1/+1 counters. Whenever another creature enters, move a counter from this to it.',example:'Graft spreads counters.',scenario:'Your graft creature has 2 counters. You play another creature. Move 1 counter to it.',category:'Mechanics'},
+  {name:'Champion',type:'Mechanic',icon:'👑',desc:'When this creature enters, exile a creature of a specified type. When this leaves, return the exiled creature.',example:'Champion stores a creature temporarily.',scenario:'Champion creature enters. Exile one of your creatures. When champion dies, return the exiled creature.',category:'Mechanics'},
+  {name:'Mutate',type:'Mechanic',icon:'🧬',desc:'You may cast this as an Aura on a creature. If you do, move it and all Auras on that creature onto another creature.',example:'Mutate combines creatures.',scenario:'Creature with mutate enters as an Aura on your creature, stacking its powers.',category:'Mechanics'},
+  {name:'Monstrosity',type:'Mechanic',icon:'👹',desc:'Pay a cost once: this creature becomes monstrous and gets +1/+1 counters. It can\'t become monstrous again.',example:'Monstrosity is a one-time upgrade.',scenario:'Your creature is monstrous once. Pay cost once, get 3 +1/+1 counters. Can\'t activate again.',category:'Mechanics'},
+  {name:'Bloodthirst',type:'Mechanic',icon:'🩸',desc:'If an opponent was dealt damage this turn, this creature enters with +1/+1 counters.',example:'Bloodthirst rewards aggressive play.',scenario:'You dealt 2 damage earlier. Your bloodthirst creature enters with 2 +1/+1 counters.',category:'Mechanics'},
+  {name:'Adapt',type:'Mechanic',icon:'🧬',desc:'Pay a cost if this creature has no +1/+1 counters: put +1/+1 counters on it. Can be done multiple times.',example:'Adapt is repeatable growth.',scenario:'Your creature has no counters. Pay cost, get 2 +1/+1 counters. Later, no counters again, pay again.',category:'Mechanics'},
+  {name:'Renown',type:'Mechanic',icon:'⭐',desc:'The first time this creature deals combat damage to a player, put +1/+1 counters on it.',example:'Renown rewards first hit.',scenario:'Your renown creature deals damage. You put 1 +1/+1 counter on it (or more).',category:'Mechanics'},
+  {name:'Exalted',type:'Mechanic',icon:'✨',desc:'Whenever a creature attacks alone, it gets +1/+1 until end of turn for each exalted ability.',example:'Exalted rewards solo attacks.',scenario:'You have 2 creatures with exalted. Your solo attacker gets +2/+2 until end of turn.',category:'Combat'},
+  {name:'Mentor',type:'Mechanic',icon:'👨‍🏫',desc:'Whenever this creature attacks, put a +1/+1 counter on another attacking creature with less power.',example:'Mentor helps weaker creatures.',scenario:'Your 3/3 mentor creature attacks with a 1/1. The 1/1 gets a +1/+1 counter.',category:'Mechanics'},
+  {name:'Riot',type:'Mechanic',icon:'🔥',desc:'As this creature enters, choose: +1/+1 counter or haste.',example:'Riot is a choice on entry.',scenario:'Your creature enters with riot. Choose between a +1/+1 counter or haste until end of turn.',category:'Mechanics'},
+
+  // Card types and tokens
+  {name:'Changeling',type:'Mechanic',icon:'👻',desc:'This creature is every creature type.',example:'Changeling creatures count as any type you need.',scenario:'Changeling creature counts as an Elf, a Goblin, an Angel, any type simultaneously.',category:'Mechanics'},
+  {name:'Living Weapon',type:'Mechanic',icon:'⚔',desc:'When this Equipment enters, put a 0/0 black Germ token on the field and attach this to it.',example:'Living weapon creates its own creature.',scenario:'Equipment with living weapon enters. A Germ token appears and the equipment attaches to it.',category:'Mechanics'},
+
+  // Special mechanics
+  {name:'Cascade',type:'Mechanic',icon:'🌊',desc:'When you cast this spell, reveal cards from the top of your deck until a nonland card with lower mana value is revealed. Cast it for free.',example:'Cascade finds free spells.',scenario:'You cast a 5-cost cascade. Reveal cards until you find a 4-cost card. Cast it for free.',category:'Casting'},
+  {name:'Cycling',type:'Mechanic',icon:'🔄',desc:'Pay a cost to discard this card and draw a new one.',example:'Cycling is a way to cycle bad draws.',scenario:'Your hand is bad. Pay the cycling cost. Discard this card and draw a new one.',category:'Mechanics'},
+  {name:'Haunt',type:'Mechanic',icon:'👻',desc:'When this creature dies or spell resolves, exile it haunting a creature. It affects that creature when it dies.',example:'Haunt uses creatures as conduits.',scenario:'Haunt creature dies, exile it haunting opponent\'s creature. When haunted creature dies, haunt effect triggers.',category:'Mechanics'},
+  {name:'Afterlife',type:'Mechanic',icon:'👼',desc:'When this creature dies, create X 1/1 black and white spirit tokens with flying.',example:'Afterlife creates tokens when it dies.',scenario:'Your afterlife creature dies. Create 2 spirit tokens.',category:'Mechanics'},
+  {name:'Ascend',type:'Mechanic',icon:'👑',desc:'If you control 10 or more permanents, you get the city\'s blessing. Cards with ascend get bonuses with the blessing.',example:'Ascend is triggered by permanent count.',scenario:'You control 10 permanents. You get the city\'s blessing. Ascend cards activate.',category:'Mechanics'},
+  {name:'Cipher',type:'Mechanic',icon:'🔐',desc:'When this spell resolves, you may exile it encoded on a creature. Whenever that creature deals damage, cast a free copy.',example:'Cipher encodes spells on creatures.',scenario:'Sorcery with cipher resolves. Encode it on your creature. When that creature attacks, cast it again for free.',category:'Casting'},
+  {name:'Conspire',type:'Mechanic',icon:'👥',desc:'As you cast this spell, you may tap two creatures that share a color with it to copy it.',example:'Conspire costs creatures instead of mana.',scenario:'Blue spell with conspire. Tap two blue creatures. Copy the spell.',category:'Casting'},
+  {name:'Manifest',type:'Mechanic',icon:'👻',desc:'Put a card from your library onto the field face-down as a 2/2 colorless creature.',example:'Manifest hides card identities.',scenario:'Manifest the top card of your deck. It\'s face-down as a 2/2 until you flip it.',category:'Mechanics'},
+  {name:'Meld',type:'Mechanic',icon:'⚙',desc:'Exile specific paired cards and put a combined token onto the field.',example:'Meld combines two specific cards.',scenario:'Two specific cards meld. A single combined token replaces both.',category:'Mechanics'},
+  {name:'Plot',type:'Mechanic',icon:'📋',desc:'Exile this card with plot. Cast it later as a sorcery without paying mana.',example:'Plot delays but frees up mana.',scenario:'Plot this card, exiling it. Later, cast it from exile for free as a sorcery.',category:'Casting'},
+  {name:'Support',type:'Mechanic',icon:'👥',desc:'Put a +1/+1 counter on each of up to N target creatures.',example:'Support distributes counters.',scenario:'Support 2 spell. Put a +1/+1 counter on up to 2 creatures.',category:'Mechanics'},
+  {name:'Surveil',type:'Mechanic',icon:'🔍',desc:'Look at the top N cards of your library. Put any on the bottom, rest on top.',example:'Surveil arranges your library.',scenario:'Surveil 2. Look at top 2 cards. Put 1 on bottom, 1 on top.',category:'Advantage'},
+  {name:'Explore',type:'Mechanic',icon:'🗺',desc:'Reveal the top card of your library. If it\'s a land, put it in your hand. Otherwise, put a +1/+1 counter on this creature and choose to bottom the card.',example:'Explore is a form of card advantage.',scenario:'Creature explores. You get a land from it or a +1/+1 counter.',category:'Mechanics'},
+  {name:'Proliferate',type:'Mechanic',icon:'📈',desc:'Choose any number of permanents and/or players with counters. Give each another counter of a kind they already have.',example:'Proliferate spreads existing counters.',scenario:'You have 2 +1/+1 counters, opponent has 1 poison. Proliferate: each gets another of their kind.',category:'Mechanics'},
+  {name:'Populate',type:'Mechanic',icon:'👥',desc:'Put a token onto the field that\'s a copy of a creature token you control.',example:'Populate duplicates tokens.',scenario:'You control a 1/1 token. Populate: create another 1/1 token of the same type.',category:'Mechanics'},
+  {name:'Extort',type:'Mechanic',icon:'💰',desc:'Whenever you cast a spell, you may pay W/B. Each opponent loses 1 life and you gain 1.',example:'Extort is a slow drain.',scenario:'You cast a spell. Pay 1 black or white. Opponent loses 1, you gain 1.',category:'Advantage'},
+
+  // Other active keywords
+  {name:'Affinity',type:'Mechanic',icon:'🔗',desc:'This spell costs 1 generic mana less for each permanent you control with the specified quality.',example:'Affinity reduces casting cost.',scenario:'Affinity for artifacts spell costs 4. You have 3 artifacts. It costs 1 instead.',category:'Casting'},
+  {name:'Amplify',type:'Mechanic',icon:'📢',desc:'As this creature enters, reveal creature cards from your hand sharing a type. Get +1/+1 counters for each.',example:'Amplify rewards themed hands.',scenario:'Creature with amplify enters. Reveal 2 creatures of the same type. It gets 2 +1/+1 counters.',category:'Mechanics'},
+  {name:'Annihilator',type:'Mechanic',icon:'💥',desc:'Whenever this creature attacks, defending player sacrifices N permanents.',example:'Annihilator is a massive sacrifice effect.',scenario:'Your annihilator creature attacks. Opponent must sacrifice 3 permanents.',category:'Combat'},
+  {name:'Aura Swap',type:'Mechanic',icon:'🔄',desc:'Pay a cost to swap an Aura you control with one in your hand.',example:'Aura swap switches enchantments.',scenario:'Pay aura swap cost. Swap your current Aura with another Aura from hand.',category:'Mechanics'},
+  {name:'Bestow',type:'Mechanic',icon:'✨',desc:'You may cast this creature as an Aura for a cost. If the creature it enchants leaves, it becomes a creature.',example:'Bestow is flexible creature/Aura casting.',scenario:'Cast as an Aura on a creature for bestow cost. If enchanted creature dies, this becomes a creature.',category:'Casting'},
+  {name:'Clash',type:'Mechanic',icon:'⚔',desc:'Choose an opponent. Both reveal top deck card. Higher mana cost wins the clash.',example:'Clash is a random effect.',scenario:'Clash: you reveal 4-cost, opponent reveals 2-cost. You win and get a bonus.',category:'Mechanics'},
+  {name:'Crew',type:'Mechanic',icon:'🚗',desc:'Tap any number of creatures with total power at least N to make this Vehicle a creature.',example:'Crew activates vehicles.',scenario:'Vehicle with crew 2. Tap creatures with 2+ total power. Vehicle becomes a creature.',category:'Mechanics'},
+  {name:'Cumulative Upkeep',type:'Mechanic',icon:'📈',desc:'At the start of your upkeep, put an age counter here. Pay for each counter or sacrifice this.',example:'Cumulative upkeep gets harder.',scenario:'Cumulative upkeep costs 1 mana. You have 3 counters. Must pay 3 mana or sacrifice.',category:'Mechanics'},
+  {name:'Dash',type:'Mechanic',icon:'💨',desc:'You may cast this creature for its dash cost. It gains haste and returns to hand at end of turn.',example:'Dash is temporary creature casting.',scenario:'Cast creature with dash for cheap cost. It gains haste. Return it to hand at end of turn.',category:'Casting'},
+  {name:'Daybound',type:'Mechanic',icon:'☀',desc:'If it\'s day, this creature doesn\'t untap. If it\'s night, transform this creature.',example:'Daybound/Nightbound are transform mechanics.',scenario:'It\'s day. Your daybound creature doesn\'t untap. At night, it transforms.',category:'Mechanics'},
+  {name:'Delve',type:'Mechanic',icon:'⚙',desc:'For each card from your graveyard you exile, this spell costs 1 generic mana less.',example:'Delve uses graveyard as mana.',scenario:'Spell costs 5. Exile 3 cards from graveyard. It costs 2.',category:'Casting'},
+  {name:'Echo',type:'Mechanic',icon:'🔁',desc:'If you cast this spell, pay echo at the beginning of your next upkeep or sacrifice it.',example:'Echo delays cost.',scenario:'You cast an echo creature this turn. Pay echo cost next turn or sacrifice it.',category:'Mechanics'},
+  {name:'Envelop',type:'Mechanic',icon:'📮',desc:'Prevents spells and abilities from targeting this.',example:'Envelop is a protective ability.',scenario:'Your creature has envelop. Spells and abilities can\'t target it.',category:'Protection'},
+  {name:'Exert',type:'Mechanic',icon:'💪',desc:'You may exert this creature as an additional cost for an ability (it doesn\'t untap next turn).',example:'Exert is a power at a cost.',scenario:'Your creature\'s ability says "you may exert." Exert it for extra value. It doesn\'t untap next turn.',category:'Mechanics'},
+  {name:'Exploit',type:'Mechanic',icon:'😈',desc:'When this creature enters, you may sacrifice a creature. If you do, a specified ability triggers.',example:'Exploit trades creatures for effects.',scenario:'Creature with exploit enters. Sacrifice another creature. The exploit ability triggers.',category:'Mechanics'},
+  {name:'Extort',type:'Mechanic',icon:'💼',desc:'Whenever you cast a spell, pay W or B to make each opponent lose 1 and you gain 1.',example:'Extort is a drain per spell.',scenario:'You cast spells. Each time, optionally pay. Opponent loses, you gain.',category:'Advantage'},
+  {name:'Fabricate',type:'Mechanic',icon:'⚙',desc:'When this creature enters, choose: put +1/+1 counters on it or create Servo tokens.',example:'Fabricate gives a choice.',scenario:'Creature with fabricate 2 enters. Choose 2 +1/+1 counters or 2 Servo tokens.',category:'Mechanics'},
+  {name:'Fading',type:'Mechanic',icon:'✨',desc:'This permanent has fade counters. At the start of your upkeep, remove one. Sacrifice if you can\'t.',example:'Fading is a timer.',scenario:'Creature with fading 3 enters with 3 counters. Each turn one removes. After 3 turns it\'s sacrificed.',category:'Mechanics'},
+  {name:'Fateseal',type:'Mechanic',icon:'🔮',desc:'Look at the top N cards of target opponent\'s deck. Put any on bottom.',example:'Fateseal messes with opponent\'s draws.',scenario:'Fateseal 2 on opponent. Look at top 2 of their deck. Put both on bottom.',category:'Mechanics'},
+  {name:'Flip',type:'Mechanic',icon:'🪙',desc:'This double-sided card flips when a condition is met, changing its attributes.',example:'Flip is a transform variant.',scenario:'Flip card\'s front condition is met. Card flips to show the back side.',category:'Mechanics'},
+  {name:'Forecast',type:'Mechanic',icon:'🔮',desc:'During your upkeep, you may reveal this card from your hand and pay a cost for its forecast ability.',example:'Forecast uses hand cards for effects.',scenario:'Reveal this forecast card during your upkeep. Pay its cost. Effect happens.',category:'Mechanics'},
+  {name:'Fortify',type:'Mechanic',icon:'🏰',desc:'Pay a cost to attach this fortification to a land you control.',example:'Fortify is equip for lands.',scenario:'Pay fortify cost. Attach to a land you control. That land gets the bonuses.',category:'Mechanics'},
+  {name:'Gravestorm',type:'Mechanic',icon:'🪦',desc:'When you cast this spell, put a copy on the stack for each permanent put into a graveyard this turn.',example:'Gravestorm triggers on graveyard fills.',scenario:'5 permanents died this turn. You cast gravestorm spell. Put 5 copies on stack.',category:'Casting'},
+  {name:'Hideaway',type:'Mechanic',icon:'🏚',desc:'When this enters, exile a card from your hand face-down. You may play it later under conditions.',example:'Hideaway stores a card.',scenario:'Land with hideaway enters. Exile a card face-down. Play it when hideaway condition is met.',category:'Mechanics'},
+  {name:'Jump-start',type:'Mechanic',icon:'🚀',desc:'You may cast this from your graveyard by discarding a card. Then exile it.',example:'Jump-start is graveyard casting with discard cost.',scenario:'Spell is in graveyard. Discard a card. Cast the jump-start spell. It exiles.',category:'Casting'},
+  {name:'Level Up',type:'Mechanic',icon:'📈',desc:'Activate to put a level counter on this creature, increasing its power/toughness and abilities.',example:'Level up grows creatures.',scenario:'Creature with level up. Pay cost repeatedly. Each level gets stronger with new abilities.',category:'Mechanics'},
+  {name:'Madness',type:'Mechanic',icon:'🤪',desc:'If you would discard this card, you may cast it for its madness cost instead.',example:'Madness casts from discard.',scenario:'Effect makes you discard. Cast this madness card for madness cost instead.',category:'Casting'},
+  {name:'Miracle',type:'Mechanic',icon:'✨',desc:'If this is the first card you draw in a turn, you may cast it for its miracle cost.',example:'Miracle rewards draws.',scenario:'Draw this card as your first draw. Cast it for miracle cost.',category:'Casting'},
+  {name:'Morph',type:'Mechanic',icon:'👻',desc:'Cast this face-down as a 2/2 colorless creature for 3 generic mana. Flip it face-up for its morph cost.',example:'Morph is surprise creatures.',scenario:'Cast face-down for 3 mana as a 2/2. Later, pay morph cost to flip it and reveal.',category:'Casting'},
+  {name:'Ninjutsu',type:'Mechanic',icon:'🥷',desc:'If you have a ninjutsu creature in hand and control an unblocked attacker, return that creature to your hand and put the ninja onto the field.',example:'Ninjutsu replaces blockers.',scenario:'Unblocked creature attacks. Pay ninjutsu. Return that creature to hand, put ninja on field attacking.',category:'Casting'},
+  {name:'Offering',type:'Mechanic',icon:'🙏',desc:'You may cast this creature any time you could cast an instant if you sacrifice a creature of a type.',example:'Offering is conditional flash.',scenario:'You have an Elf. Cast creature with Elf offering for instant speed by sacrificing the Elf.',category:'Casting'},
+  {name:'Overload',type:'Mechanic',icon:'🌪',desc:'You may cast this spell paying the overload cost. If you do, it affects all targets instead of one.',example:'Overload is mass effect casting.',scenario:'Spell targets 1 creature. Pay overload cost. It affects all creatures instead.',category:'Casting'},
+  {name:'Poisonous',type:'Mechanic',icon:'☠',desc:'Whenever this creature deals combat damage to a player, that player gets N poison counters.',example:'Poisonous is a slow poison win.',scenario:'Your poisonous 2 creature deals 3 damage. Opponent gets 2 poison counters (not 3 life loss).',category:'Combat'},
+  {name:'Provoke',type:'Mechanic',icon:'😤',desc:'When this creature attacks, choose a defending creature. Untap it and force it to block.',example:'Provoke forces blocks.',scenario:'Your creature provokes. Opponent must block with a creature you choose, even if they don\'t want to.',category:'Combat'},
+  {name:'Prowl',type:'Mechanic',icon:'🥷',desc:'You may cast this for its prowl cost if a creature of a specified type dealt damage this turn.',example:'Prowl rewards combat damage.',scenario:'Your Rogue dealt damage. You can cast this prowl creature for less mana.',category:'Casting'},
+  {name:'Recover',type:'Mechanic',icon:'🪦',desc:'Whenever a creature dies, cards with recover in graveyard may trigger. Pay to return to hand or exile it.',example:'Recover returns cards on death.',scenario:'Creature dies. Your recover card in graveyard triggers. Pay cost to return it to hand.',category:'Mechanics'},
+  {name:'Reinforce',type:'Mechanic',icon:'💪',desc:'You may discard this from your hand to put +1/+1 counters on target creature.',example:'Reinforce empowers from hand.',scenario:'Discard this card. Put 2 +1/+1 counters on target creature.',category:'Mechanics'},
+  {name:'Replicate',type:'Mechanic',icon:'🔄',desc:'You may pay the replicate cost any number of times as you cast this. Copy it for each cost paid.',example:'Replicate multiplies spells.',scenario:'Spell with replicate 2 costs 4 base. Pay 6 more. Cast 4 copies total.',category:'Casting'},
+  {name:'Retrace',type:'Mechanic',icon:'🔄',desc:'You may cast this from your graveyard by discarding a land. It goes to the graveyard again.',example:'Retrace is reusable from graveyard.',scenario:'Spell is in graveyard. Discard a land. Cast it again. It goes back to graveyard.',category:'Casting'},
+  {name:'Ripple',type:'Mechanic',icon:'🌊',desc:'When you cast this spell, reveal the top N cards of your deck. Cast any with the same name for free.',example:'Ripple casts duplicates.',scenario:'You cast ripple spell. Reveal 4 cards. There\'s another copy. Cast it for free.',category:'Casting'},
+  {name:'Scavenge',type:'Mechanic',icon:'🦴',desc:'Exile this from your graveyard to put +1/+1 counters on target creature equal to this creature\'s power.',example:'Scavenge transfers power.',scenario:'Creature with 3 power is in graveyard. Scavenge it on target creature. +3/+3.',category:'Mechanics'},
+  {name:'Soulbond',type:'Mechanic',icon:'💑',desc:'When this creature enters, pair it with another creature. Paired creatures each get bonuses.',example:'Soulbond is partner creatures.',scenario:'Creature with soulbond enters. Pair it with another creature you control. Each gets bonuses.',category:'Mechanics'},
+  {name:'Soulshift',type:'Mechanic',icon:'👻',desc:'When this creature dies, return a spirit with converted mana cost N or less from graveyard to hand.',example:'Soulshift recurs spirits.',scenario:'Spirit with soulshift 3 dies. Return a spirit with CMC 3 or less from graveyard to hand.',category:'Mechanics'},
+  {name:'Spectacle',type:'Mechanic',icon:'🎪',desc:'You may cast this for its spectacle cost if an opponent lost life this turn.',example:'Spectacle rewards opponent damage.',scenario:'You dealt damage. You can cast this spectacle creature for less.',category:'Casting'},
+  {name:'Split Second',type:'Mechanic',icon:'⏱',desc:'While this spell is on the stack, players can\'t cast spells or activate abilities.',example:'Split second stops responses.',scenario:'You cast split second spell. Opponent can\'t cast instant responses until it resolves.',category:'Mechanics'},
+  {name:'Storm',type:'Mechanic',icon:'⚡',desc:'When you cast this spell, put a copy on the stack for each spell cast before it this turn.',example:'Storm multiplies on spellcasts.',scenario:'You cast 3 spells, then storm spell. Put 3 copies of it on stack.',category:'Casting'},
+  {name:'Sunburst',type:'Mechanic',icon:'☀',desc:'This enters with a counter for each color of mana spent.',example:'Sunburst scales with colors.',scenario:'Pay 2 white and 1 black to cast. It enters with 2 counters.',category:'Mechanics'},
+  {name:'Suspend',type:'Mechanic',icon:'⏳',desc:'Exile this with N time counters. Remove one each upkeep. Cast without cost when none remain.',example:'Suspend delays casting.',scenario:'Suspend a spell with 3 counters. Each turn remove 1. After 3 turns cast it free.',category:'Casting'},
+  {name:'Transform',type:'Mechanic',icon:'🔄',desc:'This double-sided card flips when a condition is met, changing sides.',example:'Transform is a double-sided mechanic.',scenario:'Transform condition is met. Card flips and shows the back side.',category:'Mechanics'},
+  {name:'Typecycling',type:'Mechanic',icon:'🔄',desc:'Discard this and draw a card. You may search for a card of a specific type instead.',example:'Typecycling searches by type.',scenario:'Typecycling land: discard this, draw a card or search for a land.',category:'Mechanics'},
+  {name:'Vanishing',type:'Mechanic',icon:'✨',desc:'This permanent has vanishing counters. At upkeep, remove one. Sacrifice if you can\'t.',example:'Vanishing is a temporary existence.',scenario:'Creature with vanishing 2 has 2 counters. Each turn loses one. After 2 turns it\'s sacrificed.',category:'Mechanics'},
+
+  // Color and casting
+  {name:'Mana',type:'Mechanic',icon:'💎',desc:'The magical resource used to cast spells, come in five colors: white, blue, black, red, green.',example:'Most spells cost mana to cast.',scenario:'Your land taps for blue mana. You cast a spell that costs 1 blue mana, using that resource.',category:'Resources'},
+  {name:'Mana Curve',type:'Mechanic',icon:'📈',desc:'The distribution of casting costs in a deck, ideally balanced.',example:'A good curve has creatures at every cost level.',scenario:'Your deck has 1-drops, 2-drops, 3-drops, and big 5-drop finishers. This balanced curve lets you play something every turn.',category:'Mechanics'},
+  {name:'Color Pie',type:'Concept',icon:'🎨',desc:'The five colors of mana and their philosophies and abilities.',example:'White = order, Blue = knowledge, Black = ambition, Red = chaos, Green = nature.',scenario:'Blue players use counterspells to stop opponents. Red players deal direct damage. Green plays big creatures.',category:'Concept'},
+];
+
+// Create searchable index
+const LEXICON_INDEX=LEXICON.map(t=>({...t,searchStr:(t.name+' '+t.type+' '+t.category).toLowerCase()}));
+
+
 const DUNGEONS={
   mad:{
     name:'Mad Mage',color:'#5588cc',
@@ -1651,14 +2190,14 @@ function updateActivityBadges(){
     }
   }
 
-  // build desired order: [primaryFmt, dungeon, ring, ...remaining primaries in original order]
+  // build desired order: [primaryFmt, dungeon, ring, ...remaining primaries, divider, lexicon, rules]
   const originalOrder=['commander','standard','simple','dungeon','ring'];
   let desired;
   if(primaryFmt){
     const remaining=primaries.filter(p=>p!==primaryFmt);
-    desired=[primaryFmt,'dungeon','ring',...remaining];
+    desired=[primaryFmt,'dungeon','ring',...remaining,'lexicon','rules'];
   } else {
-    desired=originalOrder;
+    desired=[...originalOrder,'lexicon','rules'];
   }
 
   // reorder DOM to match desired
@@ -1673,13 +2212,17 @@ function updateActivityBadges(){
   const existingDivider=group.querySelector('.fmt-divider');
   if(existingDivider)existingDivider.remove();
 
-  // append in desired order
+  // append in desired order — add divider before lexicon to push right side to end
   desired.forEach((f,i)=>{
-    if(fmtToBtn[f])group.appendChild(fmtToBtn[f]);
-    // insert divider between primary and dungeon/ring group if primaryFmt is set
-    if(primaryFmt&&i===0){
-      const div=document.createElement('div');div.className='fmt-divider';
-      group.appendChild(div);
+    if(fmtToBtn[f]){
+      // add divider before lexicon
+      if(f==='lexicon'&&i>0){
+        const div=document.createElement('div');
+        div.className='fmt-divider';
+        div.style.marginLeft='auto';
+        group.appendChild(div);
+      }
+      group.appendChild(fmtToBtn[f]);
     }
   });
 }
@@ -1709,6 +2252,193 @@ function temptRing(i){
 }
 function resetRing(){ringStage=-1;ringBearer='';renderRing();}
 
+// ── Lexicon functions ──
+function renderLexicon(){
+  const list=document.getElementById('lexiconList');
+  const detail=document.getElementById('lexiconDetail');
+  const searchInput=document.getElementById('lexiconSearchInput');
+  const query=(searchInput.value||'').toLowerCase().trim();
+  const category=fmtState[fmt].filterCategory;
+  
+  // Filter terms based on search and category
+  let filtered=LEXICON_INDEX;
+  if(category)filtered=filtered.filter(t=>t.category===category);
+  if(query)filtered=filtered.filter(t=>t.searchStr.includes(query));
+  
+  // If no results
+  if(!filtered.length){
+    list.innerHTML='<div class="lexicon-no-results">No matches found</div>';
+    detail.classList.add('empty');
+    detail.innerHTML='<div style="font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--c-muted);margin-bottom:6px;">No Results</div><div style="font-size:10px;color:var(--c-faint);">Try different search or category</div>';
+    return;
+  }
+
+  // Sort by name
+  filtered.sort((a,b)=>a.name.localeCompare(b.name));
+
+  // Render list with icons
+  list.innerHTML='';
+  filtered.forEach((term)=>{
+    const item=document.createElement('div');
+    item.className='lexicon-item'+(term.name===fmtState[fmt].selectedTerm?' active':'');
+    item.innerHTML=`<span style="margin-right:6px;">${term.icon||'•'}</span>${term.name}`;
+    item.onclick=()=>selectLexiconTerm(term.name);
+    list.appendChild(item);
+  });
+
+  // Show detail if selected term exists in filtered list
+  const selectedTerm=fmtState[fmt].selectedTerm;
+  const termData=filtered.find(t=>t.name===selectedTerm);
+  
+  if(termData){
+    showLexiconDetail(termData);
+  } else {
+    detail.classList.add('empty');
+    detail.innerHTML='<div style="font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--c-muted);margin-bottom:6px;">Select a keyword</div><div style="font-size:10px;color:var(--c-faint);">Browse the list or search to learn about Magic abilities</div>';
+  }
+  
+  // Show count
+  const count=document.getElementById('lexiconList').querySelector('.lexicon-count');
+  if(count)count.remove();
+  const countEl=document.createElement('div');
+  countEl.className='lexicon-count';
+  countEl.textContent=filtered.length+' keyword'+(filtered.length===1?'':'s');
+  list.appendChild(countEl);
+}
+
+function selectLexiconTerm(name){
+  fmtState[fmt].selectedTerm=name;
+  const term=LEXICON.find(t=>t.name===name);
+  if(term)showLexiconDetail(term);
+  renderLexicon();
+}
+
+function showLexiconDetail(term){
+  const detail=document.getElementById('lexiconDetail');
+  detail.classList.remove('empty');
+  
+  let html=`<div class="lexicon-detail-title">${term.name}</div>`;
+  html+=`<div class="lexicon-detail-type">${term.type}</div>`;
+  html+=`<div class="lexicon-detail-text">${term.desc}</div>`;
+  
+  if(term.example){
+    html+=`<div class="lexicon-detail-example"><strong>Example:</strong> ${term.example}</div>`;
+  }
+  
+  if(term.scenario){
+    html+=`<div class="lexicon-detail-scenario"><strong>Scenario:</strong> ${term.scenario}</div>`;
+  }
+  
+  if(term.category){
+    html+=`<div class="lexicon-detail-note"><strong>Category:</strong> ${term.category}</div>`;
+  }
+  
+  detail.innerHTML=html;
+}
+
+function filterLexicon(){
+  fmtState[fmt].searchQuery=document.getElementById('lexiconSearchInput').value||'';
+  renderLexicon();
+}
+
+function clearLexiconSearch(){
+  document.getElementById('lexiconSearchInput').value='';
+  fmtState[fmt].searchQuery='';
+  fmtState[fmt].selectedTerm=null;
+  fmtState[fmt].filterCategory=null;
+  document.querySelectorAll('.lexicon-filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.lexicon-filter-btn[onclick*="null"]').classList.add('active');
+  renderLexicon();
+}
+
+function filterByCategory(cat){
+  fmtState[fmt].filterCategory=cat;
+  fmtState[fmt].selectedTerm=null;
+  document.querySelectorAll('.lexicon-filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderLexicon();
+}
+
+function jumpToLetter(letter){
+  const list=document.getElementById('lexiconList');
+  const items=Array.from(list.querySelectorAll('.lexicon-item:not(.hidden)'));
+  const item=items.find(i=>i.textContent[0]===letter);
+  if(item){
+    item.scrollIntoView({behavior:'smooth',block:'nearest'});
+    item.click();
+  }
+}
+
+const RULES_CONTENT={
+  standard:{
+    title:'Standard Format Rules',
+    content:`Standard is the primary format for new Magic players and uses only cards from the most recently released sets (typically last 2 years). It rotates out older sets to keep the format fresh and dynamic.`,
+    rules:[
+      '<strong>Format:</strong> Uses only cards from current Standard-legal sets',
+      '<strong>Size:</strong> Minimum 60 cards',
+      '<strong>Copies:</strong> Maximum 4 copies of any card except Basic Lands',
+      '<strong>Banned List:</strong> Occasionally updated to maintain balance',
+      '<strong>Rotation:</strong> Sets rotate out approximately every 2 years',
+      '<strong>Best for:</strong> New players, competitive play, frequent meta shifts'
+    ]
+  },
+  modern:{
+    title:'Modern Format Rules',
+    content:`Modern includes all cards from Mirrodin (2003) onward that are not banned. It\'s a more stable format for competitive play with a larger card pool than Standard.`,
+    rules:[
+      '<strong>Format:</strong> Uses cards from Mirrodin (2003) forward',
+      '<strong>Size:</strong> Minimum 60 cards',
+      '<strong>Copies:</strong> Maximum 4 copies of any card except Basic Lands',
+      '<strong>Banned List:</strong> Regularly maintained for balance',
+      '<strong>No Rotation:</strong> Cards don\'t leave the format',
+      '<strong>Best for:</strong> Competitive players, established decks, diverse strategies'
+    ]
+  },
+  commander:{
+    title:'Commander Format Rules',
+    content:`Commander is a multiplayer format where each player picks a legendary creature as their commander. It\'s about fun, creativity, and social play.`,
+    rules:[
+      '<strong>Size:</strong> Exactly 100 cards (including commander)',
+      '<strong>Commander:</strong> One legendary creature is chosen as your commander',
+      '<strong>Copies:</strong> Only 1 copy of each card name except Basic Lands',
+      '<strong>Color Identity:</strong> All cards must match your commander\'s color(s)',
+      '<strong>Players:</strong> Typically 2-4 players per game',
+      '<strong>Life Total:</strong> Start at 40 life',
+      '<strong>Commander Damage:</strong> 21 damage from one commander = loss',
+      '<strong>Best for:</strong> Casual play, creativity, social events'
+    ]
+  },
+  faq:{
+    title:'Frequently Asked Rules Questions',
+    content:`Common questions about Magic\'s rules and gameplay.`,
+    rules:[
+      '<strong>Can I respond to a spell?</strong> Yes, spells go on the stack and opponents have priority to cast instants and activate abilities.',
+      '<strong>What\'s the difference between Exile and Graveyard?</strong> Graveyard is a public zone you can access from. Exile is separate and cards there typically can\'t be accessed.',
+      '<strong>Does tapping a creature prevent it from blocking?</strong> No. Tapping only matters if a card specifically says "tap this creature."',
+      '<strong>What happens when a creature dies?</strong> It goes to the graveyard. Some effects can trigger when creatures die (death triggers).',
+      '<strong>Can I mulligan in Limited?</strong> Yes, you may mulligan the same as in Constructed, then shuffle to your library size.',
+      '<strong>Does damage reset between turns?</strong> Yes, unless a card says otherwise. Damage marked on creatures resets at the start of the next turn.',
+      '<strong>What\'s on the Stack?</strong> All spells and abilities wait on the stack to resolve. Players can respond in priority order.'
+    ]
+  }
+};
+
+function switchRulesTab(tab){
+  fmtState[fmt].activeTab=tab;
+  document.querySelectorAll('.rules-tab-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderRules();
+}
+
+function renderRules(){
+  const content=document.getElementById('rulesContent');
+  const tab=fmtState[fmt].activeTab||'standard';
+  const rules=RULES_CONTENT[tab];
+  let html=`<div class="rules-title">${rules.title}</div><div class="rules-text">${rules.content}</div>`;
+  rules.rules.forEach(r=>html+=`<div class="rules-rule">${r}</div>`);
+  content.innerHTML=html;
+}
+
 function setFormat(f,el){
   saveState();
   fmt=f;
@@ -1716,24 +2446,41 @@ function setFormat(f,el){
     b.classList.remove('active');
     if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+f+"'"))b.classList.add('active');
   });
+  
+  // Move Tokens button next to active board (commander, standard, or simple)
+  const tokenBtn=document.querySelector('[onclick*="tokens"]');
+  const activeBtn=document.querySelector('.fmt-btn.active');
+  if(tokenBtn && activeBtn && (f==='commander'||f==='standard'||f==='simple')){
+    activeBtn.parentNode.insertBefore(tokenBtn, activeBtn.nextSibling);
+  }
+  
   loadState();
   const simple=f==='simple';
   const standard=f==='standard';
+  const tokens=f==='tokens';
   const dungeon=f==='dungeon';
   const ring=f==='ring';
-  const fullscreen=dungeon||ring;
+  const lexicon=f==='lexicon';
+  const rules=f==='rules';
+  const fullscreen=tokens||dungeon||ring||lexicon||rules;
   const mat=document.querySelector('.mat');
   mat.classList.toggle('simple-mode',simple||fullscreen);
+  mat.classList.toggle('tokens-mode',tokens);
   mat.classList.toggle('dungeon-mode',dungeon);
   mat.classList.toggle('ring-mode',ring);
+  mat.classList.toggle('lexicon-mode',lexicon);
+  mat.classList.toggle('rules-mode',rules);
   document.getElementById('rightCol').classList.toggle('simple-hidden',simple||fullscreen);
   document.getElementById('diceCard').classList.toggle('simple-hidden',fullscreen);
   document.getElementById('cmdCard').style.display=(standard||fullscreen)?'none':'';
   document.getElementById('standardCard').style.display=standard?'':'none';
   applyDayNightUI();applyGoadedUI();
   renderAll();
+  if(tokens)renderTokens();
   if(dungeon)renderDungeon();
   if(ring)renderRing();
+  if(lexicon)renderLexicon();
+  if(rules)renderRules();
   updateActivityBadges();
 }
 function applyDayNightUI(){
@@ -1764,12 +2511,15 @@ function applyGoadedUI(){
   }
 }
 function resetAll(){
-  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false});
+  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[]});
   fmtState.commander={...defaultState(),life:40};
   fmtState.standard={...defaultState()};
   fmtState.simple={...defaultState()};
+  fmtState.tokens={...defaultState()};
   fmtState.dungeon={...defaultState(),dungeonId:null,currentRoom:-1,dungeonPath:[]};
   fmtState.ring={...defaultState(),ringStage:-1,ringBearer:''};
+  fmtState.lexicon={...defaultState(),searchQuery:'',selectedTerm:null,filterCategory:null};
+  fmtState.rules={...defaultState(),activeTab:'standard'};
   primaryFmt=null;
   dungeonId=null;currentRoom=-1;dungeonPath=[];
   ringStage=-1;ringBearer='';
@@ -1778,19 +2528,371 @@ function resetAll(){
   renderAll();
   if(fmt==='dungeon')renderDungeon();
   if(fmt==='ring')renderRing();
+  if(fmt==='tokens')renderTokens();
+  if(fmt==='lexicon')renderLexicon();
+  if(fmt==='rules')renderRules();
   updateActivityBadges();
 }
 function renderAll(){
-  adjLife(0);renderMana();renderCmd();adjPoison(0);
-  document.getElementById('xpNum').textContent=xp;
+  adjLife(0);renderMana();renderCmd();adjPoison(0);adjXp(0);adjStorm(0);
   document.getElementById('energyNum').textContent=energy;
   const ic=document.getElementById('initCard');
   if(ic){ic.classList.toggle('active',initiative);ic.classList.toggle('initiative-active',initiative);}
   document.getElementById('initState').textContent=initiative?'Holding':'Not held';
   document.getElementById('diceFace').textContent=diceHist.length?diceHist[0].split(':')[1]:'—';
   document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');
-  document.getElementById('stormFace').textContent=storm;
   applyMonarchUI();applyGoadedUI();updateActivityBadges();
+  if(fmt==='tokens')renderTokens();
+}
+
+// ── Token Pool Functions ──
+const KEYWORD_DATA={
+  flying:{label:'Flying',short:'Flying'},
+  deathtouch:{label:'Deathtouch',short:'Deathtouch'},
+  lifelink:{label:'Lifelink',short:'Lifelink'},
+  trample:{label:'Trample',short:'Trample'},
+  haste:{label:'Haste',short:'Haste'},
+  vigilance:{label:'Vigilance',short:'Vigilance'},
+  menace:{label:'Menace',short:'Menace'},
+  reach:{label:'Reach',short:'Reach'},
+  doublestrike:{label:'Double Strike',short:'Double Strike'}
+};
+
+let tokenModalPower=1,tokenModalToughness=1;
+let tokenModalColors=['w']; // Array for multi-color support
+let tokenMode='attack'; // 'attack' or 'block'
+
+function openTokenModal(){
+  tokenModalPower=1;
+  tokenModalToughness=1;
+  document.getElementById('tokenPowerDisplay').textContent=1;
+  document.getElementById('tokenToughnessDisplay').textContent=1;
+  document.getElementById('tokenName').value='';
+  
+  tokenModalColors=[]; // Start with no colors selected
+  
+  // Apply mana colors to color picker buttons
+  document.querySelectorAll('.token-color-btn').forEach(b=>{
+    const color=b.dataset.color;
+    const manaColor=CM[color];
+    if(manaColor){
+      b.style.background=manaColor.bg;
+      b.style.borderColor=manaColor.bc;
+    }
+  });
+  
+  // Update button selection states
+  updateColorButtonStates();
+  
+  document.querySelectorAll('.token-keyword-checkbox input').forEach(cb=>cb.checked=false);
+  updateTokenKeywords();
+  document.getElementById('tokenModal').classList.add('open');
+}
+
+function closeTokenModal(){
+  document.getElementById('tokenModal').classList.remove('open');
+}
+
+function adjTokenPower(d){
+  tokenModalPower=Math.max(0,tokenModalPower+d);
+  document.getElementById('tokenPowerDisplay').textContent=tokenModalPower;
+}
+
+function adjTokenToughness(d){
+  tokenModalToughness=Math.max(0,tokenModalToughness+d);
+  document.getElementById('tokenToughnessDisplay').textContent=tokenModalToughness;
+}
+
+function toggleTokenColor(color,e){
+  const btn=e.target.closest('.token-color-btn');
+  if(tokenModalColors.includes(color)){
+    // Already selected, remove it (unless it's the only one)
+    if(tokenModalColors.length>1){
+      tokenModalColors=tokenModalColors.filter(c=>c!==color);
+    }
+  } else {
+    // Not selected, add it (max 2 colors)
+    if(tokenModalColors.length<2){
+      tokenModalColors.push(color);
+    }
+  }
+  // Update all button visual states
+  updateColorButtonStates();
+}
+
+function updateColorButtonStates(){
+  document.querySelectorAll('.token-color-btn').forEach(b=>{
+    const color=b.dataset.color;
+    b.classList.toggle('selected',tokenModalColors.includes(color));
+  });
+}
+
+function updateTokenKeywords(){
+  const selected=Array.from(document.querySelectorAll('.token-keyword-checkbox input:checked')).map(cb=>cb.value);
+  document.querySelectorAll('.token-keyword-checkbox').forEach(label=>{
+    const cb=label.querySelector('input');
+    label.classList.toggle('checked',cb.checked);
+  });
+}
+
+function confirmTokenCreate(){
+  // Validate at least one color is selected
+  if(tokenModalColors.length===0){
+    alert('Please select at least one color');
+    return;
+  }
+  
+  const power=tokenModalPower;
+  const toughness=tokenModalToughness;
+  const name=document.getElementById('tokenName').value||'Token';
+  const colors=tokenModalColors.sort().join(''); // Sort for consistent comparison (e.g., 'wr' not 'rw')
+  const keywords=Array.from(document.querySelectorAll('.token-keyword-checkbox input:checked')).map(cb=>cb.value);
+  
+  // Check if token already exists (same P/T, colors, keywords, name)
+  const existingIdx=tokenPool.findIndex(t=>
+    t.power===power && t.toughness===toughness && t.colors===colors && 
+    t.name===name && JSON.stringify(t.keywords)===JSON.stringify(keywords)
+  );
+  
+  if(existingIdx>=0){
+    // Stack: increment count
+    tokenPool[existingIdx].count=(tokenPool[existingIdx].count||1)+1;
+  } else {
+    // New token type
+    const newToken={power,toughness,colors,keywords,name,count:1,attacking:0};
+    if(tokenPool.length<8){
+      tokenPool.push(newToken);
+    }
+  }
+  
+  renderTokens();
+  closeTokenModal();
+}
+
+function renderTokens(){
+  const grid=document.getElementById('tokensGrid');
+  if(!grid)return;
+  grid.innerHTML='';
+  
+  for(let i=0;i<8;i++){
+    const slot=document.createElement('div');
+    slot.className='token-slot';
+    
+    if(i<tokenPool.length){
+      const token=tokenPool[i];
+      const card=document.createElement('div');
+      card.className='token-card';
+      card.onclick=()=>incrementTokenAttack(i);
+      
+      // Handle hybrid colors (split card like mana pool)
+      if(token.colors.length>1){
+        card.style.borderColor='rgba(180,140,60,0.55)';
+        card.style.background='transparent';
+        const c1=token.colors[0];
+        const c2=token.colors[1];
+        
+        const hl=document.createElement('div');
+        hl.style.cssText='position:absolute;inset:0;left:0;right:50%;background:'+CM[c1].bg+';border-radius:8px 0 0 8px;';
+        const hr=document.createElement('div');
+        hr.style.cssText='position:absolute;inset:0;left:50%;right:0;background:'+CM[c2].bg+';border-radius:0 8px 8px 0;';
+        card.appendChild(hl);
+        card.appendChild(hr);
+      } else {
+        const color=token.colors[0];
+        card.style.borderColor=CM[color].bc;
+        card.style.background=CM[color].bg;
+      }
+      
+      const info=document.createElement('div');
+      info.className='token-info';
+      info.style.position='relative';
+      info.style.zIndex='1';
+      
+      const pt=document.createElement('div');
+      pt.className='token-pt';
+      pt.textContent=`${token.power}/${token.toughness}`;
+      info.appendChild(pt);
+      
+      if(token.name && token.name!=='Token'){
+        const nm=document.createElement('div');
+        nm.style.cssText=`font-size:9px;color:rgba(210,170,90,0.7);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;`;
+        nm.textContent=token.name;
+        info.appendChild(nm);
+      }
+      
+      if(token.keywords.length>0){
+        const kw=document.createElement('div');
+        kw.className='token-keywords';
+        kw.textContent=token.keywords.map(k=>KEYWORD_DATA[k]?.short||k).join(', ');
+        info.appendChild(kw);
+      }
+      
+      card.appendChild(info);
+      
+      const controls=document.createElement('div');
+      controls.className='token-controls';
+      controls.style.position='relative';
+      controls.style.zIndex='1';
+      
+      const plusBtn=document.createElement('button');
+      plusBtn.className='token-btn plus';
+      plusBtn.textContent='+';
+      plusBtn.onclick=(e)=>{e.stopPropagation();addTokenToStack(i);};
+      controls.appendChild(plusBtn);
+      
+      const minusBtn=document.createElement('button');
+      minusBtn.className='token-btn';
+      minusBtn.textContent='−';
+      minusBtn.onclick=(e)=>{e.stopPropagation();removeTokenFromStack(i);};
+      controls.appendChild(minusBtn);
+      
+      const untapBtn=document.createElement('button');
+      untapBtn.className='token-btn';
+      untapBtn.textContent='↺';
+      untapBtn.onclick=(e)=>{e.stopPropagation();untapToken(i);};
+      controls.appendChild(untapBtn);
+      
+      card.appendChild(controls);
+      
+      // Counter badge (top-right)
+      const counter=document.createElement('div');
+      counter.style.cssText='position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.5);border:1px solid var(--c-accent-border);border-radius:6px;padding:4px 8px;font-size:10px;color:var(--c-gold);font-weight:600;font-family:system-ui;z-index:2;';
+      counter.textContent=`${token.attacking}/${token.count}`;
+      card.appendChild(counter);
+      
+      slot.appendChild(card);
+    } else {
+      slot.className='token-slot';
+      slot.onclick=()=>openTokenModal();
+      const plus=document.createElement('div');
+      plus.className='token-add-plus';
+      plus.textContent='+';
+      const prompt=document.createElement('div');
+      prompt.className='token-add-prompt';
+      prompt.textContent='Tap to add token';
+      slot.appendChild(plus);
+      slot.appendChild(prompt);
+    }
+    
+    grid.appendChild(slot);
+  }
+  
+  calculateTokenDamage();
+}
+
+function getTokenColor(color){
+  return CM[color]||{bg:'#888888',bc:'#666666'};
+}
+
+function incrementTokenAttack(index){
+  if(index<tokenPool.length){
+    const token=tokenPool[index];
+    token.attacking=(token.attacking||0)+1;
+    if(token.attacking>token.count){
+      token.attacking=0;
+    }
+    renderTokens();
+  }
+}
+
+function untapToken(index){
+  if(index<tokenPool.length){
+    tokenPool[index].attacking=0;
+    renderTokens();
+  }
+}
+
+function untapAllTokens(){
+  tokenPool.forEach(t=>t.attacking=0);
+  renderTokens();
+}
+
+function addTokenToStack(index){
+  if(index<tokenPool.length){
+    tokenPool[index].count=(tokenPool[index].count||1)+1;
+    renderTokens();
+  }
+}
+
+function removeTokenFromStack(index){
+  if(index<tokenPool.length){
+    tokenPool[index].count=(tokenPool[index].count||1)-1;
+    if(tokenPool[index].count<=0){
+      tokenPool.splice(index,1);
+    } else {
+      // Reset attacking count if it exceeds new stack size
+      if(tokenPool[index].attacking>tokenPool[index].count){
+        tokenPool[index].attacking=tokenPool[index].count;
+      }
+    }
+    renderTokens();
+  }
+}
+
+function setTokenMode(mode){
+  tokenMode=mode;
+  const attackBtn=document.getElementById('attackBtn');
+  const blockBtn=document.getElementById('blockBtn');
+  attackBtn.classList.toggle('active',mode==='attack');
+  blockBtn.classList.toggle('active',mode==='block');
+  calculateTokenDamage();
+}
+
+function calculateTokenDamage(){
+  const displayTitle=document.getElementById('tokenDamageTitle');
+  const displayAmount=document.getElementById('tokenDamageAmount');
+  const displayBreakdown=document.getElementById('tokenDamageBreakdown');
+  
+  if(tokenMode==='attack'){
+    displayTitle.textContent='Attacking Damage';
+    const attackingTokens=tokenPool.filter(t=>t.attacking>0);
+    const totalDamage=attackingTokens.reduce((sum,t)=>sum+(t.power*t.attacking),0);
+    
+    let breakdown='';
+    if(attackingTokens.length>0){
+      const parts=[];
+      
+      // Flying damage
+      const flyingDmg=attackingTokens.filter(t=>t.keywords.includes('flying')).reduce((sum,t)=>sum+(t.power*t.attacking),0);
+      if(flyingDmg>0)parts.push(`${flyingDmg} flying`);
+      
+      // Trample damage
+      const tramplDmg=attackingTokens.filter(t=>t.keywords.includes('trample')).reduce((sum,t)=>sum+(t.power*t.attacking),0);
+      if(tramplDmg>0)parts.push(`${tramplDmg} trample`);
+      
+      // Base damage (non-keyword)
+      const baseDmg=totalDamage-flyingDmg-tramplDmg;
+      if(baseDmg>0)parts.push(`${baseDmg} base damage`);
+      
+      if(parts.length>0)breakdown=parts.join(' + ');
+    }
+    
+    displayAmount.textContent=totalDamage;
+    displayBreakdown.textContent=breakdown||'No attacking tokens';
+  } else {
+    // BLOCK MODE
+    displayTitle.textContent='Blocking Power';
+    const blockingTokens=tokenPool.filter(t=>t.attacking>0);
+    
+    let breakdown='';
+    let totalPower=0,totalToughness=0;
+    
+    if(blockingTokens.length>0){
+      const parts=[];
+      blockingTokens.forEach(t=>{
+        const blockPower=t.power*t.attacking;
+        const blockToughness=t.toughness*t.attacking;
+        totalPower+=blockPower;
+        totalToughness+=blockToughness;
+        const name=t.name&&t.name!=='Token'?t.name:`${t.power}/${t.toughness}`;
+        parts.push(`${t.attacking}${t.attacking>1?'x':''} ${name}`);
+      });
+      breakdown=parts.join(', ')+` | Total: ${totalPower} power, ${totalToughness} toughness`;
+    }
+    
+    displayAmount.textContent=blockingTokens.reduce((sum,t)=>sum+t.attacking,0);
+    displayBreakdown.textContent=breakdown||'No blocking tokens';
+  }
 }
 
 buildManaGrid();
