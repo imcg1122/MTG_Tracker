@@ -781,9 +781,11 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
       <div class="fmt-btn active" onclick="setFormat('commander',this)">Commander</div>
       <div class="fmt-btn" onclick="setFormat('standard',this)">Standard</div>
       <div class="fmt-btn" onclick="setFormat('simple',this)">Mobile</div>
-      <div class="fmt-btn" onclick="setFormat('tokens',this)">Tokens</div>
       <div class="fmt-btn" onclick="setFormat('dungeon',this)">Dungeon</div>
       <div class="fmt-btn" onclick="setFormat('ring',this)">The Ring</div>
+      <div style="display:flex;gap:5px;align-items:center;margin-left:8px;border-left:1px solid var(--c-divider);padding-left:8px;" id="tokensAdjacentGroup">
+        <div class="fmt-btn" id="tokensBtn" onclick="setFormat('tokens',this)">Tokens</div>
+      </div>
       <div class="fmt-divider" style="margin-left:auto;"></div>
       <div class="fmt-btn" onclick="setFormat('lexicon',this)" style="margin-left:6px;">Lexicon</div>
       <div class="fmt-btn" onclick="setFormat('rules',this)">Rules</div>
@@ -2151,6 +2153,7 @@ function fmtHasActivity(f){
   if(s.cmdDmg&&Object.values(s.cmdDmg).some(v=>v>0))return true;
   if(s.diceHist&&s.diceHist.length>0)return true;
   if((s.storm||0)>0)return true;
+  if(f==='tokens'&&s.tokenPool&&s.tokenPool.length>0)return true;
   if(f==='dungeon'&&s.dungeonId)return true;
   if(f==='ring'&&(s.ringStage>-1||(s.ringBearer&&s.ringBearer.trim())))return true;
   // check current working state if this is the active format
@@ -2158,6 +2161,7 @@ function fmtHasActivity(f){
     if(life!==defaultLife||poison>0||xp>0||energy>0)return true;
     if(manaEntries.length>0||initiative||goaded||monarch||!isDay)return true;
     if(Object.values(cmdDmg).some(v=>v>0)||diceHist.length>0||storm>0)return true;
+    if(f==='tokens'&&tokenPool&&tokenPool.length>0)return true;
     if(f==='dungeon'&&dungeonId)return true;
     if(f==='ring'&&(ringStage>-1||(ringBearer&&ringBearer.trim())))return true;
     const nameEl=document.getElementById('ringBearerName');
@@ -2190,12 +2194,12 @@ function updateActivityBadges(){
     }
   }
 
-  // build desired order: [primaryFmt, dungeon, ring, ...remaining primaries, divider, lexicon, rules]
-  const originalOrder=['commander','standard','simple','dungeon','ring'];
+  // build desired order: [primaryFmt, tokens, dungeon, ring, ...remaining primaries, divider, inactive primaries, lexicon, rules]
+  const originalOrder=['commander','standard','simple','dungeon','ring','tokens'];
   let desired;
   if(primaryFmt){
     const remaining=primaries.filter(p=>p!==primaryFmt);
-    desired=[primaryFmt,'dungeon','ring',...remaining,'lexicon','rules'];
+    desired=[primaryFmt,'tokens','dungeon','ring',...remaining,'lexicon','rules'];
   } else {
     desired=[...originalOrder,'lexicon','rules'];
   }
@@ -2208,15 +2212,22 @@ function updateActivityBadges(){
     if(match)fmtToBtn[match[1]]=btn;
   });
 
-  // remove old divider
-  const existingDivider=group.querySelector('.fmt-divider');
-  if(existingDivider)existingDivider.remove();
+  // remove old dividers
+  group.querySelectorAll('.fmt-divider').forEach(d=>d.remove());
 
-  // append in desired order — add divider before lexicon to push right side to end
+  // append in desired order — add divider before first inactive board, and another before lexicon
+  let dividerAdded=false;
   desired.forEach((f,i)=>{
     if(fmtToBtn[f]){
-      // add divider before lexicon
-      if(f==='lexicon'&&i>0){
+      // add divider ONCE before first inactive board (appears after ring, before remaining primaries)
+      if((f==='commander'||f==='standard'||f==='simple')&&f!==primaryFmt&&!dividerAdded){
+        const div=document.createElement('div');
+        div.className='fmt-divider';
+        group.appendChild(div);
+        dividerAdded=true;
+      }
+      // add divider before lexicon to push it and rules to the right
+      if(f==='lexicon'){
         const div=document.createElement('div');
         div.className='fmt-divider';
         div.style.marginLeft='auto';
@@ -2446,13 +2457,6 @@ function setFormat(f,el){
     b.classList.remove('active');
     if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+f+"'"))b.classList.add('active');
   });
-  
-  // Move Tokens button next to active board (commander, standard, or simple)
-  const tokenBtn=document.querySelector('[onclick*="tokens"]');
-  const activeBtn=document.querySelector('.fmt-btn.active');
-  if(tokenBtn && activeBtn && (f==='commander'||f==='standard'||f==='simple')){
-    activeBtn.parentNode.insertBefore(tokenBtn, activeBtn.nextSibling);
-  }
   
   loadState();
   const simple=f==='simple';
