@@ -92,9 +92,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .lexicon-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:1;}
 .mat.lexicon-mode .lexicon-screen{display:flex;}
 .mat.lexicon-mode .main-grid,
-.mat.lexicon-mode .bot-grid,
-.mat.lexicon-mode .top-strip .theme-btn,
-.mat.lexicon-mode .top-strip .reset-btn{display:none!important;}
+.mat.lexicon-mode .bot-grid{display:none!important;}
 .mat.lexicon-mode .top-strip{margin-bottom:12px;}
 
 .lexicon-search{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
@@ -142,18 +140,46 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .token-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(180,140,60,0.08) 0%,transparent 60%);pointer-events:none;}
 .token-card.tapped{opacity:0.6;transform:none;}
 .token-card:hover:not(.tapped){border-color:var(--c-accent-border);}
-.token-info{position:relative;z-index:1;}
-.token-pt{font-size:18px;font-weight:700;color:var(--c-gold);text-align:center;margin-bottom:4px;font-family:Georgia,serif;text-shadow:0 1px 3px rgba(0,0,0,0.5);background:rgba(0,0,0,0.25);padding:4px 8px;border-radius:4px;}
-.token-keywords{font-size:8px;color:rgba(210,170,90,0.85);text-align:center;line-height:1.3;text-transform:uppercase;letter-spacing:.05em;text-shadow:0 1px 2px rgba(0,0,0,0.3);background:rgba(0,0,0,0.2);padding:3px 6px;border-radius:3px;}
-.token-controls{display:flex;gap:6px;justify-content:center;position:relative;z-index:2;}
+.token-info{background:rgba(0,0,0,0.5);border-radius:8px;padding:10px 12px;text-align:center;position:relative;z-index:1;}
+.token-name{font-size:20px;font-weight:400;color:#f0d080;font-family:system-ui,-apple-system,sans-serif;margin-bottom:2px;line-height:1;}
+.token-pt{font-size:18px;font-weight:700;color:#f0d080;text-align:center;margin-bottom:3px;font-family:Georgia,serif;line-height:1;}
+.token-keywords{font-size:8px;color:rgba(210,170,90,0.85);text-align:center;line-height:1.3;text-transform:uppercase;letter-spacing:.05em;}
+.token-counter{flex:0 0 auto;width:28px;height:28px;border-radius:5px;border:1px solid rgba(0,0,0,0.5);background:rgba(0,0,0,0.4);color:#f0d080;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;user-select:none;box-shadow:0 2px 4px rgba(0,0,0,0.6);}
+.token-controls{display:flex;gap:6px;justify-content:center;align-items:center;position:relative;z-index:2;}
 .token-btn{flex:0 0 auto;width:28px;height:28px;border-radius:5px;border:1px solid rgba(0,0,0,0.5);background:rgba(0,0,0,0.4);color:#f0d080;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;transition:all .15s;font-weight:700;box-shadow:0 2px 4px rgba(0,0,0,0.6);}
 .token-btn:active{background:rgba(0,0,0,0.6);box-shadow:0 1px 2px rgba(0,0,0,0.8);}
 .token-btn.plus{font-weight:700;}
 .token-color-indicator{width:8px;height:8px;border-radius:50%;margin-left:4px;}
-.token-damage-display{background:rgba(0,0,0,0.2);border:1px solid var(--c-card-border);border-radius:10px;padding:12px;margin-bottom:12px;}
-.token-damage-title{font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:600;}
-.token-damage-main{font-size:20px;font-weight:700;color:var(--c-gold);margin-bottom:6px;}
+.token-damage-display{background:rgba(0,0,0,0.2);border:1px solid var(--c-card-border);border-radius:10px;padding:12px;width:140px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;}
+.token-damage-title{font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.token-damage-main{font-size:20px;font-weight:700;color:var(--c-gold);}
 .token-damage-breakdown{font-size:9px;color:rgba(210,170,90,0.75);line-height:1.4;}
+
+/* ── COMBAT AREA ── */
+.tokens-top-row{display:grid;grid-template-columns:auto 1fr;gap:12px;margin-bottom:12px;align-items:stretch;}
+.combat-area-container{background:rgba(0,0,0,0.2);border:1px solid var(--c-card-border);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.combat-area-header{font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.combat-area-icons{display:flex;gap:6px;align-items:center;flex-wrap:wrap;min-height:48px;padding:8px;background:rgba(0,0,0,0.15);border:1px dashed rgba(180,140,60,0.2);border-radius:8px;flex:1;}
+.combat-area-empty{color:rgba(210,170,90,0.35);font-size:9px;text-transform:uppercase;letter-spacing:.06em;font-style:italic;}
+.combat-icon{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:48px;height:48px;border-radius:6px;background:rgba(0,0,0,0.3);border:1px solid var(--c-card-border);cursor:pointer;transition:all .15s;user-select:none;padding:3px;overflow:visible;}
+.combat-icon.greyed-out{opacity:0.6;}
+.combat-icon-bg-left{position:absolute;inset:0;left:0;right:50%;border-radius:6px 0 0 6px;}
+.combat-icon-bg-right{position:absolute;inset:0;left:50%;right:0;border-radius:0 6px 6px 0;}
+.combat-icon-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;}
+.combat-icon-wrapper{position:relative;display:inline-flex;flex-direction:column;align-items:center;}
+.combat-icon-pt{font-size:11px;font-weight:600;font-family:Georgia,serif;color:var(--c-gold);line-height:1.2;text-align:center;letter-spacing:0.5px;}
+.combat-state-icon{font-size:16px;line-height:1;margin-top:2px;width:18px;height:18px;display:flex;align-items:center;justify-content:center;color:inherit;}
+.combat-icon[data-color="w"] .combat-state-icon{color:#2a1e00;}
+.combat-icon[data-color="u"] .combat-state-icon{color:#d0e8ff;}
+.combat-icon[data-color="b"] .combat-state-icon{color:#d0a8f0;}
+.combat-icon[data-color="r"] .combat-state-icon{color:#ffe0d0;}
+.combat-icon[data-color="g"] .combat-state-icon{color:#c0f0c0;}
+.combat-icon[data-color="c"] .combat-state-icon{color:#f0e8e0;}
+.combat-icon[data-color="hybrid"] .combat-state-icon{color:#e0d8d0;}
+.combat-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.combat-instructions{font-size:9px;color:rgba(210,170,90,0.6);text-transform:uppercase;letter-spacing:.05em;font-style:italic;flex:1;}
+.end-combat-btn{font-size:9px;padding:6px 12px;border-radius:7px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;transition:all .2s;white-space:nowrap;}
+.end-combat-btn:active{background:var(--c-btn-active);}
 
 /* Token Config Modal */
 .token-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
@@ -322,8 +348,9 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .fmt-btn.active{background:var(--c-accent);border-color:var(--c-accent-border);color:var(--c-gold);}
 .fmt-btn.has-activity:not(.active){border-color:rgba(180,140,60,0.55);color:rgba(210,170,90,0.75);}
 .fmt-btn.has-activity:not(.active)::after{content:'';position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:#c8a030;}
-.fmt-divider{width:1px;height:16px;background:rgba(180,140,60,0.25);flex-shrink:0;transition:opacity .25s;}
+.fmt-divider{width:1px;height:16px;background:rgba(180,140,60,0.25);flex-shrink:0;transition:opacity .25s;display:none;}
 .fmt-divider.hidden{display:none;}
+.fmt-divider.show{display:block;}
 .reset-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid rgba(200,80,60,0.4);color:rgba(220,100,80,0.65);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;background:transparent;user-select:none;}
 .reset-btn:active{background:rgba(200,80,60,0.18);}
 .theme-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;background:transparent;user-select:none;display:flex;align-items:center;gap:4px;}
@@ -565,6 +592,23 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   box-shadow:0 0 14px 5px currentColor;
 }
 
+/* Token burst — landscape shaped to match token card aspect ratio */
+@keyframes token-burst-fixed {
+  0%   { transform:translate(-50%,-50%) scale(0.5); opacity:1; }
+  50%  { transform:translate(-50%,-50%) scale(1.6); opacity:0.6; }
+  100% { transform:translate(-50%,-50%) scale(2.4); opacity:0; }
+}
+.token-burst-fixed {
+  position:fixed;
+  width:140px;height:80px;
+  border-radius:8px;
+  border:3px solid currentColor;
+  pointer-events:none;
+  animation:token-burst-fixed 0.5s ease-out forwards;
+  z-index:9999;
+  box-shadow:0 0 14px 5px currentColor;
+}
+
 /* Counter pop-up effects */
 @keyframes counter-pop {
   0%   { opacity:1; transform:translateX(-50%) translateY(0) scale(0.7); }
@@ -783,9 +827,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
       <div class="fmt-btn" onclick="setFormat('simple',this)">Mobile</div>
       <div class="fmt-btn" onclick="setFormat('dungeon',this)">Dungeon</div>
       <div class="fmt-btn" onclick="setFormat('ring',this)">The Ring</div>
-      <div style="display:flex;gap:5px;align-items:center;margin-left:8px;border-left:1px solid var(--c-divider);padding-left:8px;" id="tokensAdjacentGroup">
-        <div class="fmt-btn" id="tokensBtn" onclick="setFormat('tokens',this)">Tokens</div>
-      </div>
+      <div class="fmt-btn" id="tokensBtn" onclick="setFormat('tokens',this)">Tokens</div>
       <div class="fmt-divider" style="margin-left:auto;"></div>
       <div class="fmt-btn" onclick="setFormat('lexicon',this)" style="margin-left:6px;">Lexicon</div>
       <div class="fmt-btn" onclick="setFormat('rules',this)">Rules</div>
@@ -1106,10 +1148,24 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
   <!-- tokens screen — create and track token creatures -->
   <div id="tokensPanel" class="tokens-screen">
-    <div class="token-damage-display" id="tokenDamageDisplay">
-      <div class="token-damage-title" id="tokenDamageTitle">Attacking Damage</div>
-      <div class="token-damage-main" id="tokenDamageAmount">0</div>
-      <div class="token-damage-breakdown" id="tokenDamageBreakdown"></div>
+    <div class="tokens-top-row">
+      <!-- Left: Attacking Damage -->
+      <div class="token-damage-display" id="tokenDamageDisplay">
+        <div class="token-damage-title" id="tokenDamageTitle">Attacking Damage</div>
+        <div class="token-damage-main" id="tokenDamageAmount">0</div>
+        <div class="token-damage-breakdown" id="tokenDamageBreakdown"></div>
+      </div>
+      <!-- Right: Combat Area -->
+      <div class="combat-area-container">
+        <div class="combat-area-header">Combat Area</div>
+        <div class="combat-area-icons" id="combatAreaIcons">
+          <div class="combat-area-empty">No tokens in combat</div>
+        </div>
+        <div class="combat-footer">
+          <div class="combat-instructions">Tap 1 to exhaust, tap 2 to block, tap 3 to kill</div>
+          <button class="end-combat-btn" onclick="endCombatPhase()">End Combat</button>
+        </div>
+      </div>
     </div>
     <div class="tokens-header">
       <div style="display:flex;align-items:center;gap:8px;">
@@ -1274,7 +1330,10 @@ const ICONS={
   r:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20 L8 10 L11 14 L14 8 L21 20 Z"/><path d="M3 20 L21 20"/></svg>`,
   g:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22 L12 8"/><path d="M12 8 C12 8 6 10 5 4 C5 4 11 3 12 8 Z"/><path d="M12 13 C12 13 18 11 19 5 C19 5 13 4 12 13 Z"/><path d="M9 22 L15 22"/></svg>`,
   c:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L20 9 L17 20 L7 20 L4 9 Z"/><line x1="12" y1="3" x2="12" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/></svg>`,
-  hybrid:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3 C9 6 7 9 7 12 C7 15 9 18 12 21"/><path d="M12 3 C15 6 17 9 17 12 C17 15 15 18 12 21"/></svg>`
+  hybrid:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3 C9 6 7 9 7 12 C7 15 9 18 12 21"/><path d="M12 3 C15 6 17 9 17 12 C17 15 15 18 12 21"/></svg>`,
+  exhausted:`<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2 L16 2 L12 9 L16 16 L4 16 L8 9 L4 2 Z"/><line x1="10" y1="8" x2="10" y2="11" stroke-width="1.1"/></svg>`,
+  blocked:`<svg width="20" height="20" viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L20 7 L20 16 C20 21 12 25 12 25 C12 25 4 21 4 16 L4 7 Z"/><line x1="7" y1="11" x2="17" y2="11"/><line x1="7" y1="16" x2="17" y2="16"/></svg>`,
+  killed:`<svg width="20" height="20" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 1 L12 6 L12 16 L8 16 L8 6 Z"/><line x1="6" y1="16" x2="14" y2="16" stroke-width="1.5"/><line x1="10" y1="16" x2="10" y2="23"/><circle cx="10" cy="23" r="1.2" fill="currentColor"/></svg>`
 };
 const CM={
   w:{label:'White',name:'Plains',   bg:'#d4c98a',bc:'#c8b870',text:'#2a1e00',themeBg:'#1e1a08',themeBorder:'#c8b060',themeAccent:'#a89040',themeGold:'#f0d890'},
@@ -1355,9 +1414,9 @@ function spawnPop(anchorId,emoji,color){
   anchor.appendChild(pop);
   pop.addEventListener('animationend',()=>pop.remove());
 }
-function adjPoison(d){poison=Math.max(0,poison+d);const num=document.getElementById('poisonNum');const btn=document.getElementById('poisonBtn');const lbl=btn.querySelector('.hrow-lbl');if(poison>=10){num.textContent='DEAD';num.style.color='#ff4444';btn.style.background='rgba(180,50,50,0.35)';btn.style.borderColor='rgba(220,80,80,0.65)';if(lbl)lbl.style.color='#ff6666';}else{num.textContent=poison;num.style.color='#80e080';btn.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';btn.style.borderColor='';if(lbl)lbl.style.color='';}if(d>0)spawnPop('poisonBtn','☠️','#80e080');}
+function adjPoison(d){poison=Math.max(0,poison+d);const num=document.getElementById('poisonNum');const btn=document.getElementById('poisonBtn');const lbl=btn.querySelector('.hrow-lbl');if(poison>=10){num.textContent='DEAD';num.style.color='#ff4444';btn.style.background='rgba(180,50,50,0.35)';btn.style.borderColor='rgba(220,80,80,0.65)';if(lbl)lbl.style.color='#ff6666';}else{num.textContent=poison;num.style.color='#80e080';btn.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';btn.style.borderColor='';if(lbl)lbl.style.color='';}if(d>0)spawnPop('poisonBtn','☠️','#80e080');updateActivityBadges();}
 function resetPoison(){poison=0;const btn=document.getElementById('poisonBtn');const num=document.getElementById('poisonNum');const lbl=btn.querySelector('.hrow-lbl');if(btn){btn.style.background='transparent';btn.style.borderColor='';}num.textContent=0;num.style.color='#80e080';if(lbl)lbl.style.color='';}
-function adjXp(d){xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;const btn=document.getElementById('xpBtn');btn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');}
+function adjXp(d){xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;const btn=document.getElementById('xpBtn');btn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');updateActivityBadges();}
 function resetXp(){xp=0;const btn=document.getElementById('xpBtn');if(btn)btn.style.background='transparent';document.getElementById('xpNum').textContent=0;}
 function adjLife(d){
   life=Math.max(0,life+d);
@@ -1378,15 +1437,16 @@ function adjLife(d){
     wrap.appendChild(heal);
     heal.addEventListener('animationend',()=>heal.remove());
   }
+  updateActivityBadges();
 }
 
 function eKey(t,a,b){return t==='mono'?a:'h:'+[a,b].sort().join('');}
-function addCol(c){const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}renderMana();}
-function removeCol(c){const k=eKey('mono',c),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();}
-function addHybrid(c1,c2){const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0});}renderMana();}
-function removeHybrid(c1,c2){const k=eKey('hybrid',c1,c2),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();}
-function untapEntry(idx){manaEntries[idx].spent=0;renderMana();}
-function untapAll(){manaEntries.forEach((_,i)=>manaEntries[i].spent=0);renderMana();}
+function addCol(c){const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}renderMana();updateActivityBadges();}
+function removeCol(c){const k=eKey('mono',c),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();updateActivityBadges();}
+function addHybrid(c1,c2){const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0});}renderMana();updateActivityBadges();}
+function removeHybrid(c1,c2){const k=eKey('hybrid',c1,c2),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();updateActivityBadges();}
+function untapEntry(idx){manaEntries[idx].spent=0;renderMana();updateActivityBadges();}
+function untapAll(){manaEntries.forEach((_,i)=>manaEntries[i].spent=0);renderMana();updateActivityBadges();}
 function clearMana(){manaEntries=[];renderMana();}
 
 function renderMana(){
@@ -1508,7 +1568,7 @@ function addColToSlot(c,slotIdx){
     if(existing){existing.total++;}
     else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}
   }
-  renderMana();
+  renderMana();updateActivityBadges();
 }
 
 function renderCmd(){
@@ -1589,14 +1649,15 @@ function toggleInit(){
   const icon=card.querySelector('.init-icon-el');
   if(icon)icon.style.opacity=initiative?'1':'0.35';
   document.getElementById('initState').textContent=initiative?'Holding':'Not held';
+  updateActivityBadges();
 }
-function toggleGoaded(){goaded=!goaded;applyGoadedUI();}
-function resetGoaded(){goaded=false;applyGoadedUI();}
+function toggleGoaded(){goaded=!goaded;applyGoadedUI();updateActivityBadges();}
+function resetGoaded(){goaded=false;applyGoadedUI();updateActivityBadges();}
 
-function adjStorm(d){storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;const btn=document.getElementById('stormCard');btn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(d>0)spawnPop('stormCard','⚡','#90c8ff');}
-function resetStorm(){storm=0;const btn=document.getElementById('stormCard');if(btn)btn.style.background='transparent';document.getElementById('stormFace').textContent=0;}
+function adjStorm(d){storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;const btn=document.getElementById('stormCard');btn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(d>0)spawnPop('stormCard','⚡','#90c8ff');updateActivityBadges();}
+function resetStorm(){storm=0;const btn=document.getElementById('stormCard');if(btn)btn.style.background='transparent';document.getElementById('stormFace').textContent=0;updateActivityBadges();}
 
-function toggleMonarch(){monarch=!monarch;applyMonarchUI();}
+function toggleMonarch(){monarch=!monarch;applyMonarchUI();updateActivityBadges();}
 function applyMonarchUI(){
   const card=document.getElementById('monarchCard');
   const icon=document.getElementById('monarchIcon');
@@ -1641,6 +1702,7 @@ function roll(n){
     face.textContent=result;
     hist.textContent=diceHist.slice(1).join(' · ');
     face.addEventListener('animationend',()=>{face.className='dice-face';},{ once:true });
+    updateActivityBadges();
   },1500);
 }
 
@@ -2220,16 +2282,17 @@ function updateActivityBadges(){
   desired.forEach((f,i)=>{
     if(fmtToBtn[f]){
       // add divider ONCE before first inactive board (appears after ring, before remaining primaries)
-      if((f==='commander'||f==='standard'||f==='simple')&&f!==primaryFmt&&!dividerAdded){
+      // Only add this divider if a primary format is active
+      if(primaryFmt && (f==='commander'||f==='standard'||f==='simple')&&f!==primaryFmt&&!dividerAdded){
         const div=document.createElement('div');
-        div.className='fmt-divider';
+        div.className='fmt-divider show';
         group.appendChild(div);
         dividerAdded=true;
       }
-      // add divider before lexicon to push it and rules to the right
+      // add divider before lexicon to push it and rules to the right — always visible
       if(f==='lexicon'){
         const div=document.createElement('div');
-        div.className='fmt-divider';
+        div.className='fmt-divider show';
         div.style.marginLeft='auto';
         group.appendChild(div);
       }
@@ -2565,6 +2628,7 @@ const KEYWORD_DATA={
 let tokenModalPower=1,tokenModalToughness=1;
 let tokenModalColors=['w']; // Array for multi-color support
 let tokenMode='attack'; // 'attack' or 'block'
+let combatArea=[]; // Array of combat references: {tokenIndex, blocked, killed}
 
 function openTokenModal(){
   tokenModalPower=1;
@@ -2663,7 +2727,7 @@ function confirmTokenCreate(){
     tokenPool[existingIdx].count=(tokenPool[existingIdx].count||1)+1;
   } else {
     // New token type
-    const newToken={power,toughness,colors,keywords,name,count:1,attacking:0};
+    const newToken={power,toughness,colors,keywords,name,count:1,attacking:undefined};
     if(tokenPool.length<8){
       tokenPool.push(newToken);
     }
@@ -2709,20 +2773,16 @@ function renderTokens(){
       
       const info=document.createElement('div');
       info.className='token-info';
-      info.style.position='relative';
-      info.style.zIndex='1';
+      
+      const nm=document.createElement('div');
+      nm.className='token-name';
+      nm.textContent=token.name && token.name!=='Token'?token.name:'Token Creature';
+      info.appendChild(nm);
       
       const pt=document.createElement('div');
       pt.className='token-pt';
       pt.textContent=`${token.power}/${token.toughness}`;
       info.appendChild(pt);
-      
-      if(token.name && token.name!=='Token'){
-        const nm=document.createElement('div');
-        nm.style.cssText=`font-size:9px;color:rgba(210,170,90,0.7);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;`;
-        nm.textContent=token.name;
-        info.appendChild(nm);
-      }
       
       if(token.keywords.length>0){
         const kw=document.createElement('div');
@@ -2756,13 +2816,17 @@ function renderTokens(){
       untapBtn.onclick=(e)=>{e.stopPropagation();untapToken(i);};
       controls.appendChild(untapBtn);
       
+      const counter=document.createElement('div');
+      counter.className='token-counter';
+      counter.textContent=`${token.attacking!==undefined?token.attacking:token.count}/${token.count}`;
+      controls.appendChild(counter);
+      
       card.appendChild(controls);
       
-      // Counter badge (top-right)
-      const counter=document.createElement('div');
-      counter.style.cssText='position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.5);border:1px solid var(--c-accent-border);border-radius:6px;padding:4px 8px;font-size:10px;color:var(--c-gold);font-weight:600;font-family:system-ui;z-index:2;';
-      counter.textContent=`${token.attacking}/${token.count}`;
-      card.appendChild(counter);
+      // Apply tapped styling when all tokens are tapped (attacking === 0)
+      if(token.attacking===0){
+        card.classList.add('tapped');
+      }
       
       slot.appendChild(card);
     } else {
@@ -2791,24 +2855,67 @@ function getTokenColor(color){
 function incrementTokenAttack(index){
   if(index<tokenPool.length){
     const token=tokenPool[index];
-    token.attacking=(token.attacking||0)+1;
-    if(token.attacking>token.count){
-      token.attacking=0;
+    
+    // Count ALL mini tokens already in combat for this token
+    const currentCombatCount=combatArea.filter(c=>c.tokenIndex===index).length;
+    
+    // If we're already at capacity, don't allow adding more
+    if(currentCombatCount>=token.count){
+      // At or over capacity - don't do anything
+      return;
     }
+    
+    // We have space, add one more mini token
+    // Create burst effect
+    const grid=document.getElementById('tokensGrid');
+    const slots=grid.querySelectorAll('.token-slot');
+    if(slots[index]){
+      const slot=slots[index];
+      const card=slot.querySelector('.token-card');
+      if(card){
+        const rect=card.getBoundingClientRect();
+        const burst=document.createElement('div');
+        burst.className='token-burst-fixed';
+        // Use first color for burst, or hybrid gold if multiple colors
+        if(token.colors.length>1){
+          burst.style.color='rgba(200,160,255,0.85)';
+        } else {
+          burst.style.color=CM[token.colors[0]]?.bc||'rgba(200,160,255,0.85)';
+        }
+        burst.style.left=(rect.left+rect.width/2)+'px';
+        burst.style.top=(rect.top+rect.height/2)+'px';
+        document.body.appendChild(burst);
+        burst.addEventListener('animationend',()=>burst.remove());
+      }
+    }
+    
+    // Add ONE more mini token with unblocked state
+    combatArea.push({tokenIndex:index,state:'unblocked'});
+    
+    // Update attacking state to reflect how many are now in combat
+    const newCombatCount=currentCombatCount+1;
+    token.attacking=token.count-newCombatCount;
+    
     renderTokens();
+    renderCombatArea();
   }
 }
 
 function untapToken(index){
   if(index<tokenPool.length){
-    tokenPool[index].attacking=0;
+    tokenPool[index].attacking=undefined;
+    // Remove this token from combat area
+    combatArea=combatArea.filter(c=>c.tokenIndex!==index);
     renderTokens();
+    renderCombatArea();
   }
 }
 
 function untapAllTokens(){
-  tokenPool.forEach(t=>t.attacking=0);
+  tokenPool.forEach(t=>t.attacking=undefined);
+  combatArea=[]; // Clear combat area when untapping all
   renderTokens();
+  renderCombatArea();
 }
 
 function addTokenToStack(index){
@@ -2833,6 +2940,192 @@ function removeTokenFromStack(index){
   }
 }
 
+function renderCombatArea(){
+  const container=document.getElementById('combatAreaIcons');
+  if(!container)return;
+  
+  container.innerHTML='';
+  
+  if(combatArea.length===0){
+    container.innerHTML='<div class="combat-area-empty">No tokens in combat</div>';
+    return;
+  }
+  
+  combatArea.forEach((combat,combatAreaIdx)=>{
+    const tokenIndex=combat.tokenIndex;
+    if(tokenIndex<tokenPool.length){
+      const token=tokenPool[tokenIndex];
+      
+      // Wrapper for icon
+      const wrapper=document.createElement('div');
+      wrapper.className='combat-icon-wrapper';
+      // Set data attribute based on state for CSS styling
+      wrapper.setAttribute('data-state',combat.state||'unblocked');
+      
+      const icon=document.createElement('div');
+      icon.className='combat-icon';
+      // Apply state-based classes
+      if(combat.state==='exhausted' || combat.state==='blocked' || combat.state==='killed'){
+        icon.classList.add('greyed-out');
+      }
+      
+      // Set color attribute for icon visibility
+      if(token.colors.length>1){
+        icon.setAttribute('data-color','hybrid');
+      } else {
+        icon.setAttribute('data-color',token.colors[0]);
+      }
+      
+      // Apply background colors based on token colors
+      if(token.colors.length>1){
+        const c1=token.colors[0];
+        const c2=token.colors[1];
+        
+        const bgLeft=document.createElement('div');
+        bgLeft.className='combat-icon-bg-left';
+        bgLeft.style.background=CM[c1].bg;
+        icon.appendChild(bgLeft);
+        
+        const bgRight=document.createElement('div');
+        bgRight.className='combat-icon-bg-right';
+        bgRight.style.background=CM[c2].bg;
+        icon.appendChild(bgRight);
+      } else {
+        const color=token.colors[0];
+        icon.style.background=CM[color].bg;
+      }
+      
+      // Tap to cycle through states: unblocked -> exhausted -> blocked -> killed -> unblocked
+      icon.onclick=(e)=>{
+        e.stopPropagation();
+        if(combatAreaIdx<combatArea.length){
+          const states=['unblocked','exhausted','blocked','killed'];
+          const currentState=combatArea[combatAreaIdx].state||'unblocked';
+          const currentIdx=states.indexOf(currentState);
+          const nextIdx=(currentIdx+1)%states.length;
+          combatArea[combatAreaIdx].state=states[nextIdx];
+          renderCombatArea();
+          calculateTokenDamage();
+        }
+      };
+      
+      // Content wrapper for P/T and state icon
+      const content=document.createElement('div');
+      content.className='combat-icon-content';
+      
+      // Build P/T display
+      const pt=document.createElement('div');
+      pt.className='combat-icon-pt';
+      pt.textContent=`${token.power}/${token.toughness}`;
+      // Use black text for white tokens for contrast
+      if(token.colors[0]==='w'){
+        pt.style.color='#1a1a1a';
+      }
+      content.appendChild(pt);
+      
+      // Add state icon
+      const stateIcon=document.createElement('div');
+      stateIcon.className='combat-state-icon';
+      if(combat.state==='exhausted'){
+        stateIcon.innerHTML=ICONS.exhausted;
+      } else if(combat.state==='blocked'){
+        stateIcon.innerHTML=ICONS.blocked;
+      } else if(combat.state==='killed'){
+        stateIcon.innerHTML=ICONS.killed;
+      }
+      content.appendChild(stateIcon);
+      
+      icon.appendChild(content);
+      wrapper.appendChild(icon);
+      
+      container.appendChild(wrapper);
+    }
+  });
+  
+  calculateTokenDamage();
+}
+
+function endCombatPhase(){
+  if(combatArea.length===0)return;
+  
+  // Collect killed combat entries and track exhausted tokens BEFORE removal
+  const killedCombatIndices=[];
+  const exhaustedTokens={}; // Track original tokenIndices and count (including blocked->exhausted conversions)
+  const killedTokenCounts={}; // Track how many of each token type are killed
+  
+  combatArea.forEach((combat,combatIdx)=>{
+    if(combat.state==='killed'){
+      killedCombatIndices.push(combatIdx);
+      // Count how many of this token type are killed
+      if(!killedTokenCounts[combat.tokenIndex]){
+        killedTokenCounts[combat.tokenIndex]=0;
+      }
+      killedTokenCounts[combat.tokenIndex]++;
+    } else if(combat.state==='exhausted' || combat.state==='blocked'){
+      // Both exhausted and blocked (being converted to exhausted) count as tapped
+      if(!exhaustedTokens[combat.tokenIndex]){
+        exhaustedTokens[combat.tokenIndex]=0;
+      }
+      exhaustedTokens[combat.tokenIndex]++;
+    }
+  });
+  
+  // Remove killed tokens from pool (process in descending order to avoid index shifts)
+  const sortedKilledIndices=[...new Set(Object.keys(killedTokenCounts).map(k=>parseInt(k)))].sort((a,b)=>b-a);
+  sortedKilledIndices.forEach((tokenIdx)=>{
+    if(tokenIdx<tokenPool.length){
+      const numKilled=killedTokenCounts[tokenIdx];
+      tokenPool[tokenIdx].count=(tokenPool[tokenIdx].count||1)-numKilled;
+      if(tokenPool[tokenIdx].count<=0){
+        tokenPool.splice(tokenIdx,1);
+      }
+    }
+  });
+  
+  // Remove killed entries from combatArea
+  combatArea=combatArea.filter((c,idx)=>!killedCombatIndices.includes(idx));
+  
+  // Re-index combatArea after token pool changes
+  combatArea=combatArea.map(c=>{
+    let newIdx=c.tokenIndex;
+    // Adjust for each killed token that had a lower index
+    sortedKilledIndices.forEach(killedIdx=>{
+      if(killedIdx<c.tokenIndex){
+        newIdx--;
+      }
+    });
+    // Convert blocked to exhausted
+    if(c.state==='blocked'){
+      c.state='exhausted';
+    }
+    return {...c,tokenIndex:newIdx};
+  });
+  
+  // Tap exhausted tokens using adjusted indices
+  Object.keys(exhaustedTokens).forEach((tokenIdxStr)=>{
+    let tokenIdx=parseInt(tokenIdxStr);
+    
+    // Adjust for removed tokens
+    sortedKilledIndices.forEach(killedIdx=>{
+      if(killedIdx<tokenIdx){
+        tokenIdx--;
+      }
+    });
+    
+    if(tokenIdx<tokenPool.length){
+      const token=tokenPool[tokenIdx];
+      // Count ALL tokens in combat for this type that are exhausted or were blocked (now converted)
+      const totalExhausted=combatArea.filter(c=>c.tokenIndex===tokenIdx && c.state==='exhausted').length;
+      // Set attacking to the number of tokens NOT exhausted
+      token.attacking=token.count-totalExhausted;
+    }
+  });
+  
+  renderTokens();
+  renderCombatArea();
+  calculateTokenDamage();
+}
+
 function setTokenMode(mode){
   tokenMode=mode;
   const attackBtn=document.getElementById('attackBtn');
@@ -2849,58 +3142,79 @@ function calculateTokenDamage(){
   
   if(tokenMode==='attack'){
     displayTitle.textContent='Attacking Damage';
-    const attackingTokens=tokenPool.filter(t=>t.attacking>0);
-    const totalDamage=attackingTokens.reduce((sum,t)=>sum+(t.power*t.attacking),0);
+    // Calculate damage from exhausted tokens only
+    let totalDamage=0;
+    const damageBreakdown={flying:0, trample:0, base:0};
+    
+    tokenPool.forEach((t,idx)=>{
+      if(t.attacking===undefined || t.attacking>=t.count)return; // Skip untapped or wrapped
+      
+      // Count how many of this token type are exhausted in combat area
+      const exhaustedCount=combatArea.filter(c=>c.tokenIndex===idx && c.state==='exhausted').length;
+      
+      // Only add damage for exhausted tokens
+      if(exhaustedCount>0){
+        const dmg=t.power*exhaustedCount;
+        totalDamage+=dmg;
+        
+        // Track by keyword
+        if(t.keywords.includes('flying')){
+          damageBreakdown.flying+=dmg;
+        } else if(t.keywords.includes('trample')){
+          damageBreakdown.trample+=dmg;
+        } else {
+          damageBreakdown.base+=dmg;
+        }
+      }
+    });
     
     let breakdown='';
-    if(attackingTokens.length>0){
-      const parts=[];
-      
-      // Flying damage
-      const flyingDmg=attackingTokens.filter(t=>t.keywords.includes('flying')).reduce((sum,t)=>sum+(t.power*t.attacking),0);
-      if(flyingDmg>0)parts.push(`${flyingDmg} flying`);
-      
-      // Trample damage
-      const tramplDmg=attackingTokens.filter(t=>t.keywords.includes('trample')).reduce((sum,t)=>sum+(t.power*t.attacking),0);
-      if(tramplDmg>0)parts.push(`${tramplDmg} trample`);
-      
-      // Base damage (non-keyword)
-      const baseDmg=totalDamage-flyingDmg-tramplDmg;
-      if(baseDmg>0)parts.push(`${baseDmg} base damage`);
-      
-      if(parts.length>0)breakdown=parts.join(' + ');
-    }
+    const parts=[];
+    if(damageBreakdown.flying>0)parts.push(`${damageBreakdown.flying} flying`);
+    if(damageBreakdown.trample>0)parts.push(`${damageBreakdown.trample} trample`);
+    if(damageBreakdown.base>0)parts.push(`${damageBreakdown.base} base damage`);
+    if(parts.length>0)breakdown=parts.join(' + ');
     
     displayAmount.textContent=totalDamage;
     displayBreakdown.textContent=breakdown||'No attacking tokens';
   } else {
     // BLOCK MODE
     displayTitle.textContent='Blocking Power';
-    const blockingTokens=tokenPool.filter(t=>t.attacking>0);
-    
-    let breakdown='';
+    let totalBlockers=0;
     let totalPower=0,totalToughness=0;
+    const parts=[];
     
-    if(blockingTokens.length>0){
-      const parts=[];
-      blockingTokens.forEach(t=>{
-        const blockPower=t.power*t.attacking;
-        const blockToughness=t.toughness*t.attacking;
+    tokenPool.forEach((t,idx)=>{
+      if(t.attacking===undefined || t.attacking>=t.count)return; // Skip untapped or wrapped
+      
+      // Count how many of this token type are exhausted in combat area
+      const exhaustedCount=combatArea.filter(c=>c.tokenIndex===idx && c.state==='exhausted').length;
+      
+      // Only count exhausted tokens for blocking
+      if(exhaustedCount>0){
+        const blockPower=t.power*exhaustedCount;
+        const blockToughness=t.toughness*exhaustedCount;
+        totalBlockers+=exhaustedCount;
         totalPower+=blockPower;
         totalToughness+=blockToughness;
         const name=t.name&&t.name!=='Token'?t.name:`${t.power}/${t.toughness}`;
-        parts.push(`${t.attacking}${t.attacking>1?'x':''} ${name}`);
-      });
+        parts.push(`${exhaustedCount}${exhaustedCount>1?'x':''} ${name}`);
+      }
+    });
+    
+    let breakdown='';
+    if(parts.length>0){
       breakdown=parts.join(', ')+` | Total: ${totalPower} power, ${totalToughness} toughness`;
     }
     
-    displayAmount.textContent=blockingTokens.reduce((sum,t)=>sum+t.attacking,0);
+    displayAmount.textContent=totalBlockers;
     displayBreakdown.textContent=breakdown||'No blocking tokens';
   }
 }
 
 buildManaGrid();
 renderAll();
+renderCombatArea();
 
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
