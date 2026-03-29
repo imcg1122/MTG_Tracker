@@ -4,8 +4,6 @@ A single-file, zero-dependency browser-based game companion for Magic: The Gathe
 
 Designed for landscape use on tablets and phones, and scales cleanly on desktop. **Installable as an offline PWA (Progressive Web App)** on any device — play completely offline after the first visit.
 
-![Features Overview](#features)
-
 ## Quick Start
 
 1. **Online**: Visit [play-mtg.com](https://play-mtg.com) (or your GitHub Pages URL)
@@ -234,6 +232,18 @@ Quick lookup for **Standard and Commander** game rules:
 
 ---
 
+## 💝 Support This Project
+
+If you find MTG Playmat Universal helpful, consider supporting its development:
+
+[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/imcg1122)
+
+Or donate directly: https://ko-fi.com/imcg1122
+
+Your support helps fund bug fixes, new features, and ongoing maintenance!
+
+---
+
 ## Visual Effects & Animations
 
 | Effect | Trigger | Animation |
@@ -337,18 +347,6 @@ If you just want to use it on one device without hosting:
 | Firefox 88+ | ✅ Full | App runs, no PWA install |
 | Safari 15+ | ✅ Full | iOS 15+, PWA "Add to Home Screen" |
 | Samsung Internet | ✅ Full | PWA install |
-
----
-
-## 💝 Support This Project
-
-If you find MTG Playmat Universal helpful, consider supporting its development:
-
-[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/imcg1122)
-
-Or donate directly: https://ko-fi.com/imcg1122
-
-Your support helps fund bug fixes, new features, and ongoing maintenance!
 
 ---
 
