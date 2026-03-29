@@ -2667,12 +2667,13 @@ function resetAll(){
   primaryFmt=null;
   dungeonId=null;currentRoom=-1;dungeonPath=[];
   ringStage=-1;ringBearer='';
+  combatArea=[];
   loadState();
   applyDayNightUI();applyGoadedUI();
   renderAll();
   if(fmt==='dungeon')renderDungeon();
   if(fmt==='ring')renderRing();
-  if(fmt==='tokens')renderTokens();
+  if(fmt==='tokens'){renderTokens();renderCombatArea();}
   if(fmt==='lexicon')renderLexicon();
   if(fmt==='rules')renderRules();
   updateActivityBadges();
@@ -2999,12 +3000,24 @@ function untapAllTokens(){
 function addTokenToStack(index){
   if(index<tokenPool.length){
     tokenPool[index].count=(tokenPool[index].count||1)+1;
+    // New token is untapped, so increment attacking count
+    if(tokenPool[index].attacking!==undefined){
+      tokenPool[index].attacking+=1;
+    } else {
+      tokenPool[index].attacking=tokenPool[index].count;
+    }
     renderTokens();
   }
 }
 
 function removeTokenFromStack(index){
   if(index<tokenPool.length){
+    // Remove one combat entry for this token if any exist
+    const combatIdx=combatArea.findIndex(c=>c.tokenIndex===index);
+    if(combatIdx!==-1){
+      combatArea.splice(combatIdx,1);
+    }
+    
     tokenPool[index].count=(tokenPool[index].count||1)-1;
     if(tokenPool[index].count<=0){
       tokenPool.splice(index,1);
@@ -3015,6 +3028,7 @@ function removeTokenFromStack(index){
       }
     }
     renderTokens();
+    renderCombatArea();
   }
 }
 
