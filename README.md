@@ -1,8 +1,22 @@
-# MTG Playmat Universal
+# MTG Tracker
 
 A single-file, zero-dependency browser-based game companion for Magic: The Gathering. Open `index.html` in any modern browser — no install, no server, no account required.
 
 Designed for landscape use on tablets and phones, and scales cleanly on desktop. **Installable as an offline PWA (Progressive Web App)** on any device — play completely offline after the first visit.
+
+---
+
+## 💝 Support This Project
+
+If you find this helpful, consider supporting its development:
+
+[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/imcg1122)
+
+Or donate directly: https://ko-fi.com/imcg1122
+
+Your support helps fund bug fixes, new features, and ongoing maintenance!
+
+---
 
 ## Quick Start
 
@@ -232,18 +246,6 @@ Quick lookup for **Standard and Commander** game rules:
 
 ---
 
-## 💝 Support This Project
-
-If you find MTG Playmat Universal helpful, consider supporting its development:
-
-[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/imcg1122)
-
-Or donate directly: https://ko-fi.com/imcg1122
-
-Your support helps fund bug fixes, new features, and ongoing maintenance!
-
----
-
 ## Visual Effects & Animations
 
 | Effect | Trigger | Animation |
@@ -318,7 +320,7 @@ Once hosted, the app can be installed on **any device** and used **fully offline
 
 1. Open the URL in Chrome or Edge
 2. Look for the **install icon** in the address bar (a small monitor with a download arrow)
-   - Or open the browser menu and look for **"Install MTG Playmat"** or **"Install app"**
+   - Or open the browser menu and look for **"Install MTG Tracker"** or **"Install app"**
 3. Click **"Install"**
 4. App opens in its own window with no address bar
 
@@ -398,4 +400,4 @@ MIT — do whatever you want with it. Fork it, modify it, host it, share it.
 
 Open an issue on GitHub or reach out via Ko-fi. Contributions and suggestions are welcome!
 
-**Happy playtesting!** 🎲✨
+**Happy tracking!** 🎲✨
