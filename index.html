@@ -89,7 +89,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 
 /* ── LEXICON MODE ── */
-.lexicon-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:1;}
+.lexicon-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:0 0 auto;max-height:calc(100vh - 160px);overflow:hidden;}
 .mat.lexicon-mode .lexicon-screen{display:flex;}
 .mat.lexicon-mode .main-grid,
 .mat.lexicon-mode .bot-grid{display:none!important;}
@@ -107,7 +107,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .lexicon-jump-btn:hover{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.08);}
 
 /* ── RULES MODE ── */
-.rules-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:1;}
+.rules-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:0 0 auto;max-height:calc(100vh - 160px);overflow:hidden;}
 .mat.rules-mode .rules-screen{display:flex;}
 .mat.rules-mode .main-grid,
 .mat.rules-mode .bot-grid{display:none!important;}
@@ -152,8 +152,12 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .token-color-indicator{width:8px;height:8px;border-radius:50%;margin-left:4px;}
 .token-damage-display{background:rgba(0,0,0,0.2);border:1px solid var(--c-card-border);border-radius:10px;padding:12px;width:140px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;}
 .token-damage-title{font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
-.token-damage-main{font-size:20px;font-weight:700;color:var(--c-gold);}
+.token-damage-main{font-size:20px;font-weight:700;color:#ff4444;}
 .token-damage-breakdown{font-size:9px;color:rgba(210,170,90,0.75);line-height:1.4;}
+.token-life-divider{border-top:1px solid var(--c-divider);padding-top:8px;margin-top:8px;}
+.token-life-title{font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:4px;}
+.token-life-main{font-size:20px;font-weight:700;color:#44dd55;}
+.token-life-label{font-size:9px;color:rgba(210,170,90,0.75);line-height:1.4;}
 
 /* ── COMBAT AREA ── */
 .tokens-top-row{display:grid;grid-template-columns:auto 1fr;gap:12px;margin-bottom:12px;align-items:stretch;}
@@ -175,7 +179,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .combat-icon[data-color="r"] .combat-state-icon{color:#ffe0d0;}
 .combat-icon[data-color="g"] .combat-state-icon{color:#c0f0c0;}
 .combat-icon[data-color="c"] .combat-state-icon{color:#f0e8e0;}
-.combat-icon[data-color="hybrid"] .combat-state-icon{color:#e0d8d0;}
+.combat-icon[data-color="hybrid"] .combat-state-icon{color:#3a3a3a;text-shadow:0 0 2px rgba(255,255,255,0.6);}
 .combat-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .combat-instructions{font-size:9px;color:rgba(210,170,90,0.6);text-transform:uppercase;letter-spacing:.05em;font-style:italic;flex:1;}
 .end-combat-btn{font-size:9px;padding:6px 12px;border-radius:7px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;transition:all .2s;white-space:nowrap;}
@@ -221,7 +225,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .rules-rule strong{color:var(--c-gold);font-weight:600;}
 .lexicon-clear-btn:active{background:var(--c-btn-active);}
 
-.lexicon-content{display:grid;grid-template-columns:280px 1fr;gap:12px;flex:1;overflow:hidden;}
+.lexicon-content{display:grid;grid-template-columns:280px 1fr;gap:12px;flex:1;overflow:hidden;min-height:0;}
 .lexicon-list{border:1px solid var(--c-card-border);border-radius:10px;background:var(--c-inner);overflow-y:auto;display:flex;flex-direction:column;}
 .lexicon-item{padding:11px 12px;border-bottom:1px solid rgba(180,140,60,0.15);cursor:pointer;user-select:none;transition:all .15s;color:var(--c-muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-left:3px solid transparent;}
 .lexicon-item:last-child{border-bottom:none;}
@@ -575,6 +579,70 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .initiative-active .init-lbl { color:#90c8ff !important; }
 .initiative-active .init-state { color:rgba(140,200,255,0.8) !important; }
 
+/* Combat Token Glow Effects */
+
+/* Exhausted — gold breathing glow */
+/* Exhausted-Tapped — no glow, externally tapped */
+@keyframes token-attacking-glow {
+  0%,100%{box-shadow:0 0 8px 1px rgba(240,200,60,0.35),inset 0 0 6px rgba(240,200,60,0.08);}
+  50%{box-shadow:0 0 18px 4px rgba(240,200,60,0.65),inset 0 0 12px rgba(240,200,60,0.15);}
+}
+.combat-icon-wrapper[data-state="attacking"] .combat-icon {
+  animation: token-attacking-glow 2.2s ease-in-out infinite;
+}
+.combat-icon-wrapper[data-state="attacking"].glow-disabled .combat-icon {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+/* Exhausted — grey pulsing glow (combat exhaustion) */
+@keyframes token-exhausted-glow {
+  0%,100%{box-shadow:0 0 8px 2px rgba(150,150,150,0.35),inset 0 0 8px rgba(150,150,150,0.08);}
+  50%{box-shadow:0 0 18px 4px rgba(180,180,180,0.6),inset 0 0 14px rgba(180,180,180,0.15);}
+}
+.combat-icon-wrapper[data-state="exhausted"] .combat-icon {
+  animation: token-exhausted-glow 1.8s ease-in-out infinite;
+}
+.combat-icon-wrapper[data-state="exhausted"].glow-disabled .combat-icon {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+/* Exhausted-Tapped — grey pulsing glow (spell tapped) */
+.combat-icon-wrapper[data-state="exhausted-tapped"] .combat-icon {
+  animation: token-exhausted-glow 1.8s ease-in-out infinite;
+}
+.combat-icon-wrapper[data-state="exhausted-tapped"].glow-disabled .combat-icon {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+/* Blocked — blue pulsing glow */
+@keyframes token-blocked-glow {
+  0%,100%{box-shadow:0 0 8px 2px rgba(100,180,255,0.4),inset 0 0 8px rgba(100,180,255,0.1);}
+  50%{box-shadow:0 0 20px 5px rgba(120,200,255,0.7),inset 0 0 14px rgba(120,200,255,0.18);}
+}
+.combat-icon-wrapper[data-state="blocked"] .combat-icon {
+  animation: token-blocked-glow 1.8s ease-in-out infinite;
+}
+.combat-icon-wrapper[data-state="blocked"].glow-disabled .combat-icon {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+/* Killed — red pulsing glow */
+@keyframes token-killed-glow {
+  0%,100%{box-shadow:0 0 8px 2px rgba(220,80,60,0.4),inset 0 0 8px rgba(220,80,60,0.1);}
+  50%{box-shadow:0 0 20px 5px rgba(240,100,80,0.7),inset 0 0 14px rgba(240,100,80,0.18);}
+}
+.combat-icon-wrapper[data-state="killed"] .combat-icon {
+  animation: token-killed-glow 2s ease-in-out infinite;
+}
+.combat-icon-wrapper[data-state="killed"].glow-disabled .combat-icon {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
 /* Mana spend — fixed-position burst (survives DOM re-render) */
 @keyframes mana-burst-fixed {
   0%   { transform:translate(-50%,-50%) scale(0.5); opacity:1; }
@@ -725,7 +793,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   body{padding:clamp(8px,1.5vw,20px);}
   .wrap{padding:clamp(8px,1.5vw,20px);}
   .mat{padding:clamp(10px,1.5vw,16px);}
-  .mat-inner{padding:clamp(10px,1.5vw,14px);}
+  .mat-inner{padding:clamp(10px,1.5vw,14px);display:flex;flex-direction:column;}
 
   .main-grid{grid-template-columns:clamp(140px,16vw,200px) 1fr clamp(180px,22vw,240px);}
   .bot-grid{grid-template-columns:clamp(140px,16vw,200px);}
@@ -1154,15 +1222,23 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
         <div class="token-damage-title" id="tokenDamageTitle">Attacking Damage</div>
         <div class="token-damage-main" id="tokenDamageAmount">0</div>
         <div class="token-damage-breakdown" id="tokenDamageBreakdown"></div>
+        <div class="token-life-divider">
+          <div class="token-life-title">Life Gained</div>
+          <div class="token-life-main" id="tokenLifeGainAmount">0</div>
+          <div class="token-life-label" id="tokenLifeGainLabel">0 life added to life total</div>
+        </div>
       </div>
       <!-- Right: Combat Area -->
       <div class="combat-area-container">
-        <div class="combat-area-header">Combat Area</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div class="combat-area-header">Combat Area</div>
+          <div style="font-size:9px;color:rgba(210,170,90,0.6);font-style:italic;">Tap tokens in the token pool to add them to the combat area</div>
+        </div>
         <div class="combat-area-icons" id="combatAreaIcons">
           <div class="combat-area-empty">No tokens in combat</div>
         </div>
         <div class="combat-footer">
-          <div class="combat-instructions">Tap 1 to exhaust, tap 2 to block, tap 3 to kill</div>
+          <div class="combat-instructions">Tap 1 to attack, tap 2 to block, tap 3 to kill, tap 4 to exhaust</div>
           <button class="end-combat-btn" onclick="endCombatPhase()">End Combat</button>
         </div>
       </div>
@@ -1333,7 +1409,8 @@ const ICONS={
   hybrid:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3 C9 6 7 9 7 12 C7 15 9 18 12 21"/><path d="M12 3 C15 6 17 9 17 12 C17 15 15 18 12 21"/></svg>`,
   exhausted:`<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2 L16 2 L12 9 L16 16 L4 16 L8 9 L4 2 Z"/><line x1="10" y1="8" x2="10" y2="11" stroke-width="1.1"/></svg>`,
   blocked:`<svg width="20" height="20" viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L20 7 L20 16 C20 21 12 25 12 25 C12 25 4 21 4 16 L4 7 Z"/><line x1="7" y1="11" x2="17" y2="11"/><line x1="7" y1="16" x2="17" y2="16"/></svg>`,
-  killed:`<svg width="20" height="20" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 1 L12 6 L12 16 L8 16 L8 6 Z"/><line x1="6" y1="16" x2="14" y2="16" stroke-width="1.5"/><line x1="10" y1="16" x2="10" y2="23"/><circle cx="10" cy="23" r="1.2" fill="currentColor"/></svg>`
+  killed:`<svg width="20" height="20" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 1 L12 6 L12 16 L8 16 L8 6 Z"/><line x1="6" y1="16" x2="14" y2="16" stroke-width="1.5"/><line x1="10" y1="16" x2="10" y2="23"/><circle cx="10" cy="23" r="1.2" fill="currentColor"/></svg>`,
+  attacking:`⚔`
 };
 const CM={
   w:{label:'White',name:'Plains',   bg:'#d4c98a',bc:'#c8b870',text:'#2a1e00',themeBg:'#1e1a08',themeBorder:'#c8b060',themeAccent:'#a89040',themeGold:'#f0d890'},
@@ -2745,6 +2822,7 @@ function renderTokens(){
   for(let i=0;i<8;i++){
     const slot=document.createElement('div');
     slot.className='token-slot';
+    slot.setAttribute('data-token-index',i);
     
     if(i<tokenPool.length){
       const token=tokenPool[i];
@@ -2965,7 +3043,7 @@ function renderCombatArea(){
       const icon=document.createElement('div');
       icon.className='combat-icon';
       // Apply state-based classes
-      if(combat.state==='exhausted' || combat.state==='blocked' || combat.state==='killed'){
+      if(combat.state==='exhausted' || combat.state==='exhausted-tapped' || combat.state==='blocked' || combat.state==='killed'){
         icon.classList.add('greyed-out');
       }
       
@@ -2999,7 +3077,7 @@ function renderCombatArea(){
       icon.onclick=(e)=>{
         e.stopPropagation();
         if(combatAreaIdx<combatArea.length){
-          const states=['unblocked','exhausted','blocked','killed'];
+          const states=['unblocked','attacking','blocked','killed','exhausted-tapped'];
           const currentState=combatArea[combatAreaIdx].state||'unblocked';
           const currentIdx=states.indexOf(currentState);
           const nextIdx=(currentIdx+1)%states.length;
@@ -3026,12 +3104,16 @@ function renderCombatArea(){
       // Add state icon
       const stateIcon=document.createElement('div');
       stateIcon.className='combat-state-icon';
-      if(combat.state==='exhausted'){
-        stateIcon.innerHTML=ICONS.exhausted;
+      if(combat.state==='attacking'){
+        stateIcon.innerHTML=ICONS.attacking;
       } else if(combat.state==='blocked'){
         stateIcon.innerHTML=ICONS.blocked;
       } else if(combat.state==='killed'){
         stateIcon.innerHTML=ICONS.killed;
+      } else if(combat.state==='exhausted-tapped'){
+        stateIcon.innerHTML=ICONS.exhausted;
+      } else if(combat.state==='exhausted'){
+        stateIcon.innerHTML=ICONS.exhausted;
       }
       content.appendChild(stateIcon);
       
@@ -3052,6 +3134,7 @@ function endCombatPhase(){
   const killedCombatIndices=[];
   const exhaustedTokens={}; // Track original tokenIndices and count (including blocked->exhausted conversions)
   const killedTokenCounts={}; // Track how many of each token type are killed
+  let totalLifeGainFromCombat=0;
   
   combatArea.forEach((combat,combatIdx)=>{
     if(combat.state==='killed'){
@@ -3061,12 +3144,46 @@ function endCombatPhase(){
         killedTokenCounts[combat.tokenIndex]=0;
       }
       killedTokenCounts[combat.tokenIndex]++;
-    } else if(combat.state==='exhausted' || combat.state==='blocked'){
-      // Both exhausted and blocked (being converted to exhausted) count as tapped
+    } else if(combat.state==='attacking' || combat.state==='blocked'){
+      // Both attacking and blocked (being converted to exhausted) count as tapped
       if(!exhaustedTokens[combat.tokenIndex]){
         exhaustedTokens[combat.tokenIndex]=0;
       }
       exhaustedTokens[combat.tokenIndex]++;
+    }
+  });
+  
+  // Calculate life gain from lifelink tokens that dealt damage BEFORE any removal
+  combatArea.forEach((combat,combatIdx)=>{
+    const tokenIndex=combat.tokenIndex;
+    if(tokenIndex<tokenPool.length){
+      const token=tokenPool[tokenIndex];
+      // Lifelink heals from both attacking and blocked tokens
+      if(token.keywords.includes('lifelink') && (combat.state==='attacking' || combat.state==='blocked')){
+        totalLifeGainFromCombat+=token.power;
+      }
+    }
+  });
+  
+  // Trigger slash effects on killed tokens in combat area BEFORE rendering
+  killedCombatIndices.forEach((idx)=>{
+    const combatEntry=combatArea[idx];
+    if(combatEntry && combatEntry.tokenIndex<tokenPool.length){
+      const token=tokenPool[combatEntry.tokenIndex];
+      // Trigger slash on mini token in combat area
+      setTimeout(()=>{
+        const miniTokens=document.querySelectorAll('.combat-icon-wrapper[data-state="killed"] .combat-icon');
+        if(miniTokens.length>0){
+          miniTokens.forEach(miniToken=>{
+            const slash=document.createElement('div');
+            slash.className='life-slash';
+            if(!miniToken.style.position || miniToken.style.position==='static'){
+              miniToken.style.position='relative';
+            }
+            miniToken.appendChild(slash);
+          });
+        }
+      },0);
     }
   });
   
@@ -3075,6 +3192,20 @@ function endCombatPhase(){
   sortedKilledIndices.forEach((tokenIdx)=>{
     if(tokenIdx<tokenPool.length){
       const numKilled=killedTokenCounts[tokenIdx];
+      
+      // Trigger slash effect on parent token in pool BEFORE removal
+      setTimeout(()=>{
+        const tokenSlot=document.querySelector(`[data-token-index="${tokenIdx}"]`);
+        if(tokenSlot){
+          const slash=document.createElement('div');
+          slash.className='life-slash';
+          if(!tokenSlot.style.position || tokenSlot.style.position==='static'){
+            tokenSlot.style.position='relative';
+          }
+          tokenSlot.appendChild(slash);
+        }
+      },0);
+      
       tokenPool[tokenIdx].count=(tokenPool[tokenIdx].count||1)-numKilled;
       if(tokenPool[tokenIdx].count<=0){
         tokenPool.splice(tokenIdx,1);
@@ -3082,10 +3213,10 @@ function endCombatPhase(){
     }
   });
   
-  // Remove killed entries from combatArea
+  // Remove killed entries from combatArea (keep attacking/blocked/exhausted-tapped, convert attacking/blocked->exhausted)
   combatArea=combatArea.filter((c,idx)=>!killedCombatIndices.includes(idx));
   
-  // Re-index combatArea after token pool changes
+  // Re-index combatArea after token pool changes AND convert attacking/blocked to exhausted
   combatArea=combatArea.map(c=>{
     let newIdx=c.tokenIndex;
     // Adjust for each killed token that had a lower index
@@ -3094,10 +3225,11 @@ function endCombatPhase(){
         newIdx--;
       }
     });
-    // Convert blocked to exhausted
-    if(c.state==='blocked'){
+    // Convert attacking and blocked to exhausted for end of combat
+    if(c.state==='attacking' || c.state==='blocked'){
       c.state='exhausted';
     }
+    // exhausted-tapped stays as is (no conversion)
     return {...c,tokenIndex:newIdx};
   });
   
@@ -3114,16 +3246,46 @@ function endCombatPhase(){
     
     if(tokenIdx<tokenPool.length){
       const token=tokenPool[tokenIdx];
-      // Count ALL tokens in combat for this type that are exhausted or were blocked (now converted)
+      // Count tokens in combat for this type that are exhausted (after attacking/blocked->exhausted conversion)
       const totalExhausted=combatArea.filter(c=>c.tokenIndex===tokenIdx && c.state==='exhausted').length;
-      // Set attacking to the number of tokens NOT exhausted
+      // Set attacking to the number of tokens NOT exhausted (includes exhausted-tapped tokens as NOT exhausted)
       token.attacking=token.count-totalExhausted;
     }
   });
   
   renderTokens();
   renderCombatArea();
+  
+  // Disable glows on all remaining combat tokens by adding glow-disabled class
+  document.querySelectorAll('.combat-icon-wrapper[data-state]').forEach(wrapper=>{
+    if(wrapper.getAttribute('data-state')!=='unblocked'){
+      wrapper.classList.add('glow-disabled');
+    }
+  });
+  
   calculateTokenDamage();
+  
+  // Add life gained to the PRIMARY format (commander or standard), not tokens format
+  if(totalLifeGainFromCombat>0){
+    // Temporarily switch to the primary format to update its life total
+    const currentFormat=fmt;
+    const primaryFormat=fmtState.commander!==undefined?'commander':'standard';
+    
+    // Save current tokens state
+    saveState();
+    
+    // Switch to primary format, update life, and switch back
+    fmt=primaryFormat;
+    loadState();
+    adjLife(totalLifeGainFromCombat);
+    saveState();
+    
+    // Switch back to tokens format
+    fmt=currentFormat;
+    loadState();
+  }
+  
+  saveState();
 }
 
 function setTokenMode(mode){
@@ -3139,22 +3301,25 @@ function calculateTokenDamage(){
   const displayTitle=document.getElementById('tokenDamageTitle');
   const displayAmount=document.getElementById('tokenDamageAmount');
   const displayBreakdown=document.getElementById('tokenDamageBreakdown');
+  const displayLifeGain=document.getElementById('tokenLifeGainAmount');
+  const displayLifeLabel=document.getElementById('tokenLifeGainLabel');
   
   if(tokenMode==='attack'){
     displayTitle.textContent='Attacking Damage';
-    // Calculate damage from exhausted tokens only
+    // Calculate damage from attacking tokens only
     let totalDamage=0;
+    let totalLifeGain=0;
     const damageBreakdown={flying:0, trample:0, base:0};
     
     tokenPool.forEach((t,idx)=>{
       if(t.attacking===undefined || t.attacking>=t.count)return; // Skip untapped or wrapped
       
-      // Count how many of this token type are exhausted in combat area
-      const exhaustedCount=combatArea.filter(c=>c.tokenIndex===idx && c.state==='exhausted').length;
+      // Count how many of this token type are attacking in combat area
+      const attackingCount=combatArea.filter(c=>c.tokenIndex===idx && c.state==='attacking').length;
       
-      // Only add damage for exhausted tokens
-      if(exhaustedCount>0){
-        const dmg=t.power*exhaustedCount;
+      // Only add damage for attacking tokens
+      if(attackingCount>0){
+        const dmg=t.power*attackingCount;
         totalDamage+=dmg;
         
         // Track by keyword
@@ -3165,6 +3330,18 @@ function calculateTokenDamage(){
         } else {
           damageBreakdown.base+=dmg;
         }
+        
+        // Calculate lifelink gain from attacking tokens
+        if(t.keywords.includes('lifelink')){
+          totalLifeGain+=dmg;
+        }
+      }
+      
+      // Also check for lifelink on blocked tokens (they can still heal)
+      const blockedCount=combatArea.filter(c=>c.tokenIndex===idx && c.state==='blocked').length;
+      if(blockedCount>0 && t.keywords.includes('lifelink')){
+        const blockedHealing=t.power*blockedCount;
+        totalLifeGain+=blockedHealing;
       }
     });
     
@@ -3177,6 +3354,8 @@ function calculateTokenDamage(){
     
     displayAmount.textContent=totalDamage;
     displayBreakdown.textContent=breakdown||'No attacking tokens';
+    displayLifeGain.textContent=totalLifeGain;
+    displayLifeLabel.textContent=`${totalLifeGain} life added to life total`;
   } else {
     // BLOCK MODE
     displayTitle.textContent='Blocking Power';
