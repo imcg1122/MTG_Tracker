@@ -1246,8 +1246,8 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     <div class="tokens-header">
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="tokens-title">Token Pool</div>
-        <button class="mode-btn active" id="attackBtn" onclick="setTokenMode('attack')">⚔ Attack</button>
-        <button class="mode-btn" id="blockBtn" onclick="setTokenMode('block')">🛡 Block</button>
+        <button class="mode-btn active" id="attackBtn" onclick="setTokenMode('attack')">⚔ Attack Mode</button>
+        <button class="mode-btn" id="blockBtn" onclick="setTokenMode('block')">🛡 Block Mode</button>
       </div>
       <button class="untap-tokens-btn" onclick="untapAllTokens()">↺ Untap All</button>
     </div>
@@ -2655,7 +2655,7 @@ function applyGoadedUI(){
   }
 }
 function resetAll(){
-  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[]});
+  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack'});
   fmtState.commander={...defaultState(),life:40};
   fmtState.standard={...defaultState()};
   fmtState.simple={...defaultState()};
@@ -2668,6 +2668,8 @@ function resetAll(){
   dungeonId=null;currentRoom=-1;dungeonPath=[];
   ringStage=-1;ringBearer='';
   combatArea=[];
+  tokenMode='attack';
+  setTokenMode('attack');
   loadState();
   applyDayNightUI();applyGoadedUI();
   renderAll();
@@ -3172,8 +3174,12 @@ function endCombatPhase(){
     const tokenIndex=combat.tokenIndex;
     if(tokenIndex<tokenPool.length){
       const token=tokenPool[tokenIndex];
-      // Lifelink heals from both attacking and blocked tokens
-      if(token.keywords.includes('lifelink') && (combat.state==='attacking' || combat.state==='blocked')){
+      // Attack mode: lifelink heals from attacking and blocked tokens (attacking phase)
+      if(tokenMode==='attack' && token.keywords.includes('lifelink') && (combat.state==='attacking' || combat.state==='blocked')){
+        totalLifeGainFromCombat+=token.power;
+      }
+      // Block mode: lifelink heals from blocked and killed tokens (blocking phase)
+      if(tokenMode==='block' && token.keywords.includes('lifelink') && (combat.state==='blocked' || combat.state==='killed')){
         totalLifeGainFromCombat+=token.power;
       }
     }
@@ -3367,6 +3373,7 @@ function calculateTokenDamage(){
     if(parts.length>0)breakdown=parts.join(' + ');
     
     displayAmount.textContent=totalDamage;
+    displayAmount.style.color='#ff4444';
     displayBreakdown.textContent=breakdown||'No attacking tokens';
     displayLifeGain.textContent=totalLifeGain;
     displayLifeLabel.textContent=`${totalLifeGain} life added to life total`;
@@ -3375,23 +3382,31 @@ function calculateTokenDamage(){
     displayTitle.textContent='Blocking Power';
     let totalBlockers=0;
     let totalPower=0,totalToughness=0;
+    let totalLifeGain=0;
     const parts=[];
     
     tokenPool.forEach((t,idx)=>{
       if(t.attacking===undefined || t.attacking>=t.count)return; // Skip untapped or wrapped
       
-      // Count how many of this token type are exhausted in combat area
-      const exhaustedCount=combatArea.filter(c=>c.tokenIndex===idx && c.state==='exhausted').length;
+      // Count how many of this token type are blocked or killed in combat area
+      const blockedCount=combatArea.filter(c=>c.tokenIndex===idx && c.state==='blocked').length;
+      const killedCount=combatArea.filter(c=>c.tokenIndex===idx && c.state==='killed').length;
+      const blockingCount=blockedCount+killedCount;
       
-      // Only count exhausted tokens for blocking
-      if(exhaustedCount>0){
-        const blockPower=t.power*exhaustedCount;
-        const blockToughness=t.toughness*exhaustedCount;
-        totalBlockers+=exhaustedCount;
+      // Only count blocked/killed tokens for blocking
+      if(blockingCount>0){
+        const blockPower=t.power*blockingCount;
+        const blockToughness=t.toughness*blockingCount;
+        totalBlockers+=blockingCount;
         totalPower+=blockPower;
         totalToughness+=blockToughness;
         const name=t.name&&t.name!=='Token'?t.name:`${t.power}/${t.toughness}`;
-        parts.push(`${exhaustedCount}${exhaustedCount>1?'x':''} ${name}`);
+        parts.push(`${blockingCount}${blockingCount>1?'x':''} ${name}`);
+        
+        // Calculate lifelink gain from blocked/killed tokens
+        if(t.keywords.includes('lifelink')){
+          totalLifeGain+=blockPower;
+        }
       }
     });
     
@@ -3401,7 +3416,10 @@ function calculateTokenDamage(){
     }
     
     displayAmount.textContent=totalBlockers;
+    displayAmount.style.color='#4488ff';
     displayBreakdown.textContent=breakdown||'No blocking tokens';
+    displayLifeGain.textContent=totalLifeGain;
+    displayLifeLabel.textContent=`${totalLifeGain} life added to life total`;
   }
 }
 
