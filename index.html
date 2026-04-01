@@ -898,7 +898,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
       <div class="fmt-btn" id="tokensBtn" onclick="setFormat('tokens',this)">Tokens</div>
       <div class="fmt-divider" style="margin-left:auto;"></div>
       <div class="fmt-btn" onclick="setFormat('lexicon',this)" style="margin-left:6px;">Lexicon</div>
-      <div class="fmt-btn" onclick="setFormat('rules',this)">Rules</div>
+      <div class="fmt-btn" onclick="setFormat('rules',this)">Resources</div>
     </div>
     <div style="display:flex;gap:6px;align-items:center;">
       <div class="theme-btn" onclick="openTheme()">
@@ -1206,9 +1206,9 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     <div class="rules-header">
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <div class="rules-tab-btn active" onclick="switchRulesTab('standard')">Standard</div>
-        <div class="rules-tab-btn" onclick="switchRulesTab('modern')">Modern</div>
         <div class="rules-tab-btn" onclick="switchRulesTab('commander')">Commander</div>
-        <div class="rules-tab-btn" onclick="switchRulesTab('faq')">FAQ</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('faq')">Official Resources</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('appinfo')">App Info</div>
       </div>
     </div>
     <div class="rules-content" id="rulesContent"></div>
@@ -1441,6 +1441,12 @@ const fmtState={
   rules:    {life:0,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,activeTab:'standard',tokenPool:[],tokenMode:'attack'}
 };
 
+// ── Security: Sanitize user input to prevent HTML/XSS injection ──
+function sanitizeHTML(text){
+  const map={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};
+  return(text||'').replace(/[&<>"']/g,m=>map[m]);
+}
+
 function saveState(){
   const s=fmtState[fmt];
   s.life=life;s.poison=poison;s.xp=xp;s.energy=energy;
@@ -1451,7 +1457,11 @@ function saveState(){
   s.tokenPool=JSON.parse(JSON.stringify(tokenPool));
   s.tokenMode=tokenMode;
   if(fmt==='dungeon'){s.dungeonId=dungeonId;s.currentRoom=currentRoom;s.dungeonPath=[...dungeonPath];}
-  if(fmt==='ring'){s.ringStage=ringStage;s.ringBearer=document.getElementById('ringBearerName')?document.getElementById('ringBearerName').value:ringBearer;}
+  if(fmt==='ring'){
+    s.ringStage=ringStage;
+    const rawValue=document.getElementById('ringBearerName')?document.getElementById('ringBearerName').value:'';
+    s.ringBearer=sanitizeHTML(rawValue);
+  }
 }
 function loadState(){
   const s=fmtState[fmt];
@@ -2533,18 +2543,6 @@ const RULES_CONTENT={
       '<strong>Best for:</strong> New players, competitive play, frequent meta shifts'
     ]
   },
-  modern:{
-    title:'Modern Format Rules',
-    content:`Modern includes all cards from Mirrodin (2003) onward that are not banned. It\'s a more stable format for competitive play with a larger card pool than Standard.`,
-    rules:[
-      '<strong>Format:</strong> Uses cards from Mirrodin (2003) forward',
-      '<strong>Size:</strong> Minimum 60 cards',
-      '<strong>Copies:</strong> Maximum 4 copies of any card except Basic Lands',
-      '<strong>Banned List:</strong> Regularly maintained for balance',
-      '<strong>No Rotation:</strong> Cards don\'t leave the format',
-      '<strong>Best for:</strong> Competitive players, established decks, diverse strategies'
-    ]
-  },
   commander:{
     title:'Commander Format Rules',
     content:`Commander is a multiplayer format where each player picks a legendary creature as their commander. It\'s about fun, creativity, and social play.`,
@@ -2561,15 +2559,23 @@ const RULES_CONTENT={
   },
   faq:{
     title:'Frequently Asked Rules Questions',
-    content:`Common questions about Magic\'s rules and gameplay.`,
+    content:`Get answers to rules questions from official Wizards of the Coast sources.`,
     rules:[
-      '<strong>Can I respond to a spell?</strong> Yes, spells go on the stack and opponents have priority to cast instants and activate abilities.',
-      '<strong>What\'s the difference between Exile and Graveyard?</strong> Graveyard is a public zone you can access from. Exile is separate and cards there typically can\'t be accessed.',
-      '<strong>Does tapping a creature prevent it from blocking?</strong> No. Tapping only matters if a card specifically says "tap this creature."',
-      '<strong>What happens when a creature dies?</strong> It goes to the graveyard. Some effects can trigger when creatures die (death triggers).',
-      '<strong>Can I mulligan in Limited?</strong> Yes, you may mulligan the same as in Constructed, then shuffle to your library size.',
-      '<strong>Does damage reset between turns?</strong> Yes, unless a card says otherwise. Damage marked on creatures resets at the start of the next turn.',
-      '<strong>What\'s on the Stack?</strong> All spells and abilities wait on the stack to resolve. Players can respond in priority order.'
+      '<strong>Comprehensive Rules</strong> — The complete, detailed rulebook for Magic. Use this when you need the official definition of a mechanic, keyword, or specific rule interaction. <a href="https://magic.wizards.com/en/rules" target="_blank" style="color:#f0d080;text-decoration:underline;">View Comprehensive Rules</a>',
+      '<strong>Magic Rules Q&A</strong> — Quick answers to common rules questions, organized by topic. Great for getting fast clarifications on gameplay situations. <a href="https://magic-support.wizards.com/hc/en-us/sections/360007630791-Rules-and-FAQs" target="_blank" style="color:#f0d080;text-decoration:underline;">View Rules Q&A</a>',
+      '<strong>How to Play</strong> — Learn the fundamentals of Magic if you\'re new to the game or want to brush up on the basics. Perfect for beginners. <a href="https://magic.wizards.com/en/how-to-play" target="_blank" style="color:#f0d080;text-decoration:underline;">View How to Play</a>',
+      '<strong>Official Card Search</strong> — Search for any card and see its full text, rulings, and official errata. Use this to verify exact card wording and timing. <a href="https://gatherer.wizards.com" target="_blank" style="color:#f0d080;text-decoration:underline;">View Card Search</a>'
+    ]
+  },
+  appinfo:{
+    title:'MTG Tracker',
+    content:`MTG Tracker is a free, open-source Progressive Web App (PWA) designed to enhance your Magic: The Gathering gameplay with life tracking, mana management, dice rolling, commander damage, token creatures, and more. <a href="https://github.com/imcg1122/MTG_Tracker" target="_blank" style="color:#f0d080;text-decoration:underline;">Visit on GitHub</a>`,
+    rules:[
+      '<strong>Install as an App (Offline-Ready)</strong> — MTG Tracker is a Progressive Web App (PWA), allowing you to install it directly on your device like a native app. Once installed, you get faster load times, full offline support so you can play without internet, and quick access from your home screen or app drawer.',
+      '<strong>Android (Chrome):</strong> Tap the menu (⋮) → "Install app" or "Add to Home Screen", then confirm. The app appears on your home screen and works offline.',
+      '<strong>iOS (Safari):</strong> Tap Share → "Add to Home Screen", name it, and tap Add. The app works offline without an internet connection.',
+      '<strong>Desktop (Chrome, Edge, Safari):</strong> Look for the install icon (usually in the address bar or menu), click "Install app", and confirm. Use offline anytime.',
+      '<strong>Support:</strong> For issues or feature requests, <a href="https://github.com/imcg1122/MTG_Tracker" target="_blank" style="color:#f0d080;text-decoration:underline;">visit the GitHub repository</a>.'
     ]
   }
 };
