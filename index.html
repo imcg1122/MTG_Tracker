@@ -309,7 +309,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   /* Inline mana buttons — tighter */
   .pool-inline-btns{gap:1px;margin-top:1px;}
   .pool-inline-btn{width:18px;font-size:7px;padding:2px 0;height:18px;min-height:18px;}
-  .pool-inline-btn-add{font-size:10px;padding:2px 0;height:18px;min-height:18px;}
+  .pool-inline-btn-add{font-size:14px;padding:2px 0;height:18px;min-height:18px;}
   
   /* Tighten main grid gaps */
   .main-grid{gap:2px;margin-bottom:0;align-items:stretch;flex:1;overflow-y:auto;}
@@ -1430,6 +1430,9 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
+// ── Track which game boards (commander/standard/simple) have been actively used ──
+const usedBoards=new Set();
+
 // ── Per-format saved state ──
 const fmtState={
   commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack'},
@@ -1502,11 +1505,52 @@ function spawnPop(anchorId,emoji,color){
   anchor.appendChild(pop);
   pop.addEventListener('animationend',()=>pop.remove());
 }
-function adjPoison(d){poison=Math.max(0,poison+d);const num=document.getElementById('poisonNum');const btn=document.getElementById('poisonBtn');const lbl=btn.querySelector('.hrow-lbl');if(poison>=10){num.textContent='DEAD';num.style.color='#ff4444';btn.style.background='rgba(180,50,50,0.35)';btn.style.borderColor='rgba(220,80,80,0.65)';if(lbl)lbl.style.color='#ff6666';}else{num.textContent=poison;num.style.color='#80e080';btn.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';btn.style.borderColor='';if(lbl)lbl.style.color='';}if(d>0)spawnPop('poisonBtn','☠️','#80e080');updateActivityBadges();}
+function adjPoison(d){markBoardUsed(fmt);poison=Math.max(0,poison+d);const num=document.getElementById('poisonNum');const btn=document.getElementById('poisonBtn');const lbl=btn.querySelector('.hrow-lbl');if(poison>=10){num.textContent='DEAD';num.style.color='#ff4444';btn.style.background='rgba(180,50,50,0.35)';btn.style.borderColor='rgba(220,80,80,0.65)';if(lbl)lbl.style.color='#ff6666';}else{num.textContent=poison;num.style.color='#80e080';btn.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';btn.style.borderColor='';if(lbl)lbl.style.color='';}if(d>0)spawnPop('poisonBtn','☠️','#80e080');updateActivityBadges();}
 function resetPoison(){poison=0;const btn=document.getElementById('poisonBtn');const num=document.getElementById('poisonNum');const lbl=btn.querySelector('.hrow-lbl');if(btn){btn.style.background='transparent';btn.style.borderColor='';}num.textContent=0;num.style.color='#80e080';if(lbl)lbl.style.color='';}
-function adjXp(d){xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;const btn=document.getElementById('xpBtn');btn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');updateActivityBadges();}
+function adjXp(d){markBoardUsed(fmt);xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;const btn=document.getElementById('xpBtn');btn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');updateActivityBadges();}
 function resetXp(){xp=0;const btn=document.getElementById('xpBtn');if(btn)btn.style.background='transparent';document.getElementById('xpNum').textContent=0;}
+
+// ── Board usage tracking ──
+function markBoardUsed(boardName){
+  // Only track the three main game boards
+  if(['commander','standard','simple'].includes(boardName)){
+    usedBoards.add(boardName);
+    updateGameBoardButtonVisibility();
+  }
+}
+
+function updateGameBoardButtonVisibility(){
+  // If no boards used yet, show all three
+  // If any board is used, hide the unused ones
+  const boardMap={commander:'commander',standard:'standard',simple:'Mobile'};
+  const boardNames=['commander','standard','simple'];
+  const buttons=document.querySelectorAll('.fmt-btn');
+  
+  buttons.forEach(btn=>{
+    // Check if this button corresponds to a game board
+    let btnBoardName=null;
+    for(const [shortName,fullName] of Object.entries(boardMap)){
+      if(btn.textContent.trim()===fullName||btn.getAttribute('onclick').includes("'"+shortName+"'")){
+        btnBoardName=shortName;
+        break;
+      }
+    }
+    
+    if(btnBoardName&&boardNames.includes(btnBoardName)){
+      // This is a game board button
+      if(usedBoards.size===0){
+        // No boards used yet—show all
+        btn.style.display='';
+      } else {
+        // Some boards used—hide if not in the set
+        btn.style.display=usedBoards.has(btnBoardName)?'':'none';
+      }
+    }
+  });
+}
+
 function adjLife(d){
+  markBoardUsed(fmt);
   life=Math.max(0,life+d);
   const el=document.getElementById('lifeNum');
   el.textContent=life;
@@ -1529,9 +1573,9 @@ function adjLife(d){
 }
 
 function eKey(t,a,b){return t==='mono'?a:'h:'+[a,b].sort().join('');}
-function addCol(c){const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}renderMana();updateActivityBadges();}
+function addCol(c){markBoardUsed(fmt);const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}renderMana();updateActivityBadges();}
 function removeCol(c){const k=eKey('mono',c),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();updateActivityBadges();}
-function addHybrid(c1,c2){const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0});}renderMana();updateActivityBadges();}
+function addHybrid(c1,c2){markBoardUsed(fmt);const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0});}renderMana();updateActivityBadges();}
 function removeHybrid(c1,c2){const k=eKey('hybrid',c1,c2),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();updateActivityBadges();}
 function untapEntry(idx){manaEntries[idx].spent=0;renderMana();updateActivityBadges();}
 function untapAll(){manaEntries.forEach((_,i)=>manaEntries[i].spent=0);renderMana();updateActivityBadges();}
@@ -1643,6 +1687,7 @@ function openManaPicker(slotIdx){
 }
 function closeManaPicker(){document.getElementById('manaPickerOverlay').classList.remove('open');}
 function addColToSlot(c,slotIdx){
+  markBoardUsed(fmt);
   const k=eKey('mono',c);
   // If this slot already has an entry, replace it; otherwise add to that position
   if(slotIdx<manaEntries.length){
@@ -1680,6 +1725,7 @@ function renderCmd(){
   });
 }
 function adjCmd(p,d){
+  markBoardUsed('commander');
   // find the cmd-val element for this player before DOM rebuild
   const rows=document.getElementById('cmdRows');
   const vals=rows?rows.querySelectorAll('.cmd-val'):[];
@@ -1742,7 +1788,7 @@ function toggleInit(){
 function toggleGoaded(){goaded=!goaded;applyGoadedUI();updateActivityBadges();}
 function resetGoaded(){goaded=false;applyGoadedUI();updateActivityBadges();}
 
-function adjStorm(d){storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;const btn=document.getElementById('stormCard');btn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(d>0)spawnPop('stormCard','⚡','#90c8ff');updateActivityBadges();}
+function adjStorm(d){markBoardUsed(fmt);storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;const btn=document.getElementById('stormCard');btn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(d>0)spawnPop('stormCard','⚡','#90c8ff');updateActivityBadges();}
 function resetStorm(){storm=0;const btn=document.getElementById('stormCard');if(btn)btn.style.background='transparent';document.getElementById('stormFace').textContent=0;updateActivityBadges();}
 
 function toggleMonarch(){monarch=!monarch;applyMonarchUI();updateActivityBadges();}
@@ -1769,6 +1815,7 @@ function applyMonarchUI(){
 }
 
 function roll(n){
+  markBoardUsed(fmt);
   const result=Math.ceil(Math.random()*n);
   diceHist.unshift('d'+n+':'+result);
   if(diceHist.length>3)diceHist.pop();
@@ -2604,6 +2651,7 @@ function setFormat(f,el){
     b.classList.remove('active');
     if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+f+"'"))b.classList.add('active');
   });
+  updateGameBoardButtonVisibility();
   
   loadState();
   const simple=f==='simple';
@@ -2677,6 +2725,9 @@ function resetAll(){
   combatArea=[];
   tokenMode='attack';
   setTokenMode('attack');
+  // Clear the used boards tracking so all three game boards reappear
+  usedBoards.clear();
+  updateGameBoardButtonVisibility();
   loadState();
   applyDayNightUI();applyGoadedUI();
   renderAll();
@@ -3437,7 +3488,7 @@ renderCombatArea();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=2').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=4').then(reg => {
       // Listen for updates to the service worker
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
