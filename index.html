@@ -3436,7 +3436,18 @@ renderCombatArea();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=2').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=2').then(reg => {
+      // Listen for updates to the service worker
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          // When the new service worker becomes active, refresh the page
+          if (newWorker.state === 'activated') {
+            window.location.reload();
+          }
+        });
+      });
+    }).catch(() => {});
   });
 }
 </script>
