@@ -1495,7 +1495,7 @@ let cmdPlayers=['P1','P2','P3','P4'],cmdDmg={};
 let fmt='commander',life=40,poison=0,xp=0,energy=0,initiative=false,isDay=true,goaded=false,storm=0,monarch=false;
 let dungeonId=null,currentRoom=-1,dungeonPath=[];
 let ringStage=-1,ringBearer='';
-let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add';
+let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add',manaEntersTapped=false;
 let tokenPool=[]; // Array of token objects: {power, toughness, color, keywords: [], tapped: false}
 
 // ── Core game functions ──
@@ -1615,15 +1615,15 @@ function adjLife(d){
 function eKey(t,a,b){return t==='mono'?a:'h:'+[a,b].sort().join('');}
 function addCol(c){markBoardUsed(fmt);const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}renderMana();updateActivityBadges();}
 function removeCol(c){const k=eKey('mono',c),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();updateActivityBadges();}
-function addHybrid(c1,c2){markBoardUsed(fmt);const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0});}renderMana();updateActivityBadges();}
+function addHybrid(c1,c2){markBoardUsed(fmt);const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;if(manaEntersTapped){e.tappedOnEntry=true;manaEntersTapped=false;}}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0,tappedOnEntry:manaEntersTapped});manaEntersTapped=false;}renderMana();updateActivityBadges();}
 function removeHybrid(c1,c2){const k=eKey('hybrid',c1,c2),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();updateActivityBadges();}
-function untapEntry(idx){manaEntries[idx].spent=0;renderMana();updateActivityBadges();}
-function untapAll(){manaEntries.forEach((_,i)=>manaEntries[i].spent=0);renderMana();updateActivityBadges();}
+function untapEntry(idx){manaEntries[idx].spent=0;manaEntries[idx].tappedOnEntry=false;renderMana();updateActivityBadges();}
+function untapAll(){manaEntries.forEach((_,i)=>{manaEntries[i].spent=0;manaEntries[i].tappedOnEntry=false;});renderMana();updateActivityBadges();}
 function clearMana(){manaEntries=[];renderMana();}
 
 function renderMana(){
   const grid=document.getElementById('manaPoolGrid');grid.innerHTML='';
-  let totalAvail=0,totalSpent=0;
+  let totalAvail=0,totalSpent=0,totalMana=0;
   for(let si=0;si<POOL_SLOTS;si++){
     const slot=document.createElement('div');slot.className='pool-slot';
     const e=manaEntries[si];
@@ -1635,7 +1635,15 @@ function renderMana(){
       const ug=document.createElement('div');ug.className='pool-untap-ghost';ug.textContent='↺ Untap';
       slot.appendChild(ghost);slot.appendChild(ug);
     } else {
-      const avail=e.total-e.spent;totalAvail+=avail;totalSpent+=e.spent;
+      // Add to total mana regardless of tapped state
+      totalMana+=e.total;
+      
+      // Only count toward available/spent if NOT tapped on entry
+      if(!e.tappedOnEntry){
+        const avail=e.total-e.spent;totalAvail+=avail;totalSpent+=e.spent;
+      }
+      
+      const avail=e.tappedOnEntry?0:(e.total-e.spent);
       const card=document.createElement('div');card.className='pool-card'+(avail===0?' spent-out':'');
       if(e.type==='hybrid'){
         card.style.borderColor='rgba(180,140,60,0.55)';card.style.background='transparent';
@@ -1692,14 +1700,14 @@ function renderMana(){
         else manaEntries.splice(idx2,1);
         renderMana();
       };
-      utBtn.onclick=()=>untapEntry(idx2);
+      utBtn.onclick=()=>{manaEntries[idx2].tappedOnEntry=false;untapEntry(idx2);};
       inlineRow.appendChild(addBtn);inlineRow.appendChild(rmBtn);inlineRow.appendChild(utBtn);
       slot.appendChild(inlineRow);
     }
     grid.appendChild(slot);
   }
   const st=document.getElementById('manaStatus');
-  st.textContent=manaEntries.length?totalAvail+' avail · '+totalSpent+' spent':'';
+  st.textContent=manaEntries.length?totalAvail+' avail · '+totalSpent+' spent · '+totalMana+' total':'';
 }
 
 function buildManaGrid(){} // no longer needed — kept for safety
@@ -1717,12 +1725,18 @@ function openManaPicker(slotIdx){
     btn.onclick=()=>{addColToSlot(c,slotIdx);closeManaPicker();};
     g.appendChild(btn);
   });
-  // Hybrid
+  // Hybrid (moved to 3rd position)
   const hbtn=document.createElement('div');hbtn.className='mpick hybrid-style';
   hbtn.style.borderColor='rgba(180,120,240,0.55)';hbtn.style.background='rgba(100,60,180,0.15)';
   hbtn.innerHTML=`<div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:rgba(210,180,255,0.9)">${ICONS.hybrid}</div><div class="mpick-name" style="color:rgba(210,180,255,0.85)">Hybrid</div>`;
   hbtn.onclick=()=>{closeManaPicker();openHybrid('add');};
   g.appendChild(hbtn);
+  // Enters Tapped toggle button (moved to 4th position - lower right)
+  const tapBtn=document.createElement('div');tapBtn.className='mpick';tapBtn.id='entersTappedBtn';
+  tapBtn.style.borderColor='rgba(180,140,60,0.55)';tapBtn.style.background=manaEntersTapped?'rgba(180,140,60,0.32)':'rgba(180,140,60,0.12)';tapBtn.style.color='rgba(210,170,90,0.8)';
+  tapBtn.innerHTML=`<div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;">⏳</div><div class="mpick-name" style="color:rgba(210,170,90,0.8)">Enters Tapped?</div>`;
+  tapBtn.onclick=()=>{manaEntersTapped=!manaEntersTapped;const btn=document.getElementById('entersTappedBtn');btn.style.background=manaEntersTapped?'rgba(180,140,60,0.32)':'rgba(180,140,60,0.12)';};
+  g.appendChild(tapBtn);
   document.getElementById('manaPickerOverlay').classList.add('open');
 }
 function closeManaPicker(){document.getElementById('manaPickerOverlay').classList.remove('open');}
@@ -1733,13 +1747,13 @@ function addColToSlot(c,slotIdx){
   if(slotIdx<manaEntries.length){
     // slot occupied — shouldn't happen from empty tap but handle gracefully
     const existing=manaEntries.find(x=>x.key===k);
-    if(existing){existing.total++;}
-    else{manaEntries.splice(slotIdx,0,{key:k,type:'mono',color:c,total:1,spent:0});}
+    if(existing){existing.total++;if(manaEntersTapped){existing.tappedOnEntry=true;manaEntersTapped=false;}}
+    else{manaEntries.splice(slotIdx,0,{key:k,type:'mono',color:c,total:1,spent:0,tappedOnEntry:manaEntersTapped});manaEntersTapped=false;}
   } else {
     // fill empty slots up to slotIdx then add
     const existing=manaEntries.find(x=>x.key===k);
-    if(existing){existing.total++;}
-    else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}
+    if(existing){existing.total++;if(manaEntersTapped){existing.tappedOnEntry=true;manaEntersTapped=false;}}
+    else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0,tappedOnEntry:manaEntersTapped});manaEntersTapped=false;}
   }
   renderMana();updateActivityBadges();
 }
@@ -3533,7 +3547,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=11').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=14').then(reg => {
       // Listen for updates to the service worker
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
