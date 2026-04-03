@@ -478,6 +478,15 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 }
 .goaded-active > * { position: relative; z-index: 1; }
 
+/* Format button glow — indicates waiting for game board selection */
+@keyframes fmt-glow-pulse {
+  0%,100%{box-shadow:0 0 0 1px rgba(220,180,40,0.3), inset 0 0 0 0 transparent;}
+  50%{box-shadow:0 0 0 2px rgba(240,200,60,0.6), inset 0 0 0 0 transparent;}
+}
+.fmt-btn-glowing {
+  animation: fmt-glow-pulse 1.5s ease-in-out infinite !important;
+}
+
 /* Monarch — slow breathing golden glow */
 @keyframes monarch-breathe {
   0%,100%{box-shadow:0 0 6px 1px rgba(220,180,40,0.3),inset 0 0 8px rgba(220,180,40,0.05);}
@@ -1505,9 +1514,9 @@ function spawnPop(anchorId,emoji,color){
   anchor.appendChild(pop);
   pop.addEventListener('animationend',()=>pop.remove());
 }
-function adjPoison(d){markBoardUsed(fmt);poison=Math.max(0,poison+d);const num=document.getElementById('poisonNum');const btn=document.getElementById('poisonBtn');const lbl=btn.querySelector('.hrow-lbl');if(poison>=10){num.textContent='DEAD';num.style.color='#ff4444';btn.style.background='rgba(180,50,50,0.35)';btn.style.borderColor='rgba(220,80,80,0.65)';if(lbl)lbl.style.color='#ff6666';}else{num.textContent=poison;num.style.color='#80e080';btn.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';btn.style.borderColor='';if(lbl)lbl.style.color='';}if(d>0)spawnPop('poisonBtn','☠️','#80e080');updateActivityBadges();}
+function adjPoison(d){if(d!==0)markBoardUsed(fmt);poison=Math.max(0,poison+d);const num=document.getElementById('poisonNum');const btn=document.getElementById('poisonBtn');const lbl=btn.querySelector('.hrow-lbl');if(poison>=10){num.textContent='DEAD';num.style.color='#ff4444';btn.style.background='rgba(180,50,50,0.35)';btn.style.borderColor='rgba(220,80,80,0.65)';if(lbl)lbl.style.color='#ff6666';}else{num.textContent=poison;num.style.color='#80e080';btn.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';btn.style.borderColor='';if(lbl)lbl.style.color='';}if(d>0)spawnPop('poisonBtn','☠️','#80e080');updateActivityBadges();}
 function resetPoison(){poison=0;const btn=document.getElementById('poisonBtn');const num=document.getElementById('poisonNum');const lbl=btn.querySelector('.hrow-lbl');if(btn){btn.style.background='transparent';btn.style.borderColor='';}num.textContent=0;num.style.color='#80e080';if(lbl)lbl.style.color='';}
-function adjXp(d){markBoardUsed(fmt);xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;const btn=document.getElementById('xpBtn');btn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');updateActivityBadges();}
+function adjXp(d){if(d!==0)markBoardUsed(fmt);xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;const btn=document.getElementById('xpBtn');btn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');updateActivityBadges();}
 function resetXp(){xp=0;const btn=document.getElementById('xpBtn');if(btn)btn.style.background='transparent';document.getElementById('xpNum').textContent=0;}
 
 // ── Board usage tracking ──
@@ -1516,7 +1525,38 @@ function markBoardUsed(boardName){
   if(['commander','standard','simple'].includes(boardName)){
     usedBoards.add(boardName);
     updateGameBoardButtonVisibility();
+    updateGameBoardGlow();
   }
+}
+
+function updateGameBoardGlow(){
+  // If no boards used yet, show glow on all three
+  // If any board is used, remove glow from all (game has started)
+  const boardMap={commander:'commander',standard:'standard',simple:'Mobile'};
+  const boardNames=['commander','standard','simple'];
+  const buttons=document.querySelectorAll('.fmt-btn');
+  
+  buttons.forEach(btn=>{
+    // Check if this button corresponds to a game board
+    let btnBoardName=null;
+    for(const [shortName,fullName] of Object.entries(boardMap)){
+      if(btn.textContent.trim()===fullName||btn.getAttribute('onclick').includes("'"+shortName+"'")){
+        btnBoardName=shortName;
+        break;
+      }
+    }
+    
+    if(btnBoardName&&boardNames.includes(btnBoardName)){
+      // This is a game board button
+      if(usedBoards.size===0){
+        // No boards used yet—show glow
+        btn.classList.add('fmt-btn-glowing');
+      } else {
+        // Game has started—remove glow
+        btn.classList.remove('fmt-btn-glowing');
+      }
+    }
+  });
 }
 
 function updateGameBoardButtonVisibility(){
@@ -1550,7 +1590,7 @@ function updateGameBoardButtonVisibility(){
 }
 
 function adjLife(d){
-  markBoardUsed(fmt);
+  if(d!==0)markBoardUsed(fmt);
   life=Math.max(0,life+d);
   const el=document.getElementById('lifeNum');
   el.textContent=life;
@@ -1788,7 +1828,7 @@ function toggleInit(){
 function toggleGoaded(){goaded=!goaded;applyGoadedUI();updateActivityBadges();}
 function resetGoaded(){goaded=false;applyGoadedUI();updateActivityBadges();}
 
-function adjStorm(d){markBoardUsed(fmt);storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;const btn=document.getElementById('stormCard');btn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(d>0)spawnPop('stormCard','⚡','#90c8ff');updateActivityBadges();}
+function adjStorm(d){if(d!==0)markBoardUsed(fmt);storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;const btn=document.getElementById('stormCard');btn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(d>0)spawnPop('stormCard','⚡','#90c8ff');updateActivityBadges();}
 function resetStorm(){storm=0;const btn=document.getElementById('stormCard');if(btn)btn.style.background='transparent';document.getElementById('stormFace').textContent=0;updateActivityBadges();}
 
 function toggleMonarch(){monarch=!monarch;applyMonarchUI();updateActivityBadges();}
@@ -2651,7 +2691,10 @@ function setFormat(f,el){
     b.classList.remove('active');
     if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+f+"'"))b.classList.add('active');
   });
-  updateGameBoardButtonVisibility();
+  // Only update visibility if a board has been used (don't hide on initial load)
+  if(usedBoards.size>0){
+    updateGameBoardButtonVisibility();
+  }
   
   loadState();
   const simple=f==='simple';
@@ -2728,6 +2771,7 @@ function resetAll(){
   // Clear the used boards tracking so all three game boards reappear
   usedBoards.clear();
   updateGameBoardButtonVisibility();
+  updateGameBoardGlow();
   loadState();
   applyDayNightUI();applyGoadedUI();
   renderAll();
@@ -3484,11 +3528,12 @@ function calculateTokenDamage(){
 buildManaGrid();
 renderAll();
 renderCombatArea();
+updateGameBoardGlow();
 
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=4').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=11').then(reg => {
       // Listen for updates to the service worker
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
