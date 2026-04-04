@@ -4,7 +4,7 @@
   "description": "Magic: The Gathering game companion — life, mana, dice, dungeons, and more.",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "landscape",
+  "orientation": "any",
   "background_color": "#111111",
   "theme_color": "#221608",
   "icons": [
