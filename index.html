@@ -3587,7 +3587,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=42').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=43').then(reg => {
       // Listen for updates to the service worker
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
