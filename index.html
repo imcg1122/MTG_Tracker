@@ -369,7 +369,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .theme-dot{width:8px;height:8px;border-radius:50%;}
 
 /* life */
-.life-num{font-size:clamp(48px,7vw,72px);font-weight:500;color:var(--c-gold);text-align:center;line-height:1;font-family:Georgia,serif;}
+.life-num{font-size:clamp(48px,7vw,72px);font-weight:500;color:var(--c-gold);text-align:center;line-height:1;font-family:Georgia,serif;min-height:80px;display:flex;align-items:center;justify-content:center;}
 .life-num.danger{color:#e05040;}
 .life-sub{font-size:10px;color:var(--c-faint);text-align:center;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
 .life-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;}
@@ -770,7 +770,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .hrow{display:flex;flex-direction:row;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;user-select:none;flex:1;min-height:58px;max-height:58px;overflow:hidden;}
 .hrow-icon{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:20px;height:20px;}
 .hrow-num{font-size:clamp(16px,2vw,20px);font-weight:500;font-family:Georgia,serif;line-height:1;flex-shrink:0;min-width:24px;}
-.hrow-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--c-muted);flex:1;}
+.hrow-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--c-muted);flex:1;text-align:center;}
 .hrow-state{font-size:9px;color:var(--c-faint);font-style:italic;flex-shrink:0;}
 .hrow-btns{display:flex;gap:4px;align-items:center;flex-shrink:0;}
 
@@ -1665,8 +1665,21 @@ function adjLife(d){
   if(d!==0)markBoardUsed(fmt);
   life=Math.max(0,life+d);
   const el=document.getElementById('lifeNum');
-  el.textContent=life;
-  el.className='life-num'+(life<=5?' danger':'');
+  
+  // Check if P1 (you) is dead from commander damage
+  const p1CmdDmg=cmdDmg['P1']||0;
+  if(p1CmdDmg>=21){
+    el.textContent='DEAD';
+    el.style.color='#ff4444';
+    el.style.fontSize='32px';
+    el.className='life-num danger';
+  } else {
+    el.textContent=life;
+    el.style.color='';
+    el.style.fontSize='';
+    el.className='life-num'+(life<=5?' danger':'');
+  }
+  
   const wrap=el.closest('.life-card-wrap');
   if(!wrap)return;
   if(d<0){
@@ -1870,7 +1883,15 @@ function renderCmd(){
     const nameClass=!isP1&&!isCustomNamed?'clickable':'';
     const nameOnClick=!isP1?`onclick="openPlayerNameModal('${p}')"` : '';
     
-    row.innerHTML=`<div class="cmd-name ${nameClass}" style="${nameColor}${nameClickable}" ${nameOnClick}>${playerLabel}</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div><div class="reset-icon" onclick="resetCmd('${p}')" title="Reset"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>`;
+    // Determine display for player name and damage value
+    let nameDisplay=playerLabel;
+    let nameStyle=nameColor;
+    if(danger){
+      nameDisplay='DEAD';
+      nameStyle='color:#ff4444;';
+    }
+    
+    row.innerHTML=`<div class="cmd-name ${nameClass}" style="${nameStyle}${nameClickable}" ${nameOnClick}>${nameDisplay}</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div><div class="reset-icon" onclick="resetCmd('${p}')" title="Reset"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>`;
     el.appendChild(row);
   });
 }
@@ -1907,6 +1928,10 @@ function adjCmd(p,d){
     }
   }
   cmdDmg[p]=Math.max(0,(cmdDmg[p]||0)+d);
+  // Cap commander damage at 21
+  if(cmdDmg[p]>21){
+    cmdDmg[p]=21;
+  }
   // If P1 (self) takes damage, also deduct from life total
   if(p==='P1'&&d!==0){
     adjLife(-d);
@@ -1917,11 +1942,16 @@ function resetCmd(p){
   // If resetting P1 (self), also restore the commander damage amount to life total
   if(p==='P1'){
     const p1DamageTaken=cmdDmg['P1']||0;
+    cmdDmg[p]=0;
     if(p1DamageTaken>0){
-      adjLife(p1DamageTaken);  // Restore the life that was taken
+      adjLife(p1DamageTaken);  // Restore the life that was taken - this also updates the life display
+    } else {
+      // Even if no damage was taken, update the life display in case we're coming from "DEAD"
+      adjLife(0);
     }
+  } else {
+    cmdDmg[p]=0;
   }
-  cmdDmg[p]=0;
   // Reset player name and color for P2, P3, P4
   if(p!=='P1'){
     cmdPlayerConfig[p]={name:p,color:null};
@@ -3721,8 +3751,16 @@ function openModulePicker(slotIndex){
   grid.innerHTML='';
   const availModules=MODULE_CONFIG[fmt]||[];
   
-  // Show all available modules as buttons
+  // Get all module IDs already added to the active board
+  const usedModuleIds=new Set(activeModules.filter(id=>id!==''));
+  
+  // Show only available modules that aren't already in use
   availModules.forEach(mod=>{
+    // Skip if this module is already added (unless it's the one in the current slot being edited)
+    if(usedModuleIds.has(mod.id)&&activeModules[slotIndex]!==mod.id){
+      return;
+    }
+    
     const isCurrentSlot=(activeModules[slotIndex]===mod.id);
     const row=document.createElement('div');
     row.className='module-check'+(isCurrentSlot?' selected':'');
@@ -3754,6 +3792,12 @@ function applyModules(){
     const mod=availModules.find(m=>m.label===label);
     if(mod){
       activeModules[currentSlot]=mod.id;
+      
+      // Reset the module's state to inactive when adding it
+      if(mod.id==='goaded')goaded=false;
+      if(mod.id==='monarch')monarch=false;
+      if(mod.id==='init')initiative=false;
+      if(mod.id==='storm')storm=0;
     } else {
       activeModules[currentSlot]='';
     }
@@ -3880,7 +3924,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=53').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=61').then(reg => {
       // Listen for updates to the service worker
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
