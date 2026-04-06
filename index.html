@@ -1666,9 +1666,11 @@ function adjLife(d){
   life=Math.max(0,life+d);
   const el=document.getElementById('lifeNum');
   
-  // Check if P1 (you) is dead from commander damage
+  // Check if P1 (you) is dead from either life total reaching 0 or commander damage reaching 21
   const p1CmdDmg=cmdDmg['P1']||0;
-  if(p1CmdDmg>=21){
+  const isDead=(life<=0)||(p1CmdDmg>=21);
+  
+  if(isDead){
     el.textContent='DEAD';
     el.style.color='#ff4444';
     el.style.fontSize='32px';
@@ -3924,7 +3926,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=61').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=62').then(reg => {
       // Listen for updates to the service worker
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
