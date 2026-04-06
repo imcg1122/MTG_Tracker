@@ -407,12 +407,14 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 #cmdCard .sec-label{margin-bottom:4px;}
 #cmdRows{display:flex;flex-direction:column;gap:4px;}
 .cmd-row{display:flex;align-items:center;gap:3px;padding:4px 6px;border-radius:6px;background:rgba(0,0,0,0.15);}
-.cmd-name{font-size:8px;color:var(--c-muted);width:24px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;font-weight:700;}
-.cmd-val{font-size:15px;font-weight:700;color:var(--c-gold);font-family:Georgia,serif;width:28px;text-align:center;line-height:1;}
+.cmd-name{font-size:8px;color:var(--c-muted);flex:1;min-width:0;text-transform:uppercase;letter-spacing:.04em;font-weight:700;}
+.cmd-name.clickable{animation:name-pulse 2s ease-in-out infinite;}
+@keyframes name-pulse{0%,100%{opacity:.6;text-shadow:0 0 4px rgba(240,208,128,0);}50%{opacity:1;text-shadow:0 0 8px rgba(240,208,128,0.6);}}
+.cmd-val{font-size:15px;font-weight:700;color:var(--c-gold);font-family:Georgia,serif;width:28px;text-align:center;line-height:1;flex-shrink:0;}
 .cmd-val.danger{color:#e05040;}
 .cbtn{height:20px;min-width:32px;border-radius:3px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;padding:0 5px;white-space:nowrap;flex-shrink:0;font-weight:600;line-height:1;}
 .cbtn:active{background:var(--c-btn-active);}
-.reset-icon{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;transition:background .1s;}
+.reset-icon{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;transition:background .1s;margin-left:3px;}
 .reset-icon:active{background:rgba(200,80,60,0.18);}
 
 .pt-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1;}
@@ -887,6 +889,9 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .manual-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:8px;}
 .c-sel{width:28px;height:28px;border-radius:50%;border:2px solid rgba(180,140,60,0.3);cursor:pointer;user-select:none;opacity:.45;transition:opacity .1s;}
 .c-sel.selected{opacity:1;border-color:#f0d080;}
+.player-color-btn{width:48px;height:48px;border-radius:50%;border:2px solid rgba(180,140,60,0.3);cursor:pointer;user-select:none;transition:all .15s;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:rgba(0,0,0,0.5);}
+.player-color-btn:hover{transform:scale(1.08);}
+.player-color-btn.selected{border-color:#f0d080;box-shadow:0 0 12px rgba(240,208,128,0.5);}
 
 /* ── MODULE SLOTS ── */
 .module-empty-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;border-radius:8px;border:1.5px dashed rgba(180,140,60,0.25);background:transparent;cursor:pointer;user-select:none;transition:all .15s;min-height:58px;max-height:58px;overflow:hidden;}
@@ -1331,6 +1336,26 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   </div>
 </div>
 
+<!-- player name & color modal -->
+<div class="overlay" id="playerNameOverlay" onclick="closeOutside(event,'playerNameOverlay')">
+  <div class="modal">
+    <div class="modal-title">Player name & color</div>
+    <div class="modal-note">Name this player and pick a color for their damage box</div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:8px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:600;">Player name</div>
+      <input type="text" id="playerNameInput" placeholder="Enter player name" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--c-btn-border);background:rgba(0,0,0,0.2);color:var(--c-gold);font-size:12px;font-family:system-ui,-apple-system,sans-serif;outline:none;"/>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="font-size:8px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-weight:600;">Color</div>
+      <div id="playerColorGrid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;"></div>
+    </div>
+    <div class="modal-foot">
+      <div class="modal-close" onclick="closePlayerNameModal()">Cancel</div>
+      <div class="modal-apply" onclick="applyPlayerName()">Confirm</div>
+    </div>
+  </div>
+</div>
+
 <!-- token config modal -->
 <div class="token-modal" id="tokenModal" onclick="closeOutside(event,'tokenModal')">
   <div class="token-modal-content">
@@ -1536,6 +1561,7 @@ function loadState(){
   else{ringStage=-1;ringBearer='';}
 }
 let cmdPlayers=['P1','P2','P3','P4'],cmdDmg={};
+let cmdPlayerConfig={P1:{},P2:{name:'P2',color:null},P3:{name:'P3',color:null},P4:{name:'P4',color:null}};
 // ── Working variables (current format) ──
 let fmt='commander',life=40,poison=0,xp=0,energy=0,initiative=false,isDay=true,goaded=false,storm=0,monarch=false;
 let dungeonId=null,currentRoom=-1,dungeonPath=[];
@@ -1827,11 +1853,24 @@ function renderCmd(){
     // P1 gets special styling
     if(isP1){
       row.style.cssText='background:rgba(100,60,40,0.2);border:1px solid rgba(180,100,80,0.4);padding:4px 6px;border-radius:6px;';
+    } else {
+      // Apply color to non-P1 player rows if set
+      const cfg=cmdPlayerConfig[p];
+      if(cfg&&cfg.color){
+        const colorMap={W:'rgba(240,220,100,0.15)',U:'rgba(100,150,255,0.15)',B:'rgba(80,40,80,0.15)',R:'rgba(220,100,60,0.15)',G:'rgba(80,140,80,0.15)',C:'rgba(120,120,120,0.15)'};
+        row.style.cssText=`background:${colorMap[cfg.color]||'rgba(0,0,0,0.15)'};border:1px solid var(--c-btn-border);padding:4px 6px;border-radius:6px;`;
+      }
     }
     
-    const playerLabel=isP1?'You':p;
+    const cfg=cmdPlayerConfig[p];
+    const isCustomNamed=cfg&&cfg.name!==p;
+    const playerLabel=isP1?'You':(isCustomNamed?cfg.name:'rename');
     const nameColor=isP1?'color:rgba(220,120,100,0.95);':'';
-    row.innerHTML=`<div class="cmd-name" style="${nameColor}">${playerLabel}</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div><div class="reset-icon" onclick="resetCmd('${p}')" title="Reset"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>`;
+    const nameClickable=!isP1?`cursor:pointer;user-select:none;transition:opacity .15s;` : '';
+    const nameClass=!isP1&&!isCustomNamed?'clickable':'';
+    const nameOnClick=!isP1?`onclick="openPlayerNameModal('${p}')"` : '';
+    
+    row.innerHTML=`<div class="cmd-name ${nameClass}" style="${nameColor}${nameClickable}" ${nameOnClick}>${playerLabel}</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div><div class="reset-icon" onclick="resetCmd('${p}')" title="Reset"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>`;
     el.appendChild(row);
   });
 }
@@ -1883,6 +1922,10 @@ function resetCmd(p){
     }
   }
   cmdDmg[p]=0;
+  // Reset player name and color for P2, P3, P4
+  if(p!=='P1'){
+    cmdPlayerConfig[p]={name:p,color:null};
+  }
   renderCmd();
 }
 
@@ -1995,6 +2038,54 @@ function blendHex(hs){const rs=hs.filter(h=>h&&h.startsWith('#')).map(h=>h2r(h))
 function hexToGlow(h,a=0.5){const[r,g,b]=h2r(h);return`rgba(${r},${g},${b},${a})`;}
 function darken(h,a){const[r,g,b]=h2r(h);return r2h(r*a,g*a,b*a);}
 function ha(h,a){if(!h.startsWith('#'))return h;const[r,g,b]=h2r(h);return`rgba(${r},${g},${b},${a})`;}
+
+// ── Player name & color modal ──
+let currentPlayerEditKey=null;
+let selectedPlayerColor=null;
+
+function openPlayerNameModal(playerKey){
+  currentPlayerEditKey=playerKey;
+  const cfg=cmdPlayerConfig[playerKey];
+  document.getElementById('playerNameInput').value='';
+  selectedPlayerColor=cfg?.color||null;
+  buildPlayerColorGrid();
+  document.getElementById('playerNameOverlay').classList.add('open');
+}
+
+function closePlayerNameModal(){
+  document.getElementById('playerNameOverlay').classList.remove('open');
+  currentPlayerEditKey=null;
+  selectedPlayerColor=null;
+}
+
+function buildPlayerColorGrid(){
+  const g=document.getElementById('playerColorGrid');
+  g.innerHTML='';
+  const colors=['W','U','B','R','G','C'];
+  const labels={W:'White',U:'Blue',B:'Black',R:'Red',G:'Green',C:'Colorless'};
+  const bgMap={W:'#fffacd',U:'#64b5f6',B:'#8b7d9b',R:'#ef5350',G:'#66bb6a',C:'#9e9e9e'};
+  
+  colors.forEach(c=>{
+    const btn=document.createElement('div');
+    btn.className='player-color-btn'+(selectedPlayerColor===c?' selected':'');
+    btn.style.background=bgMap[c];
+    btn.textContent=c;
+    btn.onclick=()=>{
+      selectedPlayerColor=selectedPlayerColor===c?null:c;
+      buildPlayerColorGrid();
+    };
+    g.appendChild(btn);
+  });
+}
+
+function applyPlayerName(){
+  if(!currentPlayerEditKey)return;
+  const name=(document.getElementById('playerNameInput').value||'').trim();
+  cmdPlayerConfig[currentPlayerEditKey].name=name||currentPlayerEditKey;
+  cmdPlayerConfig[currentPlayerEditKey].color=selectedPlayerColor;
+  closePlayerNameModal();
+  renderCmd();
+}
 
 // ── Lexicon database — comprehensive MTG keywords ──
 const LEXICON=[
@@ -2838,6 +2929,8 @@ function resetAll(){
   combatArea=[];
   tokenMode='attack';
   setTokenMode('attack');
+  // Reset player names and colors
+  cmdPlayerConfig={P1:{},P2:{name:'P2',color:null},P3:{name:'P3',color:null},P4:{name:'P4',color:null}};
   // Clear the used boards tracking so all three game boards reappear
   usedBoards.clear();
   updateGameBoardButtonVisibility();
@@ -3787,7 +3880,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=48').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=53').then(reg => {
       // Listen for updates to the service worker
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
