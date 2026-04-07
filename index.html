@@ -1228,6 +1228,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
         <div class="rules-tab-btn" onclick="switchRulesTab('commander')">Commander</div>
         <div class="rules-tab-btn" onclick="switchRulesTab('faq')">Official Resources</div>
         <div class="rules-tab-btn" onclick="switchRulesTab('appinfo')">App Info</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('install')">Install App</div>
       </div>
     </div>
     <div class="rules-content" id="rulesContent"></div>
@@ -2828,6 +2829,16 @@ const RULES_CONTENT={
       '<strong>Desktop (Chrome, Edge, Safari):</strong> Look for the install icon (usually in the address bar or menu), click "Install app", and confirm. Use offline anytime.',
       '<strong>Support:</strong> For issues or feature requests, <a href="https://github.com/imcg1122/MTG_Tracker" target="_blank" style="color:#f0d080;text-decoration:underline;">visit the GitHub repository</a>.'
     ]
+  },
+  install:{
+    title:'Install MTG Tracker',
+    content:`Install MTG Tracker on your device to get faster loading, full offline support, and quick access from your home screen.`,
+    rules:[
+      '<strong>Why Install?</strong> Once installed, MTG Tracker works completely offline, loads instantly, and appears on your home screen like a native app. No internet connection needed during play.',
+      '<strong>Android (Chrome/Edge):</strong> Tap the menu (⋮) in the browser → "Install app" or "Add to Home Screen". The app will appear on your home screen and launch in fullscreen.',
+      '<strong>iOS (Safari):</strong> Tap Share → "Add to Home Screen", give it a name, and tap Add. Open it from your home screen anytime.',
+      '<strong>Desktop (Windows/Mac):</strong> Look for the install icon in your browser address bar (or use the menu). Click "Install app" to add it to your applications.'
+    ]
   }
 };
 
@@ -2844,11 +2855,11 @@ function renderRules(){
   const rules=RULES_CONTENT[tab];
   let html=`<div class="rules-title">${rules.title}</div><div class="rules-text">${rules.content}</div>`;
   rules.rules.forEach(r=>html+=`<div class="rules-rule">${r}</div>`);
-  if(tab==='appinfo'){
+  if(tab==='install'){
     html+=`<button class="pwa-install-btn" onclick="triggerPwaInstall()" style="display:none;margin-top:10px;width:100%;padding:12px;border-radius:10px;border:1px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);font-size:13px;font-weight:600;letter-spacing:.06em;cursor:pointer;align-items:center;justify-content:center;gap:8px;text-transform:uppercase;">⬇ Install App</button>`;
   }
   content.innerHTML=html;
-  if(tab==='appinfo'&&pwaInstallPrompt){
+  if(tab==='install'&&pwaInstallPrompt){
     content.querySelectorAll('.pwa-install-btn').forEach(b=>b.style.display='flex');
   }
 }
@@ -3886,7 +3897,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=54').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=55').catch(() => {});
   });
 }
 
