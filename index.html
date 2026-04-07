@@ -11,7 +11,7 @@
 <title>MTG Playmat</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-apple-system,sans-serif;}
+html,body{width:100%;height:100dvh;background:#111;font-family:system-ui,-apple-system,sans-serif;}
 
 :root{
   --c-bg:#221608;--c-border:#7a5c2e;--c-inner:rgba(245,230,190,0.04);
@@ -286,7 +286,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   /* AGGRESSIVE: Minimize all padding and margins to fit red line */
   html, body{margin:0;padding:0;overflow:hidden;}
   .wrap{padding:2px;}
-  .mat{padding:2px;border-width:1px;max-height:100vh;overflow:hidden;}
+  .mat{padding:2px;border-width:1px;max-height:100dvh;overflow:hidden;}
   .mat-inner{padding:2px;display:flex;flex-direction:column;}
   
   /* Minimize top strip */
@@ -336,7 +336,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 /* ── WRAPPER ── */
 .wrap{
   padding:10px;
-  display:flex;align-items:flex-start;justify-content:center;min-height:100vh;
+  display:flex;align-items:flex-start;justify-content:center;height:100dvh;overflow:hidden;max-height:100dvh;
 }
 .mat{
   background:var(--c-bg);border:2px solid var(--c-border);border-radius:14px;
@@ -3886,7 +3886,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=54').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=55').catch(() => {});
   });
 }
 
