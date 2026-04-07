@@ -23,6 +23,12 @@ html,body{width:100%;height:100dvh;background:#111;font-family:system-ui,-apple-
   --c-status:rgba(210,170,90,0.35);--c-divider:rgba(180,140,60,0.18);
 }
 
+/* ── TABLET PADDING REDUCTION ── */
+@media (min-width:600px) and (max-width:1023px){
+  .wrap{padding:4px;}
+  .mat{padding:4px;border-width:1px;}
+}
+
 /* ── PORTRAIT HINT (phones only) ── */
 .rotate-hint{
   display:none;position:fixed;inset:0;background:#111;z-index:999;
@@ -340,12 +346,12 @@ html,body{width:100%;height:100dvh;background:#111;font-family:system-ui,-apple-
 }
 .mat{
   background:var(--c-bg);border:2px solid var(--c-border);border-radius:14px;
-  padding:10px;width:100%;max-width:1200px;
+  padding:10px;width:100%;max-width:1200px;max-height:100dvh;
   transition:background .4s,border-color .4s;
 }
 .mat-inner{
   background:var(--c-inner);border:1px solid var(--c-inner-border);
-  border-radius:10px;padding:10px;position:relative;
+  border-radius:10px;padding:10px;position:relative;display:flex;flex-direction:column;flex:1;min-height:0;
 }
 
 /* ── SHARED COMPONENTS ── */
@@ -3886,7 +3892,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=55').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=56').catch(() => {});
   });
 }
 
