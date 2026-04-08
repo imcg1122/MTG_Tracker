@@ -1289,7 +1289,6 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;" id="modulePickerGrid"></div>
     <div class="modal-foot">
       <div class="modal-close" onclick="closeModulePicker()">Cancel</div>
-      <div class="modal-apply" onclick="applyModules()">Apply</div>
     </div>
   </div>
 </div>
@@ -1484,7 +1483,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='57';  // Update this each release
+const APP_VERSION='58';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -1678,16 +1677,20 @@ function adjLife(d){
   const wrap=el.closest('.life-card-wrap');
   if(!wrap)return;
   if(d<0){
-    const slash=document.createElement('div');
-    slash.className='life-slash';
-    wrap.appendChild(slash);
-    slash.addEventListener('animationend',()=>slash.remove());
+    requestAnimationFrame(()=>{
+      const slash=document.createElement('div');
+      slash.className='life-slash';
+      wrap.appendChild(slash);
+      slash.addEventListener('animationend',()=>slash.remove());
+    });
   } else if(d>0){
-    const heal=document.createElement('div');
-    heal.className='life-heal';
-    heal.textContent='+'+d;
-    wrap.appendChild(heal);
-    heal.addEventListener('animationend',()=>heal.remove());
+    requestAnimationFrame(()=>{
+      const heal=document.createElement('div');
+      heal.className='life-heal';
+      heal.textContent='+'+d;
+      wrap.appendChild(heal);
+      heal.addEventListener('animationend',()=>heal.remove());
+    });
   }
   updateActivityBadges();
 }
@@ -2955,7 +2958,7 @@ function resetAll(){
 }
 function renderAll(){
   requestAnimationFrame(()=>{
-    adjLife(0);renderMana();renderCmd();adjPoison(0);adjXp(0);adjStorm(0);
+    adjLife(0);renderMana();renderCmd();adjPoison(0);adjXp(0);adjStorm(0);adjEnergy(0);
     document.getElementById('energyNum').textContent=energy;
     const ic=document.getElementById('initCard');
     if(ic){ic.classList.toggle('active',initiative);ic.classList.toggle('initiative-active',initiative);}
@@ -3731,14 +3734,21 @@ function openModulePicker(slotIndex){
   grid.innerHTML='';
   const availModules=MODULE_CONFIG[fmt]||[];
   
-  // Show all available modules as buttons
+  // Show only modules NOT already used in any slot
   availModules.forEach(mod=>{
-    const isCurrentSlot=(activeModules[slotIndex]===mod.id);
+    const isAlreadyUsed=activeModules.includes(mod.id);
+    if(isAlreadyUsed)return;  // Skip if already active
+    
     const row=document.createElement('div');
-    row.className='module-check'+(isCurrentSlot?' selected':'');
+    row.className='module-check';
     row.onclick=()=>{
-      document.querySelectorAll('#modulePickerGrid .module-check').forEach(r=>r.classList.remove('selected'));
-      row.classList.add('selected');
+      // Auto-apply on selection
+      activeModules[slotIndex]=mod.id;
+      markBoardUsed(fmt);
+      saveState();
+      closeModulePicker();
+      renderAll();
+      updateActivityBadges();
     };
     row.innerHTML=`<label>${mod.label}</label>`;
     grid.appendChild(row);
@@ -3890,7 +3900,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=57').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=58').catch(() => {});
   });
 }
 
