@@ -259,7 +259,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 }
 
 /* Tablet lexicon */
-@media (max-width:599px) and (orientation:landscape){
+@media (max-width:959px) and (orientation:landscape){
   .lexicon-content{grid-template-columns:200px 1fr;gap:8px;}
   .lexicon-list{max-height:none;}
   .lexicon-item{font-size:9px;padding:9px 10px;}
@@ -1483,7 +1483,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='58';  // Update this each release
+const APP_VERSION='60';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -2785,7 +2785,10 @@ function filterByCategory(cat){
 function jumpToLetter(letter){
   const list=document.getElementById('lexiconList');
   const items=Array.from(list.querySelectorAll('.lexicon-item:not(.hidden)'));
-  const item=items.find(i=>i.textContent[0]===letter);
+  const item=items.find(i=>{
+    const name=i.textContent.replace(/[^\w\s]/g,'').trim();
+    return name[0]?.toUpperCase()===letter;
+  });
   if(item){
     item.scrollIntoView({behavior:'smooth',block:'nearest'});
     item.click();
@@ -3900,7 +3903,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=58').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=60').catch(() => {});
   });
 }
 
