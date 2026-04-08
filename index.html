@@ -382,8 +382,9 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .card{background:var(--c-card);border:1px solid var(--c-card-border);border-radius:8px;padding:9px 11px;transition:background .3s,border-color .3s;}
 
 /* top strip */
-.top-strip{display:flex;gap:6px;margin-bottom:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
-.fmt-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;user-select:none;transition:all .25s;position:relative;}
+.top-strip{display:flex;gap:6px;margin-bottom:8px;align-items:center;justify-content:flex-start;flex-wrap:wrap;}
+.top-strip > div:last-child{margin-left:auto;}
+.fmt-btn{font-size:9px;padding:4px 10px;border-radius:10px;border:1px solid var(--c-btn-border);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.07em;user-select:none;transition:all .25s;position:relative;white-space:nowrap;}
 .fmt-btn.active{background:var(--c-accent);border-color:var(--c-accent-border);color:var(--c-gold);}
 .fmt-btn.has-activity:not(.active){border-color:rgba(180,140,60,0.55);color:rgba(210,170,90,0.75);}
 .fmt-btn.has-activity:not(.active)::after{content:'';position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:#c8a030;}
@@ -1512,7 +1513,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='61';  // Update this each release
+const APP_VERSION='62';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -3932,7 +3933,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=61').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=62').catch(() => {});
   });
 }
 
