@@ -960,10 +960,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
           <div class="life-num" id="lifeNum">40</div>
           <div class="life-sub">points</div>
           <div class="life-btns">
-            <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(-5)">−5</div>
-            <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="adjLife(5)">+5</div>
-            <div class="lbtn" onclick="adjLife(-1)">−1</div>
-            <div class="lbtn" onclick="adjLife(1)">+1</div>
+            <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="deferredAdjLife(-5)">−5</div>
+            <div class="lbtn" style="font-size:clamp(11px,1.4vw,14px);" onclick="deferredAdjLife(5)">+5</div>
+            <div class="lbtn" onclick="deferredAdjLife(-1)">−1</div>
+            <div class="lbtn" onclick="deferredAdjLife(1)">+1</div>
           </div>
         </div>
       </div>
@@ -1044,7 +1044,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
       <div id="moduleWrapper" style="display:flex;flex-direction:column;gap:5px;flex:1;min-height:0;height:100%;">
 
         <!-- Poison -->
-        <div class="card hrow" id="poisonBtn" onclick="adjPoison(1)" style="position:relative;">
+        <div class="card hrow" id="poisonBtn" onclick="deferredAdjPoison(1)" style="position:relative;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#80e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon">
             <path d="M9 3 L9 8 C9 8 5 10 5 15 C5 19 8 21 12 21 C16 21 19 19 19 15 C19 10 15 8 15 8 L15 3"/>
             <line x1="7" y1="3" x2="17" y2="3"/>
@@ -1053,26 +1053,26 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
           <span class="hrow-num" id="poisonNum" style="color:#80e080;">0</span>
           <span class="hrow-lbl">Poison</span>
           <div class="hrow-btns">
-            <div class="reset-icon" onclick="event.stopPropagation();adjPoison(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="reset-icon" onclick="event.stopPropagation();deferredAdjPoison(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
             <div class="reset-icon" onclick="event.stopPropagation();resetPoison()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
           </div>
         </div>
 
         <!-- XP -->
-        <div class="card hrow" id="xpBtn" onclick="adjXp(1)" style="position:relative;">
+        <div class="card hrow" id="xpBtn" onclick="deferredAdjXp(1)" style="position:relative;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c0a0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon">
             <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
           </svg>
           <span class="hrow-num" id="xpNum" style="color:#c0a0ff;">0</span>
           <span class="hrow-lbl">Exp</span>
           <div class="hrow-btns">
-            <div class="reset-icon" onclick="event.stopPropagation();adjXp(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="reset-icon" onclick="event.stopPropagation();deferredAdjXp(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
             <div class="reset-icon" onclick="event.stopPropagation();resetXp()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
           </div>
         </div>
 
         <!-- Storm -->
-        <div class="card hrow storm-card" id="stormCard" onclick="adjStorm(1)" style="position:relative;">
+        <div class="card hrow storm-card" id="stormCard" onclick="deferredAdjStorm(1)" style="position:relative;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#90c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon">
             <path d="M20 17H7a4 4 0 0 1-.5-7.96A5.5 5.5 0 0 1 18 11.5a3 3 0 0 1 2 5.5Z" fill="rgba(80,140,255,0.15)"/>
             <line x1="9" y1="20" x2="8" y2="22"/><line x1="13" y1="20" x2="12" y2="22"/><line x1="17" y1="20" x2="16" y2="22"/>
@@ -1080,7 +1080,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
           <span class="hrow-num" id="stormFace" style="color:#90c8ff;">0</span>
           <span class="hrow-lbl">Storm</span>
           <div class="hrow-btns">
-            <div class="reset-icon" onclick="event.stopPropagation();adjStorm(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="reset-icon" onclick="event.stopPropagation();deferredAdjStorm(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
             <div class="reset-icon" onclick="event.stopPropagation();resetStorm()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
           </div>
         </div>
@@ -1662,6 +1662,12 @@ function updateGameBoardButtonVisibility(){
   });
 }
 
+// ── RAF Deferred Handlers (Performance: Defer heavy renders to next frame) ──
+function deferredAdjLife(d){requestAnimationFrame(()=>adjLife(d));}
+function deferredAdjPoison(d){requestAnimationFrame(()=>adjPoison(d));}
+function deferredAdjXp(d){requestAnimationFrame(()=>adjXp(d));}
+function deferredAdjStorm(d){requestAnimationFrame(()=>adjStorm(d));}
+
 function adjLife(d){
   if(d!==0)markBoardUsed(fmt);
   life=Math.max(0,life+d);
@@ -1686,15 +1692,15 @@ function adjLife(d){
 }
 
 function eKey(t,a,b){return t==='mono'?a:'h:'+[a,b].sort().join('');}
-function addCol(c){markBoardUsed(fmt);const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}renderMana();updateActivityBadges();}
-function removeCol(c){const k=eKey('mono',c),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();updateActivityBadges();}
-function addHybrid(c1,c2){markBoardUsed(fmt);const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;if(manaEntersTapped){e.tappedOnEntry=(e.tappedOnEntry||0)+1;manaEntersTapped=false;}}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0,tappedOnEntry:manaEntersTapped?1:0});manaEntersTapped=false;}renderMana();updateActivityBadges();}
-function removeHybrid(c1,c2){const k=eKey('hybrid',c1,c2),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();updateActivityBadges();}
-function addAllColors(){markBoardUsed(fmt);const k='all-colors',e=manaEntries.find(x=>x.key===k);if(e){e.total++;if(manaEntersTapped){e.tappedOnEntry=(e.tappedOnEntry||0)+1;manaEntersTapped=false;}}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'all-colors',total:1,spent:0,tappedOnEntry:manaEntersTapped?1:0});manaEntersTapped=false;}renderMana();updateActivityBadges();}
-function removeAllColors(){const k='all-colors',idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}renderMana();updateActivityBadges();}
-function untapEntry(idx){manaEntries[idx].spent=0;manaEntries[idx].tappedOnEntry=0;renderMana();updateActivityBadges();}
-function untapAll(){manaEntries.forEach((_,i)=>{manaEntries[i].spent=0;manaEntries[i].tappedOnEntry=0;});renderMana();updateActivityBadges();}
-function clearMana(){manaEntries=[];renderMana();}
+function addCol(c){markBoardUsed(fmt);const k=eKey('mono',c),e=manaEntries.find(x=>x.key===k);if(e){e.total++;}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0});}requestAnimationFrame(renderMana);updateActivityBadges();}
+function removeCol(c){const k=eKey('mono',c),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}requestAnimationFrame(renderMana);updateActivityBadges();}
+function addHybrid(c1,c2){markBoardUsed(fmt);const k=eKey('hybrid',c1,c2),e=manaEntries.find(x=>x.key===k);if(e){e.total++;if(manaEntersTapped){e.tappedOnEntry=(e.tappedOnEntry||0)+1;manaEntersTapped=false;}}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'hybrid',c1,c2,total:1,spent:0,tappedOnEntry:manaEntersTapped?1:0});manaEntersTapped=false;}requestAnimationFrame(renderMana);updateActivityBadges();}
+function removeHybrid(c1,c2){const k=eKey('hybrid',c1,c2),idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}requestAnimationFrame(renderMana);updateActivityBadges();}
+function addAllColors(){markBoardUsed(fmt);const k='all-colors',e=manaEntries.find(x=>x.key===k);if(e){e.total++;if(manaEntersTapped){e.tappedOnEntry=(e.tappedOnEntry||0)+1;manaEntersTapped=false;}}else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'all-colors',total:1,spent:0,tappedOnEntry:manaEntersTapped?1:0});manaEntersTapped=false;}requestAnimationFrame(renderMana);updateActivityBadges();}
+function removeAllColors(){const k='all-colors',idx=manaEntries.findIndex(x=>x.key===k);if(idx===-1)return;const e=manaEntries[idx];if(e.total>1){e.total--;if(e.spent>e.total)e.spent=e.total;}else{manaEntries.splice(idx,1);}requestAnimationFrame(renderMana);updateActivityBadges();}
+function untapEntry(idx){manaEntries[idx].spent=0;manaEntries[idx].tappedOnEntry=0;requestAnimationFrame(renderMana);updateActivityBadges();}
+function untapAll(){manaEntries.forEach((_,i)=>{manaEntries[i].spent=0;manaEntries[i].tappedOnEntry=0;});requestAnimationFrame(renderMana);updateActivityBadges();}
+function clearMana(){manaEntries=[];requestAnimationFrame(renderMana);}
 
 function renderMana(){
   const grid=document.getElementById('manaPoolGrid');grid.innerHTML='';
@@ -1767,7 +1773,7 @@ function renderMana(){
           document.body.appendChild(burst);
           burst.addEventListener('animationend',()=>burst.remove());
           manaEntries[idx].spent++;
-          renderMana();
+          requestAnimationFrame(renderMana);
         };
       }
       slot.appendChild(card);
@@ -1778,11 +1784,11 @@ function renderMana(){
       const rmBtn=document.createElement('div');rmBtn.className='pool-inline-btn';rmBtn.textContent='−';
       const utBtn=document.createElement('div');utBtn.className='pool-inline-btn';utBtn.textContent='↺';
       const idx2=si;
-      addBtn.onclick=()=>{manaEntries[idx2].total++;renderMana();};
+      addBtn.onclick=()=>{manaEntries[idx2].total++;requestAnimationFrame(renderMana);};
       rmBtn.onclick=()=>{
         if(manaEntries[idx2].total>1){manaEntries[idx2].total--;if(manaEntries[idx2].spent>manaEntries[idx2].total)manaEntries[idx2].spent=manaEntries[idx2].total;}
         else manaEntries.splice(idx2,1);
-        renderMana();
+        requestAnimationFrame(renderMana);
       };
       utBtn.onclick=()=>{if(manaEntries[idx2].tappedOnEntry>0)manaEntries[idx2].tappedOnEntry--;untapEntry(idx2);};
       inlineRow.appendChild(addBtn);inlineRow.appendChild(rmBtn);inlineRow.appendChild(utBtn);
@@ -1839,7 +1845,7 @@ function addColToSlot(c,slotIdx){
     if(existing){existing.total++;if(manaEntersTapped){existing.tappedOnEntry=(existing.tappedOnEntry||0)+1;manaEntersTapped=false;}}
     else if(manaEntries.length<POOL_SLOTS){manaEntries.push({key:k,type:'mono',color:c,total:1,spent:0,tappedOnEntry:manaEntersTapped?1:0});manaEntersTapped=false;}
   }
-  renderMana();updateActivityBadges();
+  requestAnimationFrame(renderMana);updateActivityBadges();
 }
 
 function renderCmd(){
@@ -2947,16 +2953,18 @@ function resetAll(){
   updateActivityBadges();
 }
 function renderAll(){
-  adjLife(0);renderMana();renderCmd();adjPoison(0);adjXp(0);adjStorm(0);
-  document.getElementById('energyNum').textContent=energy;
-  const ic=document.getElementById('initCard');
-  if(ic){ic.classList.toggle('active',initiative);ic.classList.toggle('initiative-active',initiative);}
-  document.getElementById('initState').textContent=initiative?'Holding':'Not held';
-  document.getElementById('diceFace').textContent=diceHist.length?diceHist[0].split(':')[1]:'—';
-  document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');
-  applyMonarchUI();applyGoadedUI();updateActivityBadges();
-  renderRightColumn();
-  if(fmt==='tokens')renderTokens();
+  requestAnimationFrame(()=>{
+    adjLife(0);renderMana();renderCmd();adjPoison(0);adjXp(0);adjStorm(0);
+    document.getElementById('energyNum').textContent=energy;
+    const ic=document.getElementById('initCard');
+    if(ic){ic.classList.toggle('active',initiative);ic.classList.toggle('initiative-active',initiative);}
+    document.getElementById('initState').textContent=initiative?'Holding':'Not held';
+    document.getElementById('diceFace').textContent=diceHist.length?diceHist[0].split(':')[1]:'—';
+    document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');
+    applyMonarchUI();applyGoadedUI();updateActivityBadges();
+    renderRightColumn();
+    if(fmt==='tokens')renderTokens();
+  });
 }
 
 // ── Token Pool Functions ──
@@ -3881,7 +3889,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=56').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=57').catch(() => {});
   });
 }
 
