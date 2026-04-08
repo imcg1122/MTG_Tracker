@@ -1484,6 +1484,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
+const APP_VERSION='57';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -2826,7 +2827,7 @@ const RULES_CONTENT={
     ]
   },
   appinfo:{
-    title:'MTG Tracker',
+    title:`MTG Tracker v${APP_VERSION}`,
     content:`MTG Tracker is a free, open-source Progressive Web App (PWA) designed to enhance your Magic: The Gathering gameplay with life tracking, mana management, dice rolling, commander damage, token creatures, and more. <a href="https://github.com/imcg1122/MTG_Tracker" target="_blank" style="color:#f0d080;text-decoration:underline;">Visit on GitHub</a>`,
     rules:[
       '<strong>Install as an App (Offline-Ready)</strong> — MTG Tracker is a Progressive Web App (PWA), allowing you to install it directly on your device like a native app. Once installed, you get faster load times, full offline support so you can play without internet, and quick access from your home screen or app drawer.',
