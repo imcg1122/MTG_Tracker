@@ -370,8 +370,8 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   display:flex;align-items:flex-start;justify-content:center;min-height:100vh;
 }
 .mat{
-  background:var(--c-bg);border:2px solid var(--c-border);border-radius:14px;
-  padding:10px;width:100%;max-width:1200px;
+  background:transparent;border:none;border-radius:14px;
+  padding:0;width:100%;max-width:1200px;
   transition:background .4s,border-color .4s;
 }
 .mat-inner{
@@ -1518,7 +1518,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='74';  // Update this each release
+const APP_VERSION='76';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -3938,7 +3938,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=74').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=76').catch(() => {});
   });
 }
 
