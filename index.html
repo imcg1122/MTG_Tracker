@@ -90,7 +90,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 
 /* ── LEXICON MODE ── */
-.lexicon-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:0 0 auto;max-height:calc(100vh - 160px);overflow-y:auto;}
+.lexicon-screen{display:none;width:100%;flex-direction:column;gap:12px;max-height:90vh;overflow-y:auto;}
 .mat.lexicon-mode .lexicon-screen{display:flex;}
 .mat.lexicon-mode .main-grid,
 .mat.lexicon-mode .bot-grid{display:none!important;}
@@ -106,9 +106,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .lexicon-filter-btn.active{border-color:var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);}
 .lexicon-jump-btn{padding:3px 6px;border-radius:4px;border:1px solid rgba(180,140,60,0.2);background:transparent;color:var(--c-muted);cursor:pointer;user-select:none;transition:all .15s;}
 .lexicon-jump-btn:hover{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.08);}
+.lexicon-jump-btn.active{border-color:var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);}
 
 /* ── RULES MODE ── */
-.rules-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:0 0 auto;max-height:calc(100vh - 160px);overflow-y:auto;}
+.rules-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:1;overflow-y:auto;}
 .mat.rules-mode .rules-screen{display:flex;}
 .mat.rules-mode .main-grid,
 .mat.rules-mode .bot-grid{display:none!important;}
@@ -254,17 +255,12 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 /* Mobile lexicon layout */
 @media (max-width:959px){
   .lexicon-screen{overflow-y:auto!important;}
-  .lexicon-content{grid-template-columns:1fr;gap:12px;overflow-y:auto;}
+  .lexicon-content{grid-template-columns:1fr;gap:12px;flex:1;overflow-y:auto;min-height:auto;}
   .lexicon-list{max-height:none;}
   .lexicon-detail{max-height:none;}
   .rules-screen{overflow-y:auto!important;}
 }
 
-/* Mobile-appropriate height constraint with scrollbars */
-@media (max-width:1024px){
-  .lexicon-screen{max-height:60vh;overflow-y:auto;}
-  .rules-screen{max-height:60vh;overflow-y:auto;}
-}
 
 /* Tablet lexicon */
 @media (max-width:959px) and (orientation:landscape){
@@ -1528,7 +1524,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='80';  // Update this each release
+const APP_VERSION='91';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -1564,7 +1560,7 @@ const fmtState={
   tokens:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
   dungeon:  {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,dungeonId:null,currentRoom:-1,dungeonPath:[],storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
   ring:     {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,ringStage:-1,ringBearer:'',storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
-  lexicon:  {life:0,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,searchQuery:'',selectedTerm:null,filterCategory:null,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
+  lexicon:  {life:0,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,searchQuery:'',selectedTerm:null,filterCategory:null,filterLetter:null,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
   rules:    {life:0,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,activeTab:'standard',tokenPool:[],tokenMode:'attack',activeModules:['','','','','']}
 };
 
@@ -2249,19 +2245,15 @@ const LEXICON=[
   {name:'Horsemanship',type:'Ability',icon:'🐴',desc:'This creature can only be blocked by creatures with horsemanship.',example:'Horsemanship acts similarly to flying.',scenario:'Your horsemanship creature attacks. Only horsemanship creatures can block it.',category:'Combat'},
 
   // Graveyard interactions
-  {name:'Flashback',type:'Mechanic',icon:'🪦',desc:'You may cast this spell from your graveyard by paying the flashback cost instead of mana.',example:'Flashback lets you cast spells twice.',scenario:'You cast a spell, it goes to graveyard. Later, pay flashback cost to cast it again from the graveyard.',category:'Mechanics'},
   {name:'Dredge',type:'Mechanic',icon:'🪦',desc:'Instead of drawing a card, you may put the top X cards of your library into your graveyard and return this from the graveyard to your hand.',example:'Dredge is a graveyard recursion mechanic.',scenario:'You would draw a card. Instead, dredge: mill 3 cards and return dredge card to hand.',category:'Mechanics'},
   {name:'Unearth',type:'Mechanic',icon:'🪦',desc:'Return this card from your graveyard to the battlefield. It gains haste. Exile it at the end of turn.',example:'Unearth lets you reuse creatures once.',scenario:'Creature dies. Pay unearth cost. It returns to field for one turn with haste, then exiles.',category:'Mechanics'},
   {name:'Persist',type:'Mechanic',icon:'🪦',desc:'If this creature has no -1/-1 counters on it, when it dies, return it to the field with a -1/-1 counter.',example:'Persist creatures return with a downside.',scenario:'Your persist creature dies with no -1/-1 counters. It returns tapped with one -1/-1 counter.',category:'Mechanics'},
   {name:'Embalm',type:'Mechanic',icon:'🪦',desc:'You may exile this card from your graveyard and create a zombie token copy.',example:'Embalm is a graveyard recursion for creatures.',scenario:'Creature dies. Pay embalm cost. A zombie copy enters the field.',category:'Mechanics'},
 
   // Casting cost mechanics
-  {name:'Kicker',type:'Mechanic',icon:'💰',desc:'You may pay an additional cost when casting this spell to get an additional effect.',example:'Kicker gives you a choice between two effects.',scenario:'Spell costs 2 with kicker 1. Pay 2 and get effect A, or pay 3 and get both A and B.',category:'Casting'},
   {name:'Multikicker',type:'Mechanic',icon:'💰',desc:'Similar to kicker but can be paid multiple times.',example:'Multikicker lets you scale the effect.',scenario:'Spell has multikicker 1. You pay 5 total (1 base + 4 kicker). You get 4 iterations of the effect.',category:'Casting'},
   {name:'Buyback',type:'Mechanic',icon:'🔁',desc:'You may pay an additional cost to return this spell to your hand instead of putting it in the graveyard.',example:'Buyback lets you reuse spells.',scenario:'You cast a spell with buyback 2. Pay 2 extra. Spell resolves and returns to your hand instead of the graveyard.',category:'Casting'},
-  {name:'Convoke',type:'Mechanic',icon:'👥',desc:'You may tap creatures you control to help pay the cost of this spell.',example:'Convoke lets creatures pay mana.',scenario:'Spell costs 3. You have 3 creatures. Tap them all. Spell costs 0. Convoke paid for it.',category:'Casting'},
   {name:'Splice',type:'Mechanic',icon:'🔗',desc:'As you cast a spell with a specific type, you may reveal this from your hand and add its effect to that spell.',example:'Splice merges abilities onto other spells.',scenario:'You cast an arcane spell. Splice card in hand. Its effect is added to the spell for splice cost.',category:'Casting'},
-  {name:'Foretell',type:'Mechanic',icon:'🔮',desc:'Pay 2 generic mana and exile this card face down. Cast it later for its foretell cost.',example:'Foretell is a way to hide spell timing.',scenario:'Pay 2 and foretell this card. Later, cast it face-down from exile for its foretell cost.',category:'Casting'},
 
   // Creature interaction
   {name:'Devour',type:'Mechanic',icon:'🐍',desc:'As this creature enters the battlefield, you may sacrifice creatures. It enters with +1/+1 counters for each sacrificed.',example:'Devour rewards sacrificing creatures.',scenario:'Spell costs 3. You have a devour creature. Sacrifice 2 creatures as it enters. It gets 2 +1/+1 counters.',category:'Mechanics'},
@@ -2269,7 +2261,6 @@ const LEXICON=[
   {name:'Modular',type:'Mechanic',icon:'🔧',desc:'This creature enters with +1/+1 counters. When it dies, move all its counters to another artifact creature.',example:'Modular transfers power between artifacts.',scenario:'Modular creature with 3 counters dies. Move all 3 counters to another artifact creature you control.',category:'Mechanics'},
   {name:'Graft',type:'Mechanic',icon:'🌱',desc:'This creature enters with +1/+1 counters. Whenever another creature enters, move a counter from this to it.',example:'Graft spreads counters.',scenario:'Your graft creature has 2 counters. You play another creature. Move 1 counter to it.',category:'Mechanics'},
   {name:'Champion',type:'Mechanic',icon:'👑',desc:'When this creature enters, exile a creature of a specified type. When this leaves, return the exiled creature.',example:'Champion stores a creature temporarily.',scenario:'Champion creature enters. Exile one of your creatures. When champion dies, return the exiled creature.',category:'Mechanics'},
-  {name:'Mutate',type:'Mechanic',icon:'🧬',desc:'You may cast this as an Aura on a creature. If you do, move it and all Auras on that creature onto another creature.',example:'Mutate combines creatures.',scenario:'Creature with mutate enters as an Aura on your creature, stacking its powers.',category:'Mechanics'},
   {name:'Monstrosity',type:'Mechanic',icon:'👹',desc:'Pay a cost once: this creature becomes monstrous and gets +1/+1 counters. It can\'t become monstrous again.',example:'Monstrosity is a one-time upgrade.',scenario:'Your creature is monstrous once. Pay cost once, get 3 +1/+1 counters. Can\'t activate again.',category:'Mechanics'},
   {name:'Bloodthirst',type:'Mechanic',icon:'🩸',desc:'If an opponent was dealt damage this turn, this creature enters with +1/+1 counters.',example:'Bloodthirst rewards aggressive play.',scenario:'You dealt 2 damage earlier. Your bloodthirst creature enters with 2 +1/+1 counters.',category:'Mechanics'},
   {name:'Adapt',type:'Mechanic',icon:'🧬',desc:'Pay a cost if this creature has no +1/+1 counters: put +1/+1 counters on it. Can be done multiple times.',example:'Adapt is repeatable growth.',scenario:'Your creature has no counters. Pay cost, get 2 +1/+1 counters. Later, no counters again, pay again.',category:'Mechanics'},
@@ -2283,7 +2274,6 @@ const LEXICON=[
   {name:'Living Weapon',type:'Mechanic',icon:'⚔',desc:'When this Equipment enters, put a 0/0 black Germ token on the field and attach this to it.',example:'Living weapon creates its own creature.',scenario:'Equipment with living weapon enters. A Germ token appears and the equipment attaches to it.',category:'Mechanics'},
 
   // Special mechanics
-  {name:'Cascade',type:'Mechanic',icon:'🌊',desc:'When you cast this spell, reveal cards from the top of your deck until a nonland card with lower mana value is revealed. Cast it for free.',example:'Cascade finds free spells.',scenario:'You cast a 5-cost cascade. Reveal cards until you find a 4-cost card. Cast it for free.',category:'Casting'},
   {name:'Cycling',type:'Mechanic',icon:'🔄',desc:'Pay a cost to discard this card and draw a new one.',example:'Cycling is a way to cycle bad draws.',scenario:'Your hand is bad. Pay the cycling cost. Discard this card and draw a new one.',category:'Mechanics'},
   {name:'Haunt',type:'Mechanic',icon:'👻',desc:'When this creature dies or spell resolves, exile it haunting a creature. It affects that creature when it dies.',example:'Haunt uses creatures as conduits.',scenario:'Haunt creature dies, exile it haunting opponent\'s creature. When haunted creature dies, haunt effect triggers.',category:'Mechanics'},
   {name:'Afterlife',type:'Mechanic',icon:'👼',desc:'When this creature dies, create X 1/1 black and white spirit tokens with flying.',example:'Afterlife creates tokens when it dies.',scenario:'Your afterlife creature dies. Create 2 spirit tokens.',category:'Mechanics'},
@@ -2296,7 +2286,6 @@ const LEXICON=[
   {name:'Support',type:'Mechanic',icon:'👥',desc:'Put a +1/+1 counter on each of up to N target creatures.',example:'Support distributes counters.',scenario:'Support 2 spell. Put a +1/+1 counter on up to 2 creatures.',category:'Mechanics'},
   {name:'Surveil',type:'Mechanic',icon:'🔍',desc:'Look at the top N cards of your library. Put any on the bottom, rest on top.',example:'Surveil arranges your library.',scenario:'Surveil 2. Look at top 2 cards. Put 1 on bottom, 1 on top.',category:'Advantage'},
   {name:'Explore',type:'Mechanic',icon:'🗺',desc:'Reveal the top card of your library. If it\'s a land, put it in your hand. Otherwise, put a +1/+1 counter on this creature and choose to bottom the card.',example:'Explore is a form of card advantage.',scenario:'Creature explores. You get a land from it or a +1/+1 counter.',category:'Mechanics'},
-  {name:'Proliferate',type:'Mechanic',icon:'📈',desc:'Choose any number of permanents and/or players with counters. Give each another counter of a kind they already have.',example:'Proliferate spreads existing counters.',scenario:'You have 2 +1/+1 counters, opponent has 1 poison. Proliferate: each gets another of their kind.',category:'Mechanics'},
   {name:'Populate',type:'Mechanic',icon:'👥',desc:'Put a token onto the field that\'s a copy of a creature token you control.',example:'Populate duplicates tokens.',scenario:'You control a 1/1 token. Populate: create another 1/1 token of the same type.',category:'Mechanics'},
   {name:'Extort',type:'Mechanic',icon:'💰',desc:'Whenever you cast a spell, you may pay W/B. Each opponent loses 1 life and you gain 1.',example:'Extort is a slow drain.',scenario:'You cast a spell. Pay 1 black or white. Opponent loses 1, you gain 1.',category:'Advantage'},
 
@@ -2316,7 +2305,6 @@ const LEXICON=[
   {name:'Envelop',type:'Mechanic',icon:'📮',desc:'Prevents spells and abilities from targeting this.',example:'Envelop is a protective ability.',scenario:'Your creature has envelop. Spells and abilities can\'t target it.',category:'Protection'},
   {name:'Exert',type:'Mechanic',icon:'💪',desc:'You may exert this creature as an additional cost for an ability (it doesn\'t untap next turn).',example:'Exert is a power at a cost.',scenario:'Your creature\'s ability says "you may exert." Exert it for extra value. It doesn\'t untap next turn.',category:'Mechanics'},
   {name:'Exploit',type:'Mechanic',icon:'😈',desc:'When this creature enters, you may sacrifice a creature. If you do, a specified ability triggers.',example:'Exploit trades creatures for effects.',scenario:'Creature with exploit enters. Sacrifice another creature. The exploit ability triggers.',category:'Mechanics'},
-  {name:'Extort',type:'Mechanic',icon:'💼',desc:'Whenever you cast a spell, pay W or B to make each opponent lose 1 and you gain 1.',example:'Extort is a drain per spell.',scenario:'You cast spells. Each time, optionally pay. Opponent loses, you gain.',category:'Advantage'},
   {name:'Fabricate',type:'Mechanic',icon:'⚙',desc:'When this creature enters, choose: put +1/+1 counters on it or create Servo tokens.',example:'Fabricate gives a choice.',scenario:'Creature with fabricate 2 enters. Choose 2 +1/+1 counters or 2 Servo tokens.',category:'Mechanics'},
   {name:'Fading',type:'Mechanic',icon:'✨',desc:'This permanent has fade counters. At the start of your upkeep, remove one. Sacrifice if you can\'t.',example:'Fading is a timer.',scenario:'Creature with fading 3 enters with 3 counters. Each turn one removes. After 3 turns it\'s sacrificed.',category:'Mechanics'},
   {name:'Fateseal',type:'Mechanic',icon:'🔮',desc:'Look at the top N cards of target opponent\'s deck. Put any on bottom.',example:'Fateseal messes with opponent\'s draws.',scenario:'Fateseal 2 on opponent. Look at top 2 of their deck. Put both on bottom.',category:'Mechanics'},
@@ -2327,12 +2315,10 @@ const LEXICON=[
   {name:'Hideaway',type:'Mechanic',icon:'🏚',desc:'When this enters, exile a card from your hand face-down. You may play it later under conditions.',example:'Hideaway stores a card.',scenario:'Land with hideaway enters. Exile a card face-down. Play it when hideaway condition is met.',category:'Mechanics'},
   {name:'Jump-start',type:'Mechanic',icon:'🚀',desc:'You may cast this from your graveyard by discarding a card. Then exile it.',example:'Jump-start is graveyard casting with discard cost.',scenario:'Spell is in graveyard. Discard a card. Cast the jump-start spell. It exiles.',category:'Casting'},
   {name:'Level Up',type:'Mechanic',icon:'📈',desc:'Activate to put a level counter on this creature, increasing its power/toughness and abilities.',example:'Level up grows creatures.',scenario:'Creature with level up. Pay cost repeatedly. Each level gets stronger with new abilities.',category:'Mechanics'},
-  {name:'Madness',type:'Mechanic',icon:'🤪',desc:'If you would discard this card, you may cast it for its madness cost instead.',example:'Madness casts from discard.',scenario:'Effect makes you discard. Cast this madness card for madness cost instead.',category:'Casting'},
   {name:'Miracle',type:'Mechanic',icon:'✨',desc:'If this is the first card you draw in a turn, you may cast it for its miracle cost.',example:'Miracle rewards draws.',scenario:'Draw this card as your first draw. Cast it for miracle cost.',category:'Casting'},
   {name:'Morph',type:'Mechanic',icon:'👻',desc:'Cast this face-down as a 2/2 colorless creature for 3 generic mana. Flip it face-up for its morph cost.',example:'Morph is surprise creatures.',scenario:'Cast face-down for 3 mana as a 2/2. Later, pay morph cost to flip it and reveal.',category:'Casting'},
   {name:'Ninjutsu',type:'Mechanic',icon:'🥷',desc:'If you have a ninjutsu creature in hand and control an unblocked attacker, return that creature to your hand and put the ninja onto the field.',example:'Ninjutsu replaces blockers.',scenario:'Unblocked creature attacks. Pay ninjutsu. Return that creature to hand, put ninja on field attacking.',category:'Casting'},
   {name:'Offering',type:'Mechanic',icon:'🙏',desc:'You may cast this creature any time you could cast an instant if you sacrifice a creature of a type.',example:'Offering is conditional flash.',scenario:'You have an Elf. Cast creature with Elf offering for instant speed by sacrificing the Elf.',category:'Casting'},
-  {name:'Overload',type:'Mechanic',icon:'🌪',desc:'You may cast this spell paying the overload cost. If you do, it affects all targets instead of one.',example:'Overload is mass effect casting.',scenario:'Spell targets 1 creature. Pay overload cost. It affects all creatures instead.',category:'Casting'},
   {name:'Poisonous',type:'Mechanic',icon:'☠',desc:'Whenever this creature deals combat damage to a player, that player gets N poison counters.',example:'Poisonous is a slow poison win.',scenario:'Your poisonous 2 creature deals 3 damage. Opponent gets 2 poison counters (not 3 life loss).',category:'Combat'},
   {name:'Provoke',type:'Mechanic',icon:'😤',desc:'When this creature attacks, choose a defending creature. Untap it and force it to block.',example:'Provoke forces blocks.',scenario:'Your creature provokes. Opponent must block with a creature you choose, even if they don\'t want to.',category:'Combat'},
   {name:'Prowl',type:'Mechanic',icon:'🥷',desc:'You may cast this for its prowl cost if a creature of a specified type dealt damage this turn.',example:'Prowl rewards combat damage.',scenario:'Your Rogue dealt damage. You can cast this prowl creature for less mana.',category:'Casting'},
@@ -2345,7 +2331,6 @@ const LEXICON=[
   {name:'Soulbond',type:'Mechanic',icon:'💑',desc:'When this creature enters, pair it with another creature. Paired creatures each get bonuses.',example:'Soulbond is partner creatures.',scenario:'Creature with soulbond enters. Pair it with another creature you control. Each gets bonuses.',category:'Mechanics'},
   {name:'Soulshift',type:'Mechanic',icon:'👻',desc:'When this creature dies, return a spirit with converted mana cost N or less from graveyard to hand.',example:'Soulshift recurs spirits.',scenario:'Spirit with soulshift 3 dies. Return a spirit with CMC 3 or less from graveyard to hand.',category:'Mechanics'},
   {name:'Spectacle',type:'Mechanic',icon:'🎪',desc:'You may cast this for its spectacle cost if an opponent lost life this turn.',example:'Spectacle rewards opponent damage.',scenario:'You dealt damage. You can cast this spectacle creature for less.',category:'Casting'},
-  {name:'Split Second',type:'Mechanic',icon:'⏱',desc:'While this spell is on the stack, players can\'t cast spells or activate abilities.',example:'Split second stops responses.',scenario:'You cast split second spell. Opponent can\'t cast instant responses until it resolves.',category:'Mechanics'},
   {name:'Storm',type:'Mechanic',icon:'⚡',desc:'When you cast this spell, put a copy on the stack for each spell cast before it this turn.',example:'Storm multiplies on spellcasts.',scenario:'You cast 3 spells, then storm spell. Put 3 copies of it on stack.',category:'Casting'},
   {name:'Sunburst',type:'Mechanic',icon:'☀',desc:'This enters with a counter for each color of mana spent.',example:'Sunburst scales with colors.',scenario:'Pay 2 white and 1 black to cast. It enters with 2 counters.',category:'Mechanics'},
   {name:'Suspend',type:'Mechanic',icon:'⏳',desc:'Exile this with N time counters. Remove one each upkeep. Cast without cost when none remain.',example:'Suspend delays casting.',scenario:'Suspend a spell with 3 counters. Each turn remove 1. After 3 turns cast it free.',category:'Casting'},
@@ -2728,9 +2713,11 @@ function renderLexicon(){
   const query=(searchInput.value||'').toLowerCase().trim();
   const category=fmtState[fmt].filterCategory;
   
-  // Filter terms based on search and category
+  // Filter terms based on search, category, and letter
   let filtered=LEXICON_INDEX;
   if(category)filtered=filtered.filter(t=>t.category===category);
+  const filterLetter=fmtState[fmt].filterLetter;
+  if(filterLetter)filtered=filtered.filter(t=>t.name[0]?.toUpperCase()===filterLetter);
   if(query)filtered=filtered.filter(t=>t.searchStr.includes(query));
   
   // If no results
@@ -2814,30 +2801,41 @@ function clearLexiconSearch(){
   fmtState[fmt].searchQuery='';
   fmtState[fmt].selectedTerm=null;
   fmtState[fmt].filterCategory=null;
+  fmtState[fmt].filterLetter=null;
   document.querySelectorAll('.lexicon-filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.lexicon-jump-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.lexicon-filter-btn[onclick*="null"]').classList.add('active');
   renderLexicon();
 }
 
 function filterByCategory(cat){
   fmtState[fmt].filterCategory=cat;
+  fmtState[fmt].filterLetter=null;
   fmtState[fmt].selectedTerm=null;
   document.querySelectorAll('.lexicon-filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.lexicon-jump-btn').forEach(b=>b.classList.remove('active'));
   event.target.classList.add('active');
   renderLexicon();
 }
 
 function jumpToLetter(letter){
-  const list=document.getElementById('lexiconList');
-  const items=Array.from(list.querySelectorAll('.lexicon-item:not(.hidden)'));
-  const item=items.find(i=>{
-    const name=i.textContent.replace(/[^\w\s]/g,'').trim();
-    return name[0]?.toUpperCase()===letter;
+  const filterLetter=fmtState[fmt].filterLetter;
+  // Toggle off if clicking same letter, otherwise set new letter
+  fmtState[fmt].filterLetter=(filterLetter===letter)?null:letter;
+  fmtState[fmt].selectedTerm=null;
+  
+  // Update button styling - compare each button's text to the NEW filterLetter state
+  const newFilterLetter=fmtState[fmt].filterLetter;
+  document.querySelectorAll('.lexicon-jump-btn').forEach(b=>{
+    const btnLetter=b.textContent.trim();
+    if(btnLetter===newFilterLetter){
+      b.classList.add('active');
+    }else{
+      b.classList.remove('active');
+    }
   });
-  if(item){
-    item.scrollIntoView({behavior:'smooth',block:'nearest'});
-    item.click();
-  }
+  
+  renderLexicon();
 }
 
 const RULES_CONTENT={
@@ -2980,7 +2978,7 @@ function resetAll(){
   fmtState.tokens={...defaultState()};
   fmtState.dungeon={...defaultState(),dungeonId:null,currentRoom:-1,dungeonPath:[]};
   fmtState.ring={...defaultState(),ringStage:-1,ringBearer:''};
-  fmtState.lexicon={...defaultState(),searchQuery:'',selectedTerm:null,filterCategory:null};
+  fmtState.lexicon={...defaultState(),searchQuery:'',selectedTerm:null,filterCategory:null,filterLetter:null};
   fmtState.rules={...defaultState(),activeTab:'standard'};
   primaryFmt=null;
   dungeonId=null;currentRoom=-1;dungeonPath=[];
@@ -3949,7 +3947,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=80').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=91').catch(() => {});
   });
 }
 
