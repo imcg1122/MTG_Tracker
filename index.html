@@ -829,7 +829,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .pool-inline-btn-add:active{background:var(--c-btn-active);}
 .pool-inline-btn{width:26px;font-size:10px;padding:5px 0;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;}
 .pool-inline-btn:active{background:var(--c-btn-active);}
-.pool-empty-tap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:8px;border:1.5px dashed rgba(180,140,60,0.25);background:transparent;width:100%;min-height:clamp(120px,14vh,160px);cursor:pointer;user-select:none;transition:border-color .2s,background .2s;}
+.pool-empty-tap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:8px;border:1.5px dashed rgba(180,140,60,0.25);background:transparent;width:100%;min-height:140px;cursor:pointer;user-select:none;transition:border-color .2s,background .2s;}
 .pool-empty-tap:active{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.06);}
 .pool-empty-tap-icon{font-size:18px;opacity:.3;}
 .pool-empty-tap-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--c-faint);text-align:center;line-height:1.4;}
@@ -851,6 +851,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
   .pool-empty{min-height:clamp(120px,14vh,160px);}
   .pool-card{min-height:clamp(120px,14vh,160px);}
+  .pool-empty-tap{min-height:clamp(120px,14vh,160px);}
 
   .sec-label{font-size:clamp(8px,0.9vw,10px);}
   .fmt-btn,.reset-btn,.theme-btn{font-size:clamp(9px,0.9vw,11px);padding:clamp(3px,0.5vh,5px) clamp(8px,1vw,12px);}
@@ -863,6 +864,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .mc-btn-name{font-size:8px;}
   .pool-card{min-height:clamp(130px,15vh,170px);}
   .pool-empty{min-height:clamp(130px,15vh,170px);}
+  .pool-empty-tap{min-height:clamp(130px,15vh,170px);}
   .card{padding:10px 13px;}
   .mana-btn-grid{gap:7px;}
   .cbtn{height:26px;font-size:11px;}
@@ -873,6 +875,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 @media (min-width:1400px){
   .pool-card{min-height:170px;}
   .pool-empty{min-height:170px;}
+  .pool-empty-tap{min-height:170px;}
   .lbtn{height:52px;}
   .dbtn{height:clamp(29px,3.2vh,35px);font-size:clamp(8px,1.2vw,10px);}
   .dice-btn-grid{gap:5px;}
@@ -1518,7 +1521,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='76';  // Update this each release
+const APP_VERSION='77';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -3938,7 +3941,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=76').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=77').catch(() => {});
   });
 }
 
