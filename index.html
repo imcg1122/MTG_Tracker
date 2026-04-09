@@ -839,6 +839,15 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .main-grid > *:first-child{display:flex;flex-direction:column;}
 .bot-grid{display:grid;gap:8px;}
 
+/* Mobile and tablet — edge-to-edge full bleed */
+@media (max-width:1024px){
+  body{overflow:hidden;}
+  .wrap{border-radius:0;}
+  .mat{border-radius:0;padding:0;}
+  .lexicon-screen{flex:1;}
+  .rules-screen{flex:1;}
+}
+
 /* Wide layout — tablet landscape, desktop */
 @media (min-width:600px){
   body{padding:clamp(2px,0.8vw,6px);}
@@ -1526,7 +1535,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='81';  // Update this each release
+const APP_VERSION='83';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -3947,7 +3956,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=81').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=83').catch(() => {});
   });
 }
 
