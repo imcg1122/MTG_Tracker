@@ -1521,7 +1521,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='77';  // Update this each release
+const APP_VERSION='78';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -2987,6 +2987,7 @@ function resetAll(){
   usedBoards.clear();
   updateGameBoardButtonVisibility();
   updateGameBoardGlow();
+  resetTheme();
   loadState();
   applyDayNightUI();applyGoadedUI();
   renderAll();
@@ -3941,7 +3942,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=77').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=78').catch(() => {});
   });
 }
 
