@@ -465,14 +465,14 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .initiative-card.active .init-state{color:rgba(240,200,80,0.7);}
 
 /* dice */
-.dice-compact-inner{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 5px;height:100%;justify-content:space-between;}
+.dice-compact-inner{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 5px;height:100%;justify-content:flex-start;}
 .dice-result-row{display:flex;align-items:center;gap:7px;}
 .d20-svg{opacity:.65;flex-shrink:0;}
 .dice-face{font-size:clamp(22px,3vw,32px);font-weight:500;color:var(--c-gold);font-family:Georgia,serif;line-height:1;min-width:36px;text-align:center;}
 .dice-rolling{animation:pop .28s ease-out;}
 @keyframes pop{0%{transform:scale(.45);opacity:.15;}100%{transform:scale(1);opacity:1;}}
-.dice-btn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:100%;}
-.dbtn{font-size:9px;padding:6px 0;border-radius:5px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;user-select:none;text-align:center;transition:background .1s;}
+.dice-btn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;width:100%;}
+.dbtn{font-size:10px;height:32px;padding:0;border-radius:5px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-muted);cursor:pointer;text-transform:uppercase;letter-spacing:.04em;user-select:none;display:flex;align-items:center;justify-content:center;transition:background .1s;}
 .dbtn:active{background:var(--c-btn-active);}
 .dice-hist{font-size:8px;color:var(--c-faint);text-align:center;}
 
@@ -607,7 +607,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 }
 
 /* Life num container needs position:relative for overlays */
-.life-card-wrap { position: relative; }
+.life-card-wrap{display:flex;flex-direction:column;justify-content:center;gap:8px;position:relative;}
 
 /* Initiative — electric blue full highlight */
 @keyframes initiative-pulse {
@@ -800,7 +800,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .hrow{display:flex;flex-direction:row;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;user-select:none;flex:1;min-height:58px;max-height:58px;overflow:hidden;}
 .hrow-icon{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:20px;height:20px;}
 .hrow-num{font-size:clamp(16px,2vw,20px);font-weight:500;font-family:Georgia,serif;line-height:1;flex-shrink:0;min-width:24px;}
-.hrow-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:var(--c-muted);flex:1;}
+.hrow-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:rgba(210,170,90,0.65);flex:1;text-align:center;}
 .hrow-state{font-size:9px;color:var(--c-faint);font-style:italic;flex-shrink:0;}
 .hrow-btns{display:flex;gap:4px;align-items:center;flex-shrink:0;}
 
@@ -844,7 +844,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .mat{padding:clamp(10px,1.5vw,16px);}
   .mat-inner{padding:clamp(10px,1.5vw,14px);display:flex;flex-direction:column;}
 
-  .main-grid{grid-template-columns:clamp(140px,16vw,200px) 1fr clamp(180px,22vw,240px);}
+  .main-grid{grid-template-columns:clamp(110px,12vw,150px) 1fr clamp(220px,28vw,300px);}
   .bot-grid{grid-template-columns:clamp(140px,16vw,200px);}
 
   .pool-empty{min-height:clamp(120px,14vh,160px);}
@@ -872,14 +872,14 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .pool-card{min-height:170px;}
   .pool-empty{min-height:170px;}
   .lbtn{height:52px;}
-  .dbtn{padding:8px 0;font-size:10px;}
+  .dbtn{height:32px;font-size:10px;}
   .dice-btn-grid{gap:5px;}
 }
 
 /* ── MOBILE PORTRAIT LAYOUT (portrait phones, <600px) ── */
 /* Only shown when not in portrait-blocked state */
 @media (max-width:599px) and (orientation:landscape){
-  .main-grid{grid-template-columns:130px 1fr 185px;}
+  .main-grid{grid-template-columns:100px 1fr 215px;}
   .bot-grid{grid-template-columns:130px;}
   .pool-card{min-height:100px;}
   .pool-empty{min-height:100px;}
@@ -1014,7 +1014,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
             </svg>
             <div class="dice-face" id="diceFace" style="font-size:clamp(28px,4vw,44px);min-width:48px;">—</div>
           </div>
-          <div class="dice-hist" id="diceHist" style="margin-bottom:10px;"></div>
+          <div class="dice-hist" id="diceHist" style="margin-bottom:6px;"></div>
           <div class="dice-btn-grid">
             <div class="dbtn" onclick="roll(4)">d4</div>
             <div class="dbtn" onclick="roll(6)">d6</div>
@@ -1122,13 +1122,15 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
               <path d="M12 2 L15 8 L22 9 L17 14 L18 21 L12 18 L6 21 L7 14 L2 9 L9 8 Z"/>
             </svg>
           </div>
+          <span class="hrow-num" style="visibility:hidden;"></span>
           <span class="hrow-lbl" id="goadedLbl">Goaded</span>
-          <span class="hrow-state" id="goadedState">None</span>
+          <span class="hrow-state" id="goadedState">Not held</span>
         </div>
 
         <!-- Initiative -->
         <div class="card hrow initiative-card" id="initCard" onclick="toggleInit()" style="cursor:pointer;user-select:none;">
           <span class="hrow-icon init-icon-el" style="font-size:16px;opacity:.35;">⚔</span>
+          <span class="hrow-num" style="visibility:hidden;"></span>
           <span class="hrow-lbl init-lbl">Initiative</span>
           <span class="hrow-state init-state" id="initState">Not held</span>
         </div>
@@ -1141,6 +1143,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
               <line x1="3" y1="21" x2="21" y2="21"/>
             </svg>
           </div>
+          <span class="hrow-num" style="visibility:hidden;"></span>
           <span class="hrow-lbl monarch-lbl" id="monarchLbl">Monarch</span>
           <span class="hrow-state monarch-state" id="monarchState">Not held</span>
         </div>
@@ -1513,7 +1516,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='64';  // Update this each release
+const APP_VERSION='71';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -2948,13 +2951,13 @@ function applyGoadedUI(){
     card.classList.add('active','goaded-active');
     if(icon)icon.style.opacity='1';
     if(lbl)lbl.style.color='#f0a080';
-    if(state){state.textContent='Active';state.style.color='rgba(240,140,100,0.8)';}
+    if(state){state.textContent='Holding';state.style.color='rgba(240,140,100,0.8)';}
   } else {
     card.classList.remove('active','goaded-active');
     card.style.background='';card.style.borderColor='';
     if(icon)icon.style.opacity='0.35';
     if(lbl)lbl.style.color='';
-    if(state){state.textContent='None';state.style.color='';}
+    if(state){state.textContent='Not held';state.style.color='';}
   }
 }
 function resetAll(){
@@ -3933,7 +3936,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=64').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=71').catch(() => {});
   });
 }
 
