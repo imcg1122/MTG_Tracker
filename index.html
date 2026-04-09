@@ -90,7 +90,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 
 /* ── LEXICON MODE ── */
-.lexicon-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:0 0 auto;max-height:calc(100vh - 160px);overflow:hidden;}
+.lexicon-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:0 0 auto;max-height:calc(100vh - 160px);overflow-y:auto;}
 .mat.lexicon-mode .lexicon-screen{display:flex;}
 .mat.lexicon-mode .main-grid,
 .mat.lexicon-mode .bot-grid{display:none!important;}
@@ -108,7 +108,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .lexicon-jump-btn:hover{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.08);}
 
 /* ── RULES MODE ── */
-.rules-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:0 0 auto;max-height:calc(100vh - 160px);overflow:hidden;}
+.rules-screen{display:none;width:100%;flex-direction:column;gap:12px;flex:0 0 auto;max-height:calc(100vh - 160px);overflow-y:auto;}
 .mat.rules-mode .rules-screen{display:flex;}
 .mat.rules-mode .main-grid,
 .mat.rules-mode .bot-grid{display:none!important;}
@@ -260,6 +260,12 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .rules-screen{overflow-y:auto!important;}
 }
 
+/* Mobile-appropriate height constraint with scrollbars */
+@media (max-width:1024px){
+  .lexicon-screen{max-height:60vh;overflow-y:auto;}
+  .rules-screen{max-height:60vh;overflow-y:auto;}
+}
+
 /* Tablet lexicon */
 @media (max-width:959px) and (orientation:landscape){
   .lexicon-content{grid-template-columns:200px 1fr;gap:8px;}
@@ -366,17 +372,17 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* ── WRAPPER ── */
 .wrap{
-  padding:0px;width:100%;
+  padding:4px;
   display:flex;align-items:flex-start;justify-content:center;min-height:100vh;
 }
 .mat{
   background:transparent;border:none;border-radius:14px;
-  padding:0;width:100%;
+  padding:0;width:100%;max-width:1200px;
   transition:background .4s,border-color .4s;
 }
 .mat-inner{
   background:var(--c-inner);border:1px solid var(--c-inner-border);
-  border-radius:10px;padding:10px;position:relative;width:100%;margin:0;
+  border-radius:10px;padding:10px;position:relative;
 }
 
 /* ── SHARED COMPONENTS ── */
@@ -840,14 +846,6 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .bot-grid{display:grid;gap:8px;}
 
 /* Mobile and tablet — edge-to-edge full bleed */
-@media (max-width:1024px){
-  body{overflow:hidden;}
-  .wrap{border-radius:0;}
-  .mat{border-radius:0;padding:0;}
-  .lexicon-screen{flex:1;}
-  .rules-screen{flex:1;}
-}
-
 /* Wide layout — tablet landscape, desktop */
 @media (min-width:600px){
   body{padding:clamp(2px,0.8vw,6px);}
@@ -878,11 +876,6 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .mana-btn-grid{gap:7px;}
   .cbtn{height:26px;font-size:11px;}
   .cmd-val{font-size:18px;}
-}
-
-/* Large desktop — max width constraint */
-@media (min-width:1200px){
-  .mat{max-width:1200px;}
 }
 
 /* Large desktop — generous sizing */
@@ -1535,7 +1528,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='83';  // Update this each release
+const APP_VERSION='80';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -3956,7 +3949,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=83').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=80').catch(() => {});
   });
 }
 
