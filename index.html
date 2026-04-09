@@ -253,9 +253,11 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* Mobile lexicon layout */
 @media (max-width:959px){
-  .lexicon-content{grid-template-columns:1fr;gap:12px;}
-  .lexicon-list{max-height:200px;}
-  .lexicon-detail{max-height:350px;}
+  .lexicon-screen{overflow-y:auto!important;}
+  .lexicon-content{grid-template-columns:1fr;gap:12px;overflow-y:auto;}
+  .lexicon-list{max-height:none;}
+  .lexicon-detail{max-height:none;}
+  .rules-screen{overflow-y:auto!important;}
 }
 
 /* Tablet lexicon */
@@ -1516,7 +1518,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='73';  // Update this each release
+const APP_VERSION='74';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -3936,7 +3938,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=73').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=74').catch(() => {});
   });
 }
 

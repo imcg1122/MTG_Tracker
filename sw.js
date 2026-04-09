@@ -1,4 +1,4 @@
-const CACHE = 'mtg-playmat-v73';
+const CACHE = 'mtg-playmat-v74';
 const ASSETS = [
   './',
   './index.html',
