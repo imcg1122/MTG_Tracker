@@ -366,17 +366,17 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* ── WRAPPER ── */
 .wrap{
-  padding:0px;
+  padding:0px;width:100%;
   display:flex;align-items:flex-start;justify-content:center;min-height:100vh;
 }
 .mat{
   background:transparent;border:none;border-radius:14px;
-  padding:0;width:100%;max-width:1200px;
+  padding:0;width:100%;
   transition:background .4s,border-color .4s;
 }
 .mat-inner{
   background:var(--c-inner);border:1px solid var(--c-inner-border);
-  border-radius:10px;padding:10px;position:relative;
+  border-radius:10px;padding:10px;position:relative;width:100%;margin:0;
 }
 
 /* ── SHARED COMPONENTS ── */
@@ -869,6 +869,11 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .mana-btn-grid{gap:7px;}
   .cbtn{height:26px;font-size:11px;}
   .cmd-val{font-size:18px;}
+}
+
+/* Large desktop — max width constraint */
+@media (min-width:1200px){
+  .mat{max-width:1200px;}
 }
 
 /* Large desktop — generous sizing */
@@ -1521,7 +1526,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='79';  // Update this each release
+const APP_VERSION='81';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -3942,7 +3947,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=79').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=81').catch(() => {});
   });
 }
 
