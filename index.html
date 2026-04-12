@@ -1589,7 +1589,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='96';  // Update this each release
+const APP_VERSION='97';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -1677,7 +1677,7 @@ let dungeonId=null,currentRoom=-1,dungeonPath=[];
 let ringStage=-1,ringBearer='';
 let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add',manaEntersTapped=false;
 let tokenPool=[]; // Array of token objects: {power, toughness, color, keywords: [], tapped: false}
-let activeModules=['','','']; // Array of active module IDs for the current format
+let activeModules=['','','','','']; // Array of active module IDs for the current format
 
 // ── Core game functions ──
 function adjEnergy(d){energy=Math.max(0,energy+d);const num=document.getElementById('energyNum');const moduleNum=document.getElementById('module-energyNum');const btn=document.getElementById('energyCard');const moduleBtn=document.getElementById('module-energy');if(num)num.textContent=energy;if(moduleNum)moduleNum.textContent=energy;if(btn)btn.style.background=energy>0?'rgba(40,80,180,0.25)':'transparent';if(moduleBtn)moduleBtn.style.background=energy>0?'rgba(40,80,180,0.25)':'transparent';if(d>0)spawnPop('energyCard','⚡','#a0c8ff');}
@@ -3108,10 +3108,10 @@ function applyGoadedUI(){
   update(moduleCard,moduleIcon,moduleLbl,moduleState);
 }
 function resetAll(){
-  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,speed:1,tokenPool:[],tokenMode:'attack',activeModules:['','','']});
+  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,speed:1,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']});
   fmtState.commander={...defaultState(),life:40};
   fmtState.standard={...defaultState(),activeModules:['','','','','','','']};
-  fmtState.simple={...defaultState()};
+  fmtState.simple={...defaultState(),activeModules:['','','']};
   fmtState.tokens={...defaultState()};
   fmtState.dungeon={...defaultState(),dungeonId:null,currentRoom:-1,dungeonPath:[]};
   fmtState.ring={...defaultState(),ringStage:-1,ringBearer:''};
@@ -4224,7 +4224,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=96').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=97').catch(() => {});
   });
 }
 
