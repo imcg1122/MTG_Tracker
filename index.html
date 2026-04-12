@@ -328,6 +328,19 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .sec-label{font-size:6px;margin-bottom:1px;}
   .card{padding:3px 4px;}
   
+  /* Module row ultra-compact */
+  .mat.simple-mode .module-row{gap:3px;margin-bottom:2px;}
+  .mat.simple-mode .module-slot-empty{min-height:44px;padding:4px;}
+  .mat.simple-mode .module-slot-empty-icon{font-size:10px;}
+  .mat.simple-mode .module-slot-empty-lbl{font-size:6px;}
+  .mat.simple-mode .module-row .hrow{min-height:44px;max-height:44px;padding:4px 5px;gap:4px;}
+  .mat.simple-mode .module-row .hrow-icon{width:14px;height:14px;}
+  .mat.simple-mode .module-row .hrow-num{font-size:11px;}
+  .mat.simple-mode .module-row .hrow-lbl{font-size:6px;}
+  .mat.simple-mode .module-row .hrow-btns{gap:2px;}
+  .mat.simple-mode .module-row .reset-icon{width:16px;height:16px;}
+  .mat.simple-mode .module-row .reset-icon svg{width:8px;height:8px;}
+  
   /* Mana status text */
   .mana-status{font-size:6px;}
   .untap-btn{font-size:7px;padding:2px 6px;height:22px;min-height:22px;white-space:nowrap;}
@@ -364,6 +377,11 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .mat.simple-mode .counter-tap-btn{padding:8px 3px;}
   .mat.simple-mode .counter-num{font-size:18px;}
   .mat.simple-mode .counter-label{font-size:7px;}
+  
+  /* Module row compact landscape */
+  .mat.simple-mode .module-row{gap:4px;margin-bottom:4px;}
+  .mat.simple-mode .module-slot-empty{min-height:50px;}
+  .mat.simple-mode .module-row .hrow{min-height:50px;max-height:50px;padding:5px 6px;}
 }
 
 /* ── WRAPPER ── */
@@ -536,6 +554,20 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .monarch-active {
   animation: monarch-breathe 2.5s ease-in-out infinite;
 }
+
+/* Speed — green glowing border at max */
+@keyframes speed-glow {
+  0%,100%{box-shadow:0 0 8px 2px rgba(100,255,100,0.4),inset 0 0 10px rgba(100,255,100,0.08);}
+  50%{box-shadow:0 0 20px 6px rgba(120,255,120,0.65),inset 0 0 16px rgba(100,255,100,0.15);}
+}
+.speed-card.speed-4 {
+  animation: speed-glow 2.5s ease-in-out infinite;
+}
+.speed-card{transition:background .2s,border-color .2s;}
+.speed-card.speed-1{background:rgba(80,80,80,0.18);border-color:rgba(120,120,120,0.4);}
+.speed-card.speed-2{background:rgba(180,50,50,0.22);border-color:rgba(220,80,80,0.5);}
+.speed-card.speed-3{background:rgba(200,140,20,0.22);border-color:rgba(240,180,40,0.5);}
+.speed-card.speed-4{background:rgba(40,140,40,0.25);border-color:#64ff64;border-width:2px;}
 
 /* Mana spend — color burst */
 @keyframes mana-burst {
@@ -836,10 +868,23 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .pool-empty-tap-icon{font-size:18px;opacity:.3;}
 .pool-empty-tap-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--c-faint);text-align:center;line-height:1.4;}
 
+/* ── MANA POOL HEIGHT FILL (commander + standard only) ── */
+.mat:not(.simple-mode) .card:has(#manaPoolGrid){display:flex;flex-direction:column;}
+.mat:not(.simple-mode) #manaPoolGrid{flex:1;min-height:0;grid-auto-rows:1fr;}
+.mat:not(.simple-mode) .pool-empty-tap,.mat:not(.simple-mode) .pool-card{flex:1;min-height:0;}
+
 /* ── EMPTY MODULES SLOT ── */
 .main-grid{display:grid;gap:8px;margin-bottom:8px;align-items:stretch;}
 .main-grid > *:first-child{display:flex;flex-direction:column;}
 .bot-grid{display:grid;gap:8px;}
+
+/* ── MODULE ROW (Mobile mode 4-slot display) ── */
+.module-row{display:none;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;}
+.mat.simple-mode .module-row{display:grid;}
+.module-slot-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;background:var(--c-inner);border:1.5px dashed rgba(180,140,60,0.25);border-radius:6px;cursor:pointer;user-select:none;transition:all 0.2s;min-height:56px;}
+.module-slot-empty:active{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.06);}
+.module-slot-empty-icon{font-size:12px;color:rgba(210,170,90,0.4);}
+.module-slot-empty-lbl{font-size:7px;text-transform:uppercase;letter-spacing:0.06em;color:rgba(210,170,90,0.35);text-align:center;line-height:1.2;}
 
 /* Mobile and tablet — edge-to-edge full bleed */
 /* Wide layout — tablet landscape, desktop */
@@ -1156,10 +1201,28 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
           <span class="hrow-state monarch-state" id="monarchState">Not held</span>
         </div>
 
+        <!-- Speed / Start Your Engines -->
+        <div class="card hrow speed-card speed-1" id="speedCard" onclick="toggleSpeed()" style="display:none;cursor:pointer;user-select:none;position:relative;">
+          <svg width="18" height="18" viewBox="0 0 50 50" fill="none" stroke="rgba(180,140,60,0.6)" stroke-width="2" class="hrow-icon" id="speedIcon">
+            <circle cx="25" cy="25" r="15"/>
+            <path d="M 25 8 L 25 5 M 25 45 L 25 42 M 42 25 L 45 25 M 5 25 L 8 25 M 36 14 L 38 12 M 12 38 L 14 36 M 36 36 L 38 38 M 12 12 L 14 14"/>
+            <circle cx="25" cy="25" r="6" fill="rgba(180,140,60,0.3)"/>
+          </svg>
+          <span class="hrow-num" id="speedNum" style="color:rgba(200,200,200,0.7);">1</span>
+          <span class="hrow-lbl">Speed</span>
+          <div class="hrow-btns">
+            <div class="reset-icon" id="speedDecBtn" onclick="event.stopPropagation();adjSpeed(-1)" style="opacity:0.4;cursor:not-allowed;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="reset-icon" onclick="event.stopPropagation();resetSpeed()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
+          </div>
+        </div>
+
       </div>
     </div>
 
   </div>
+
+  <!-- module-row: 4 selectable module slots for mobile mode -->
+  <div class="module-row" id="moduleRow"></div>
 
   <!-- dungeon screen — full layout replacement in dungeon mode -->
   <div id="dungeonPanel" class="dungeon-screen">
@@ -1524,7 +1587,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='91';  // Update this each release
+const APP_VERSION='94';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -1534,6 +1597,7 @@ const MODULE_CONFIG={
     {id:'goaded',label:'Goaded'},
     {id:'init',label:'Initiative'},
     {id:'monarch',label:'Monarch'},
+    {id:'speed',label:'Speed'},
     {id:'dayNight',label:'Day/Night'},
     {id:'energy',label:'Energy'}
   ],
@@ -1544,6 +1608,7 @@ const MODULE_CONFIG={
     {id:'goaded',label:'Goaded'},
     {id:'init',label:'Initiative'},
     {id:'monarch',label:'Monarch'},
+    {id:'speed',label:'Speed'},
     {id:'dayNight',label:'Day/Night'},
     {id:'energy',label:'Energy'}
   ]
@@ -1576,7 +1641,7 @@ function saveState(){
   s.manaEntries=JSON.parse(JSON.stringify(manaEntries));
   s.cmdDmg=JSON.parse(JSON.stringify(cmdDmg));
   s.diceHist=[...diceHist];
-  s.initiative=initiative;s.goaded=goaded;s.isDay=isDay;s.storm=storm;s.monarch=monarch;
+  s.initiative=initiative;s.goaded=goaded;s.isDay=isDay;s.storm=storm;s.monarch=monarch;s.speed=speed;
   s.tokenPool=JSON.parse(JSON.stringify(tokenPool));
   s.tokenMode=tokenMode;
   s.activeModules=[...activeModules];
@@ -1593,7 +1658,7 @@ function loadState(){
   manaEntries=s.manaEntries?JSON.parse(JSON.stringify(s.manaEntries)):[];
   cmdDmg=s.cmdDmg?JSON.parse(JSON.stringify(s.cmdDmg)):{};
   diceHist=[...(s.diceHist||[])];
-  initiative=s.initiative||false;goaded=s.goaded||false;isDay=s.isDay!==false;storm=s.storm||0;monarch=s.monarch||false;
+  initiative=s.initiative||false;goaded=s.goaded||false;isDay=s.isDay!==false;storm=s.storm||0;monarch=s.monarch||false;speed=s.speed||1;
   tokenPool=s.tokenPool?JSON.parse(JSON.stringify(s.tokenPool)):[];
   tokenMode=s.tokenMode||'attack';
   activeModules=[...(s.activeModules||[])];
@@ -1605,7 +1670,7 @@ function loadState(){
 let cmdPlayers=['P1','P2','P3','P4'],cmdDmg={};
 let cmdPlayerConfig={P1:{},P2:{name:'P2',color:null},P3:{name:'P3',color:null},P4:{name:'P4',color:null}};
 // ── Working variables (current format) ──
-let fmt='commander',life=40,poison=0,xp=0,energy=0,initiative=false,isDay=true,goaded=false,storm=0,monarch=false;
+let fmt='commander',life=40,poison=0,xp=0,energy=0,initiative=false,isDay=true,goaded=false,storm=0,monarch=false,speed=1;
 let dungeonId=null,currentRoom=-1,dungeonPath=[];
 let ringStage=-1,ringBearer='';
 let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add',manaEntersTapped=false;
@@ -1613,25 +1678,27 @@ let tokenPool=[]; // Array of token objects: {power, toughness, color, keywords:
 let activeModules=['','','','','']; // Array of active module IDs for the current format
 
 // ── Core game functions ──
-function adjEnergy(d){energy=Math.max(0,energy+d);document.getElementById('energyNum').textContent=energy;const btn=document.getElementById('energyCard');if(btn){btn.style.background=energy>0?'rgba(40,80,180,0.25)':'transparent';}if(d>0)spawnPop('energyCard','⚡','#a0c8ff');}
-function resetEnergy(){energy=0;document.getElementById('energyNum').textContent=0;}
+function adjEnergy(d){energy=Math.max(0,energy+d);const num=document.getElementById('energyNum');const moduleNum=document.getElementById('module-energyNum');const btn=document.getElementById('energyCard');const moduleBtn=document.getElementById('module-energy');if(num)num.textContent=energy;if(moduleNum)moduleNum.textContent=energy;if(btn)btn.style.background=energy>0?'rgba(40,80,180,0.25)':'transparent';if(moduleBtn)moduleBtn.style.background=energy>0?'rgba(40,80,180,0.25)':'transparent';if(d>0)spawnPop('energyCard','⚡','#a0c8ff');}
+function resetEnergy(){energy=0;const num=document.getElementById('energyNum');const moduleNum=document.getElementById('module-energyNum');if(num)num.textContent=0;if(moduleNum)moduleNum.textContent=0;}
 function toggleDayNight(){isDay=!isDay;applyDayNightUI();}
 function resetDayNight(){isDay=true;applyDayNightUI();}
 function spawnPop(anchorId,emoji,color){
   const anchor=document.getElementById(anchorId);
-  if(!anchor)return;
-  anchor.style.position='relative';
+  const moduleAnchor=document.getElementById('module-'+anchorId.replace(/Btn|Card|Icon|Num|State|Label|Face/,''));
+  const target=moduleAnchor||anchor;
+  if(!target)return;
+  target.style.position='relative';
   const pop=document.createElement('div');
   pop.className='counter-pop';
   pop.textContent=emoji;
   pop.style.color=color;
-  anchor.appendChild(pop);
+  target.appendChild(pop);
   pop.addEventListener('animationend',()=>pop.remove());
 }
-function adjPoison(d){if(d!==0)markBoardUsed(fmt);poison=Math.max(0,poison+d);const num=document.getElementById('poisonNum');const btn=document.getElementById('poisonBtn');const lbl=btn.querySelector('.hrow-lbl');if(poison>=10){num.textContent='DEAD';num.style.color='#ff4444';btn.style.background='rgba(180,50,50,0.35)';btn.style.borderColor='rgba(220,80,80,0.65)';if(lbl)lbl.style.color='#ff6666';}else{num.textContent=poison;num.style.color='#80e080';btn.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';btn.style.borderColor='';if(lbl)lbl.style.color='';}if(d>0)spawnPop('poisonBtn','☠️','#80e080');updateActivityBadges();}
-function resetPoison(){poison=0;const btn=document.getElementById('poisonBtn');const num=document.getElementById('poisonNum');const lbl=btn.querySelector('.hrow-lbl');if(btn){btn.style.background='transparent';btn.style.borderColor='';}num.textContent=0;num.style.color='#80e080';if(lbl)lbl.style.color='';}
-function adjXp(d){if(d!==0)markBoardUsed(fmt);xp=Math.max(0,xp+d);document.getElementById('xpNum').textContent=xp;const btn=document.getElementById('xpBtn');btn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');updateActivityBadges();}
-function resetXp(){xp=0;const btn=document.getElementById('xpBtn');if(btn)btn.style.background='transparent';document.getElementById('xpNum').textContent=0;}
+function adjPoison(d){if(d!==0)markBoardUsed(fmt);poison=Math.max(0,poison+d);const num=document.getElementById('poisonNum');const btn=document.getElementById('poisonBtn');const moduleNum=document.getElementById('module-poisonNum');const moduleBtn=document.getElementById('module-poison');const updateNum=(el)=>{if(el){el.textContent=poison>=10?'DEAD':poison;el.style.color=poison>=10?'#ff4444':'#80e080';}};const updateBtn=(el)=>{if(el){if(poison>=10){el.style.background='rgba(180,50,50,0.35)';el.style.borderColor='rgba(220,80,80,0.65)';}else{el.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';el.style.borderColor='';}}};updateNum(num);updateNum(moduleNum);updateBtn(btn);updateBtn(moduleBtn);const lbl=btn?btn.querySelector('.hrow-lbl'):null;const moduleLbl=moduleBtn?moduleBtn.querySelector('.hrow-lbl'):null;if(lbl)lbl.style.color=poison>=10?'#ff6666':'';if(moduleLbl)moduleLbl.style.color=poison>=10?'#ff6666':'';if(d>0)spawnPop('poisonBtn','☠️','#80e080');updateActivityBadges();}
+function resetPoison(){poison=0;const btn=document.getElementById('poisonBtn');const moduleBtn=document.getElementById('module-poison');const num=document.getElementById('poisonNum');const moduleNum=document.getElementById('module-poisonNum');const lbl=btn?btn.querySelector('.hrow-lbl'):null;const moduleLbl=moduleBtn?moduleBtn.querySelector('.hrow-lbl'):null;if(btn){btn.style.background='transparent';btn.style.borderColor='';}if(moduleBtn){moduleBtn.style.background='transparent';moduleBtn.style.borderColor='';}if(num)num.textContent=0;if(moduleNum)moduleNum.textContent=0;if(num)num.style.color='#80e080';if(moduleNum)moduleNum.style.color='#80e080';if(lbl)lbl.style.color='';if(moduleLbl)moduleLbl.style.color='';}
+function adjXp(d){if(d!==0)markBoardUsed(fmt);xp=Math.max(0,xp+d);const num=document.getElementById('xpNum');const moduleNum=document.getElementById('module-xpNum');const btn=document.getElementById('xpBtn');const moduleBtn=document.getElementById('module-xp');if(num)num.textContent=xp;if(moduleNum)moduleNum.textContent=xp;if(btn)btn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(moduleBtn)moduleBtn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';if(d>0)spawnPop('xpBtn','✦ XP','#c0a0ff');updateActivityBadges();}
+function resetXp(){xp=0;const btn=document.getElementById('xpBtn');const moduleBtn=document.getElementById('module-xp');const num=document.getElementById('xpNum');const moduleNum=document.getElementById('module-xpNum');if(btn)btn.style.background='transparent';if(moduleBtn)moduleBtn.style.background='transparent';if(num)num.textContent=0;if(moduleNum)moduleNum.textContent=0;}
 
 // ── Board usage tracking ──
 function markBoardUsed(boardName){
@@ -1984,40 +2051,92 @@ function resetCmd(p){
 function toggleInit(){
   initiative=!initiative;
   const card=document.getElementById('initCard');
-  card.classList.toggle('active',initiative);
-  card.classList.toggle('initiative-active',initiative);
-  const icon=card.querySelector('.init-icon-el');
-  if(icon)icon.style.opacity=initiative?'1':'0.35';
-  document.getElementById('initState').textContent=initiative?'Holding':'Not held';
+  const moduleCard=document.getElementById('module-init');
+  const state=document.getElementById('initState');
+  const moduleState=document.getElementById('module-initState');
+  if(card){
+    card.classList.toggle('active',initiative);
+    card.classList.toggle('initiative-active',initiative);
+    const icon=card.querySelector('.init-icon-el');
+    if(icon)icon.style.opacity=initiative?'1':'0.35';
+  }
+  if(moduleCard){
+    moduleCard.classList.toggle('active',initiative);
+    moduleCard.classList.toggle('initiative-active',initiative);
+    const icon=moduleCard.querySelector('.init-icon-el');
+    if(icon)icon.style.opacity=initiative?'1':'0.35';
+  }
+  if(state)state.textContent=initiative?'Holding':'Not held';
+  if(moduleState)moduleState.textContent=initiative?'Holding':'Not held';
   updateActivityBadges();
 }
 function toggleGoaded(){goaded=!goaded;applyGoadedUI();updateActivityBadges();}
 function resetGoaded(){goaded=false;applyGoadedUI();updateActivityBadges();}
 
-function adjStorm(d){if(d!==0)markBoardUsed(fmt);storm=Math.max(0,storm+d);document.getElementById('stormFace').textContent=storm;const btn=document.getElementById('stormCard');btn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(d>0)spawnPop('stormCard','⚡','#90c8ff');updateActivityBadges();}
-function resetStorm(){storm=0;const btn=document.getElementById('stormCard');if(btn)btn.style.background='transparent';document.getElementById('stormFace').textContent=0;updateActivityBadges();}
+function adjStorm(d){if(d!==0)markBoardUsed(fmt);storm=Math.max(0,storm+d);const face=document.getElementById('stormFace');const moduleNum=document.getElementById('module-stormNum');const btn=document.getElementById('stormCard');const moduleBtn=document.getElementById('module-storm');if(face)face.textContent=storm;if(moduleNum)moduleNum.textContent=storm;if(btn)btn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(moduleBtn)moduleBtn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';if(d>0)spawnPop('stormCard','⚡','#90c8ff');updateActivityBadges();}
+function resetStorm(){storm=0;const btn=document.getElementById('stormCard');const moduleBtn=document.getElementById('module-storm');const face=document.getElementById('stormFace');const moduleNum=document.getElementById('module-stormNum');if(btn)btn.style.background='transparent';if(moduleBtn)moduleBtn.style.background='transparent';if(face)face.textContent=0;if(moduleNum)moduleNum.textContent=0;updateActivityBadges();}
 
 function toggleMonarch(){monarch=!monarch;applyMonarchUI();updateActivityBadges();}
 function applyMonarchUI(){
   const card=document.getElementById('monarchCard');
+  const moduleCard=document.getElementById('module-monarch');
   const icon=document.getElementById('monarchIcon');
+  const moduleIcon=document.getElementById('module-monarchIcon');
   const lbl=document.getElementById('monarchLbl');
+  const moduleLbl=document.getElementById('module-monarchLbl');
   const state=document.getElementById('monarchState');
-  if(!card)return;
-  if(monarch){
-    card.classList.add('active','monarch-active');
-    card.style.background='rgba(180,140,20,0.18)';
-    card.style.borderColor='rgba(220,180,40,0.65)';
-    if(icon)icon.style.opacity='1';
-    if(lbl)lbl.style.color='#f0d080';
-    if(state){state.textContent='Holding';state.style.color='rgba(240,200,80,0.75)';}
-  } else {
-    card.classList.remove('active','monarch-active');
-    card.style.background='';card.style.borderColor='';
-    if(icon)icon.style.opacity='0.35';
-    if(lbl)lbl.style.color='';
-    if(state){state.textContent='Not held';state.style.color='';}
+  const moduleState=document.getElementById('module-monarchState');
+  const update=(c,i,l,s)=>{
+    if(!c)return;
+    if(monarch){
+      c.classList.add('active','monarch-active');
+      c.style.background='rgba(180,140,20,0.18)';
+      c.style.borderColor='rgba(220,180,40,0.65)';
+      if(i)i.style.opacity='1';
+      if(l)l.style.color='#f0d080';
+      if(s){s.textContent='Holding';s.style.color='rgba(240,200,80,0.75)';}
+    } else {
+      c.classList.remove('active','monarch-active');
+      c.style.background='';c.style.borderColor='';
+      if(i)i.style.opacity='0.35';
+      if(l)l.style.color='';
+      if(s){s.textContent='Not held';s.style.color='';}
+    }
+  };
+  update(card,icon,lbl,state);
+  update(moduleCard,moduleIcon,moduleLbl,moduleState);
+}
+
+function toggleSpeed(){markBoardUsed(fmt);if(speed<4){speed++;applySpeedUI();}}
+function adjSpeed(d){markBoardUsed(fmt);speed=Math.max(1,Math.min(4,speed+d));applySpeedUI();}
+function resetSpeed(){markBoardUsed(fmt);speed=1;applySpeedUI();}
+function applySpeedUI(){
+  const card=document.getElementById('speedCard');
+  const moduleCard=document.getElementById('module-speed');
+  const num=document.getElementById('speedNum');
+  const moduleNum=document.getElementById('module-speedNum');
+  const icon=document.getElementById('speedIcon');
+  const moduleIcon=document.getElementById('module-speedIcon');
+  const decBtn=document.getElementById('speedDecBtn');
+  const moduleDecBtn=document.getElementById('module-speedDecBtn');
+  
+  const colors=['','rgba(200,200,200,0.7)','#ff6666','#f0b428','#64ff64'];
+  const iconStroke=['','rgba(180,140,60,0.6)','rgba(240,100,100,0.7)','rgba(240,180,40,0.8)','#64ff64'];
+  
+  if(card){
+    card.className='card hrow speed-card speed-'+speed;
+    if(num){num.textContent=speed;num.style.color=colors[speed];}
+    if(icon)icon.style.stroke=iconStroke[speed];
+    if(decBtn){decBtn.style.opacity=speed>1?'1':'0.4';decBtn.style.cursor=speed>1?'pointer':'not-allowed';}
   }
+  if(moduleCard){
+    moduleCard.className='card hrow speed-card speed-'+speed;
+    if(moduleNum){moduleNum.textContent=speed;moduleNum.style.color=colors[speed];}
+    if(moduleIcon)moduleIcon.style.stroke=iconStroke[speed];
+    if(moduleDecBtn){moduleDecBtn.style.opacity=speed>1?'1':'0.4';moduleDecBtn.style.cursor=speed>1?'pointer':'not-allowed';}
+  }
+  
+  updateActivityBadges();
 }
 
 function roll(n){
@@ -2064,7 +2183,7 @@ function buildThemeGrid(){
   });
   updateSelNote();
 }
-function updateSelNote(){const note=document.getElementById('themeSelNote');note.textContent=!themeSel.length?'None selected — will apply default':themeSel.map(c=>CM[c].label).join(' + ')+' selected';}
+function updateSelNote(){const note=document.getElementById('themeSelNote');if(note)note.textContent=!themeSel.length?'None selected — will apply default':themeSel.map(c=>CM[c].label).join(' + ')+' selected';}
 
 function applyTheme(){
   if(!themeSel.length){resetTheme();return;}
@@ -2936,6 +3055,7 @@ function setFormat(f,el){
   document.getElementById('diceCard').classList.toggle('simple-hidden',fullscreen);
   applyDayNightUI();applyGoadedUI();
   renderAll();
+  renderModuleRow();
   if(tokens)renderTokens();
   if(dungeon)renderDungeon();
   if(ring)renderRing();
@@ -2945,33 +3065,48 @@ function setFormat(f,el){
 }
 function applyDayNightUI(){
   const btn=document.getElementById('dayNightBtn');
+  const moduleBtn=document.getElementById('module-dayNightBtn');
   const icon=document.getElementById('dayNightIcon');
+  const moduleIcon=document.getElementById('module-dayNightIcon');
   const lbl=document.getElementById('dayNightLabel');
-  if(!btn)return;
-  if(isDay){btn.style.borderColor='rgba(200,170,80,0.5)';btn.style.background='rgba(180,140,20,0.15)';icon.textContent='☀️';lbl.textContent='Day';lbl.style.color='#f0d080';}
-  else{btn.style.borderColor='rgba(100,100,200,0.5)';btn.style.background='rgba(40,40,120,0.25)';icon.textContent='🌙';lbl.textContent='Night';lbl.style.color='#b0a0e0';}
+  const moduleLbl=document.getElementById('module-dayNightLabel');
+  const update=(b,i,l)=>{
+    if(!b)return;
+    if(isDay){b.style.borderColor='rgba(200,170,80,0.5)';b.style.background='rgba(180,140,20,0.15)';if(i)i.textContent='☀️';if(l){l.textContent='Day';l.style.color='#f0d080';}}
+    else{b.style.borderColor='rgba(100,100,200,0.5)';b.style.background='rgba(40,40,120,0.25)';if(i)i.textContent='🌙';if(l){l.textContent='Night';l.style.color='#b0a0e0';}}
+  };
+  update(btn,icon,lbl);
+  update(moduleBtn,moduleIcon,moduleLbl);
 }
 function applyGoadedUI(){
   const card=document.getElementById('goadedCard');
+  const moduleCard=document.getElementById('module-goaded');
   const icon=document.getElementById('goadedIcon');
+  const moduleIcon=document.getElementById('module-goadedIcon');
   const lbl=document.getElementById('goadedLbl');
+  const moduleLbl=document.getElementById('module-goadedLbl');
   const state=document.getElementById('goadedState');
-  if(!card)return;
-  if(goaded){
-    card.classList.add('active','goaded-active');
-    if(icon)icon.style.opacity='1';
-    if(lbl)lbl.style.color='#f0a080';
-    if(state){state.textContent='Holding';state.style.color='rgba(240,140,100,0.8)';}
-  } else {
-    card.classList.remove('active','goaded-active');
-    card.style.background='';card.style.borderColor='';
-    if(icon)icon.style.opacity='0.35';
-    if(lbl)lbl.style.color='';
-    if(state){state.textContent='Not held';state.style.color='';}
-  }
+  const moduleState=document.getElementById('module-goadedState');
+  const update=(c,i,l,s)=>{
+    if(!c)return;
+    if(goaded){
+      c.classList.add('active','goaded-active');
+      if(i)i.style.opacity='1';
+      if(l)l.style.color='#f0a080';
+      if(s){s.textContent='Holding';s.style.color='rgba(240,140,100,0.8)';}
+    } else {
+      c.classList.remove('active','goaded-active');
+      c.style.background='';c.style.borderColor='';
+      if(i)i.style.opacity='0.35';
+      if(l)l.style.color='';
+      if(s){s.textContent='Not held';s.style.color='';}
+    }
+  };
+  update(card,icon,lbl,state);
+  update(moduleCard,moduleIcon,moduleLbl,moduleState);
 }
 function resetAll(){
-  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']});
+  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,speed:1,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']});
   fmtState.commander={...defaultState(),life:40};
   fmtState.standard={...defaultState(),activeModules:['','','','','','','']};
   fmtState.simple={...defaultState()};
@@ -3006,19 +3141,201 @@ function resetAll(){
 function renderAll(){
   requestAnimationFrame(()=>{
     adjLife(0);renderMana();renderCmd();adjPoison(0);adjXp(0);adjStorm(0);adjEnergy(0);
-    document.getElementById('energyNum').textContent=energy;
+    const energyNum=document.getElementById('energyNum');
+    if(energyNum)energyNum.textContent=energy;
     const ic=document.getElementById('initCard');
     if(ic){ic.classList.toggle('active',initiative);ic.classList.toggle('initiative-active',initiative);}
-    document.getElementById('initState').textContent=initiative?'Holding':'Not held';
+    const initState=document.getElementById('initState');
+    if(initState)initState.textContent=initiative?'Holding':'Not held';
     document.getElementById('diceFace').textContent=diceHist.length?diceHist[0].split(':')[1]:'—';
     document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');
     applyMonarchUI();applyGoadedUI();updateActivityBadges();
     renderRightColumn();
+    renderModuleRow();
     if(fmt==='tokens')renderTokens();
+    updateModuleRowCounters();
   });
 }
 
-// ── Token Pool Functions ──
+function renderModuleRow(){
+  const container=document.getElementById('moduleRow');
+  if(!container)return;
+  if(fmt!=='simple'){container.innerHTML='';return;}
+  container.innerHTML='';
+  const modules=activeModules.slice(0,4);
+  const moduleHtml={
+    poison:`<div class="card hrow" id="module-poison" onclick="deferredAdjPoison(1)" style="position:relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#80e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon"><path d="M9 3 L9 8 C9 8 5 10 5 15 C5 19 8 21 12 21 C16 21 19 19 19 15 C19 10 15 8 15 8 L15 3"/><line x1="7" y1="3" x2="17" y2="3"/><ellipse cx="12" cy="15" rx="3" ry="3.5" fill="rgba(40,160,40,0.3)" stroke="#80e080" stroke-width="1.2"/></svg><span class="hrow-num" id="module-poisonNum" style="color:#80e080;">0</span><span class="hrow-lbl">Poison</span><div class="hrow-btns"><div class="reset-icon" onclick="event.stopPropagation();deferredAdjPoison(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetPoison()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`,
+    xp:`<div class="card hrow" id="module-xp" onclick="deferredAdjXp(1)" style="position:relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c0a0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><span class="hrow-num" id="module-xpNum" style="color:#c0a0ff;">0</span><span class="hrow-lbl">Exp</span><div class="hrow-btns"><div class="reset-icon" onclick="event.stopPropagation();deferredAdjXp(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetXp()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`,
+    storm:`<div class="card hrow storm-card" id="module-storm" onclick="deferredAdjStorm(1)" style="position:relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#90c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon"><path d="M20 17H7a4 4 0 0 1-.5-7.96A5.5 5.5 0 0 1 18 11.5a3 3 0 0 1 2 5.5Z" fill="rgba(80,140,255,0.15)"/><line x1="9" y1="20" x2="8" y2="22"/><line x1="13" y1="20" x2="12" y2="22"/><line x1="17" y1="20" x2="16" y2="22"/></svg><span class="hrow-num" id="module-stormNum" style="color:#90c8ff;">0</span><span class="hrow-lbl">Storm</span><div class="hrow-btns"><div class="reset-icon" onclick="event.stopPropagation();deferredAdjStorm(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetStorm()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`,
+    goaded:`<div class="card hrow" id="module-goaded" onclick="toggleGoaded()" style="cursor:pointer;user-select:none;transition:all .2s;"><div class="hrow-icon" id="module-goadedIcon" style="opacity:.35;transition:opacity .2s;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(220,100,60,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L15 8 L22 9 L17 14 L18 21 L12 18 L6 21 L7 14 L2 9 L9 8 Z"/></svg></div><span class="hrow-num" style="visibility:hidden;"></span><span class="hrow-lbl" id="module-goadedLbl">Goaded</span><span class="hrow-state" id="module-goadedState">Not held</span></div>`,
+    init:`<div class="card hrow initiative-card" id="module-init" onclick="toggleInit()" style="cursor:pointer;user-select:none;"><span class="hrow-icon init-icon-el" style="font-size:16px;opacity:.35;">⚔</span><span class="hrow-num" style="visibility:hidden;"></span><span class="hrow-lbl init-lbl">Initiative</span><span class="hrow-state init-state" id="module-initState">Not held</span></div>`,
+    monarch:`<div class="card hrow monarch-card" id="module-monarch" onclick="toggleMonarch()" style="cursor:pointer;user-select:none;"><div class="hrow-icon monarch-icon-el" id="module-monarchIcon" style="opacity:.35;transition:opacity .2s;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,200,80,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18 L5 10 L9 14 L12 6 L15 14 L19 10 L21 18 Z"/><line x1="3" y1="21" x2="21" y2="21"/></svg></div><span class="hrow-num" style="visibility:hidden;"></span><span class="hrow-lbl monarch-lbl" id="module-monarchLbl">Monarch</span><span class="hrow-state monarch-state" id="module-monarchState">Not held</span></div>`,
+    speed:`<div class="card hrow speed-card speed-1" id="module-speed" onclick="toggleSpeed()" style="cursor:pointer;user-select:none;position:relative;"><svg width="18" height="18" viewBox="0 0 50 50" fill="none" stroke="rgba(180,140,60,0.6)" stroke-width="2" class="hrow-icon" id="module-speedIcon"><circle cx="25" cy="25" r="15"/><path d="M 25 8 L 25 5 M 25 45 L 25 42 M 42 25 L 45 25 M 5 25 L 8 25 M 36 14 L 38 12 M 12 38 L 14 36 M 36 36 L 38 38 M 12 12 L 14 14"/><circle cx="25" cy="25" r="6" fill="rgba(180,140,60,0.3)"/></svg><span class="hrow-num" id="module-speedNum" style="color:rgba(200,200,200,0.7);">1</span><span class="hrow-lbl">Speed</span><div class="hrow-btns"><div class="reset-icon" id="module-speedDecBtn" onclick="event.stopPropagation();adjSpeed(-1)" style="opacity:0.4;cursor:not-allowed;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetSpeed()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`,
+    dayNight:`<div class="card hrow" id="module-dayNight" style="flex:0 0 auto;overflow:hidden;padding:6px;"><div id="module-dayNightBtn" onclick="toggleDayNight()" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;padding:6px;border-radius:6px;border:1.5px solid rgba(200,170,80,0.4);background:rgba(180,140,20,0.12);cursor:pointer;user-select:none;transition:all .25s;"><div id="module-dayNightIcon" style="font-size:18px;line-height:1;">☀️</div><div id="module-dayNightLabel" style="font-size:7px;text-transform:uppercase;letter-spacing:.06em;color:#f0d080;font-weight:500;">Day</div></div></div>`,
+    energy:`<div class="card hrow" id="module-energy" style="flex:0 0 auto;" onclick="adjEnergy(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a0c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="hrow-num" id="module-energyNum" style="color:#a0c8ff;">0</span><span class="hrow-lbl">Energy</span><div class="hrow-btns"><div class="reset-icon" onclick="event.stopPropagation();adjEnergy(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetEnergy()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`
+  };
+  modules.forEach((modId,idx)=>{
+    if(!modId){
+      const slot=document.createElement('div');
+      slot.className='module-slot-empty';
+      slot.onclick=()=>openModulePicker(idx);
+      slot.innerHTML='<div class="module-slot-empty-icon">+</div><div class="module-slot-empty-lbl">Tap to add module</div>';
+      container.appendChild(slot);
+    } else {
+      const slot=document.createElement('div');
+      slot.innerHTML=moduleHtml[modId]||'';
+      const moduleEl=slot.firstElementChild;
+      container.appendChild(moduleEl);
+      
+      // Add remove button
+      let removeBtn=moduleEl.querySelector('.module-remove-btn');
+      if(!removeBtn){
+        removeBtn=document.createElement('div');
+        removeBtn.className='reset-icon module-remove-btn';
+        removeBtn.style.cssText='color:rgba(220,100,100,0.8);';
+        removeBtn.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="5" y1="19" x2="19" y2="5"/></svg>';
+        
+        // Find where to insert the button
+        const btnsContainer=moduleEl.querySelector('.hrow-btns');
+        if(btnsContainer){
+          // Counter card - add to buttons row
+          btnsContainer.appendChild(removeBtn);
+        } else {
+          // Toggle card - add to the right
+          removeBtn.style.cssText='color:rgba(220,100,100,0.8);margin-left:auto;';
+          moduleEl.appendChild(removeBtn);
+        }
+      }
+      
+      // Update the remove button's onclick to remove from current slot
+      removeBtn.onclick=(e)=>{
+        e.stopPropagation();
+        // Reset the module's state when removed
+        if(modId==='speed')speed=1;
+        activeModules[idx]='';
+        saveState();
+        renderAll();
+      };
+    }
+  });
+  updateModuleRowCounters();
+}
+function updateModuleRowCounters(){
+  if(fmt!=='simple')return;
+  const poisonNum=document.getElementById('module-poisonNum');
+  if(poisonNum){
+    poisonNum.textContent=poison;
+    poisonNum.style.color=poison>=10?'#ff4444':'#80e080';
+  }
+  const poisonBtn=document.getElementById('module-poison');
+  if(poisonBtn){
+    if(poison>=10){poisonBtn.style.background='rgba(180,50,50,0.35)';poisonBtn.style.borderColor='rgba(220,80,80,0.65)';}
+    else{poisonBtn.style.background=poison>0?'rgba(20,100,20,0.25)':'transparent';poisonBtn.style.borderColor='';}
+  }
+  const xpNum=document.getElementById('module-xpNum');
+  if(xpNum)xpNum.textContent=xp;
+  const xpBtn=document.getElementById('module-xp');
+  if(xpBtn)xpBtn.style.background=xp>0?'rgba(140,80,180,0.25)':'transparent';
+  const stormNum=document.getElementById('module-stormNum');
+  if(stormNum)stormNum.textContent=storm;
+  const stormBtn=document.getElementById('module-storm');
+  if(stormBtn)stormBtn.style.background=storm>0?'rgba(80,120,200,0.25)':'transparent';
+  const energyNum=document.getElementById('module-energyNum');
+  if(energyNum)energyNum.textContent=energy;
+  const energyCard=document.getElementById('module-energy');
+  if(energyCard)energyCard.style.background=energy>0?'rgba(40,80,180,0.25)':'transparent';
+  applyModuleInit();applyModuleGoaded();applyModuleMonarch();applyModuleSpeed();applyModuleDayNight();
+}
+function applyModuleInit(){
+  const card=document.getElementById('module-init');
+  if(!card)return;
+  card.classList.toggle('active',initiative);
+  card.classList.toggle('initiative-active',initiative);
+  const icon=card.querySelector('.init-icon-el');
+  if(icon)icon.style.opacity=initiative?'1':'0.35';
+  const state=document.getElementById('module-initState');
+  if(state)state.textContent=initiative?'Holding':'Not held';
+}
+function applyModuleGoaded(){
+  const card=document.getElementById('module-goaded');
+  if(!card)return;
+  const icon=document.getElementById('module-goadedIcon');
+  const lbl=document.getElementById('module-goadedLbl');
+  const state=document.getElementById('module-goadedState');
+  if(goaded){
+    card.classList.add('active','goaded-active');
+    if(icon)icon.style.opacity='1';
+    if(lbl)lbl.style.color='#f0a080';
+    if(state){state.textContent='Holding';state.style.color='rgba(240,140,100,0.8)';}
+  } else {
+    card.classList.remove('active','goaded-active');
+    card.style.background='';card.style.borderColor='';
+    if(icon)icon.style.opacity='0.35';
+    if(lbl)lbl.style.color='';
+    if(state){state.textContent='Not held';state.style.color='';}
+  }
+}
+function applyModuleMonarch(){
+  const card=document.getElementById('module-monarch');
+  const icon=document.getElementById('module-monarchIcon');
+  const lbl=document.getElementById('module-monarchLbl');
+  const state=document.getElementById('module-monarchState');
+  if(!card)return;
+  if(monarch){
+    card.classList.add('active','monarch-active');
+    card.style.background='rgba(180,140,20,0.18)';
+    card.style.borderColor='rgba(220,180,40,0.65)';
+    if(icon)icon.style.opacity='1';
+    if(lbl)lbl.style.color='#f0d080';
+    if(state){state.textContent='Holding';state.style.color='rgba(240,200,80,0.75)';}
+  } else {
+    card.classList.remove('active','monarch-active');
+    card.style.background='';card.style.borderColor='';
+    if(icon)icon.style.opacity='0.35';
+    if(lbl)lbl.style.color='';
+    if(state){state.textContent='Not held';state.style.color='';}
+  }
+}
+function applyModuleSpeed(){
+  const card=document.getElementById('module-speed');
+  const num=document.getElementById('module-speedNum');
+  const icon=document.getElementById('module-speedIcon');
+  const decBtn=document.getElementById('module-speedDecBtn');
+  if(!card)return;
+  card.className='card hrow speed-card speed-'+speed;
+  if(num)num.textContent=speed;
+  const colors=['','rgba(200,200,200,0.7)','#ff6666','#f0b428','#64ff64'];
+  const iconStroke=['','rgba(180,140,60,0.6)','rgba(240,100,100,0.7)','rgba(240,180,40,0.8)','#64ff64'];
+  if(num)num.style.color=colors[speed];
+  if(icon)icon.style.stroke=iconStroke[speed];
+  if(decBtn)decBtn.style.opacity=speed>1?'1':'0.4';
+  if(decBtn)decBtn.style.cursor=speed>1?'pointer':'not-allowed';
+}
+function applyModuleDayNight(){
+  const btn=document.getElementById('module-dayNightBtn');
+  const icon=document.getElementById('module-dayNightIcon');
+  const lbl=document.getElementById('module-dayNightLabel');
+  if(!btn)return;
+  if(isDay){btn.style.borderColor='rgba(200,170,80,0.5)';btn.style.background='rgba(180,140,20,0.15)';if(icon)icon.textContent='☀️';if(lbl){lbl.textContent='Day';lbl.style.color='#f0d080';}}
+  else{btn.style.borderColor='rgba(100,100,200,0.5)';btn.style.background='rgba(40,40,120,0.25)';if(icon)icon.textContent='🌙';if(lbl){lbl.textContent='Night';lbl.style.color='#b0a0e0';}}
+}
+function openModulePicker(slotIndex){
+  const overlay=document.createElement('div');
+  overlay.className='overlay open';
+  overlay.style.zIndex='1000';
+  const modules=['poison','xp','storm','goaded','init','monarch','speed','dayNight','energy'];
+  const labels=['Poison','Exp','Storm','Goaded','Initiative','Monarch','Speed','Day/Night','Energy'];
+  const modalContent=`<div class="modal"><div class="modal-title">Select module for slot ${slotIndex+1}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">${modules.map((id,i)=>`<button onclick="setActiveModule(${slotIndex},'${id}');this.closest('.overlay').remove();" style="padding:8px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);border-radius:6px;cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:.06em;">${labels[i]}</button>`).join('')}</div><button onclick="setActiveModule(${slotIndex},'');this.closest('.overlay').remove();" style="width:100%;padding:8px;border:1px solid rgba(220,100,80,0.5);background:transparent;color:rgba(220,100,80,0.7);border-radius:6px;cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:.06em;">Clear slot</button></div>`;
+  overlay.innerHTML=modalContent;
+  document.body.appendChild(overlay);
+  overlay.onclick=(e)=>{if(e.target===overlay)overlay.remove();};
+}
+function setActiveModule(slotIndex,moduleId){
+  activeModules[slotIndex]=moduleId;
+  saveState();
+  markBoardUsed(fmt);
+  setFormat(fmt);
+}
 const KEYWORD_DATA={
   flying:{label:'Flying',short:'Flying'},
   deathtouch:{label:'Deathtouch',short:'Deathtouch'},
@@ -3039,8 +3356,10 @@ let combatArea=[]; // Array of combat references: {tokenIndex, blocked, killed}
 function openTokenModal(){
   tokenModalPower=1;
   tokenModalToughness=1;
-  document.getElementById('tokenPowerDisplay').textContent=1;
-  document.getElementById('tokenToughnessDisplay').textContent=1;
+  const powerDisplay=document.getElementById('tokenPowerDisplay');
+  const toughnessDisplay=document.getElementById('tokenToughnessDisplay');
+  if(powerDisplay)powerDisplay.textContent=1;
+  if(toughnessDisplay)toughnessDisplay.textContent=1;
   document.getElementById('tokenName').value='';
   
   tokenModalColors=[]; // Start with no colors selected
@@ -3069,12 +3388,14 @@ function closeTokenModal(){
 
 function adjTokenPower(d){
   tokenModalPower=Math.max(0,tokenModalPower+d);
-  document.getElementById('tokenPowerDisplay').textContent=tokenModalPower;
+  const powerDisplay=document.getElementById('tokenPowerDisplay');
+  if(powerDisplay)powerDisplay.textContent=tokenModalPower;
 }
 
 function adjTokenToughness(d){
   tokenModalToughness=Math.max(0,tokenModalToughness+d);
-  document.getElementById('tokenToughnessDisplay').textContent=tokenModalToughness;
+  const toughnessDisplay=document.getElementById('tokenToughnessDisplay');
+  if(toughnessDisplay)toughnessDisplay.textContent=tokenModalToughness;
 }
 
 function toggleTokenColor(color,e){
@@ -3775,63 +4096,6 @@ function calculateTokenDamage(){
 // Track which slot is being edited
 let currentSlot=-1;
 
-function openModulePicker(slotIndex){
-  currentSlot=slotIndex;
-  const grid=document.getElementById('modulePickerGrid');
-  grid.innerHTML='';
-  const availModules=MODULE_CONFIG[fmt]||[];
-  
-  // Show only modules NOT already used in any slot
-  availModules.forEach(mod=>{
-    const isAlreadyUsed=activeModules.includes(mod.id);
-    if(isAlreadyUsed)return;  // Skip if already active
-    
-    const row=document.createElement('div');
-    row.className='module-check';
-    row.onclick=()=>{
-      // Auto-apply on selection
-      activeModules[slotIndex]=mod.id;
-      markBoardUsed(fmt);
-      saveState();
-      closeModulePicker();
-      renderAll();
-      updateActivityBadges();
-    };
-    row.innerHTML=`<label>${mod.label}</label>`;
-    grid.appendChild(row);
-  });
-  
-  document.getElementById('modulePickerOverlay').classList.add('open');
-}
-
-function closeModulePicker(){
-  document.getElementById('modulePickerOverlay').classList.remove('open');
-  currentSlot=-1;
-}
-
-function applyModules(){
-  if(currentSlot<0)return;
-  
-  const selectedRow=document.querySelector('#modulePickerGrid .module-check.selected');
-  if(!selectedRow){
-    activeModules[currentSlot]='';
-  } else {
-    const label=selectedRow.querySelector('label').textContent;
-    const availModules=MODULE_CONFIG[fmt]||[];
-    const mod=availModules.find(m=>m.label===label);
-    if(mod){
-      activeModules[currentSlot]=mod.id;
-    } else {
-      activeModules[currentSlot]='';
-    }
-  }
-  
-  markBoardUsed(fmt);
-  saveState();
-  closeModulePicker();
-  renderAll();
-  updateActivityBadges();
-}
 
 function renderRightColumn(){
   const rightCol=document.getElementById('rightCol');
@@ -3856,7 +4120,8 @@ function renderRightColumn(){
     init: document.getElementById('initCard'),
     monarch: document.getElementById('monarchCard'),
     dayNight: document.getElementById('dayNightCard'),
-    energy: document.getElementById('energyCard')
+    energy: document.getElementById('energyCard'),
+    speed: document.getElementById('speedCard')
   };
   
   // Get the commander card
@@ -3899,11 +4164,12 @@ function renderRightColumn(){
       `;
       slotsContainer.appendChild(emptySlot);
     } else {
-      // Filled slot - show the actual module element (not cloned)
+      // Filled slot - move the actual element to slotsContainer
       const moduleEl=moduleElements[moduleId];
       if(moduleEl){
-        // Make the original element visible
+        // Move element to slotsContainer (not clone - so updates work)
         moduleEl.style.display='flex';
+        slotsContainer.appendChild(moduleEl);
         
         // Add remove button if it doesn't exist
         let removeBtn=moduleEl.querySelector('.module-remove-btn');
@@ -3928,11 +4194,20 @@ function renderRightColumn(){
         // Update the remove button's onclick to remove from current slot
         removeBtn.onclick=(e)=>{
           e.stopPropagation();
+          // Reset the module's state when removed
+          if(moduleId==='speed')speed=1;
           activeModules[slotIndex]='';
           saveState();
           renderAll();
         };
       }
+    }
+  });
+  
+  // Hide all original module elements that weren't moved
+  Object.values(moduleElements).forEach(el=>{
+    if(el && el.parentElement!==slotsContainer){
+      el.style.display='none';
     }
   });
   
@@ -3947,7 +4222,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=91').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=94').catch(() => {});
   });
 }
 
