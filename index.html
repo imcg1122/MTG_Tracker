@@ -469,6 +469,8 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .reset-icon{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;transition:background .1s;margin-left:3px;}
 .reset-icon:active{background:rgba(200,80,60,0.18);}
 
+
+
 .pt-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1;}
 .counter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
 .counter-tap-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;padding:10px 4px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s;}
@@ -878,8 +880,8 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .main-grid > *:first-child{display:flex;flex-direction:column;}
 .bot-grid{display:grid;gap:8px;}
 
-/* ── MODULE ROW (Mobile mode 4-slot display) ── */
-.module-row{display:none;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;}
+/* ── MODULE ROW (Mobile mode 3-slot display) ── */
+.module-row{display:none;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;}
 .mat.simple-mode .module-row{display:grid;}
 .module-slot-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;background:var(--c-inner);border:1.5px dashed rgba(180,140,60,0.25);border-radius:6px;cursor:pointer;user-select:none;transition:all 0.2s;min-height:56px;}
 .module-slot-empty:active{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.06);}
@@ -1221,7 +1223,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
   </div>
 
-  <!-- module-row: 4 selectable module slots for mobile mode -->
+  <!-- module-row: 3 selectable module slots for mobile mode -->
   <div class="module-row" id="moduleRow"></div>
 
   <!-- dungeon screen — full layout replacement in dungeon mode -->
@@ -1587,7 +1589,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=8;
-const APP_VERSION='94';  // Update this each release
+const APP_VERSION='96';  // Update this each release
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -1621,7 +1623,7 @@ const usedBoards=new Set();
 const fmtState={
   commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
   standard: {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','','','']},
-  simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
+  simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','']},
   tokens:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
   dungeon:  {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,dungeonId:null,currentRoom:-1,dungeonPath:[],storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
   ring:     {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,ringStage:-1,ringBearer:'',storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
@@ -1675,7 +1677,7 @@ let dungeonId=null,currentRoom=-1,dungeonPath=[];
 let ringStage=-1,ringBearer='';
 let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add',manaEntersTapped=false;
 let tokenPool=[]; // Array of token objects: {power, toughness, color, keywords: [], tapped: false}
-let activeModules=['','','','','']; // Array of active module IDs for the current format
+let activeModules=['','','']; // Array of active module IDs for the current format
 
 // ── Core game functions ──
 function adjEnergy(d){energy=Math.max(0,energy+d);const num=document.getElementById('energyNum');const moduleNum=document.getElementById('module-energyNum');const btn=document.getElementById('energyCard');const moduleBtn=document.getElementById('module-energy');if(num)num.textContent=energy;if(moduleNum)moduleNum.textContent=energy;if(btn)btn.style.background=energy>0?'rgba(40,80,180,0.25)':'transparent';if(moduleBtn)moduleBtn.style.background=energy>0?'rgba(40,80,180,0.25)':'transparent';if(d>0)spawnPop('energyCard','⚡','#a0c8ff');}
@@ -3106,7 +3108,7 @@ function applyGoadedUI(){
   update(moduleCard,moduleIcon,moduleLbl,moduleState);
 }
 function resetAll(){
-  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,speed:1,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']});
+  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,speed:1,tokenPool:[],tokenMode:'attack',activeModules:['','','']});
   fmtState.commander={...defaultState(),life:40};
   fmtState.standard={...defaultState(),activeModules:['','','','','','','']};
   fmtState.simple={...defaultState()};
@@ -3162,7 +3164,7 @@ function renderModuleRow(){
   if(!container)return;
   if(fmt!=='simple'){container.innerHTML='';return;}
   container.innerHTML='';
-  const modules=activeModules.slice(0,4);
+  const modules=activeModules.slice(0,3);
   const moduleHtml={
     poison:`<div class="card hrow" id="module-poison" onclick="deferredAdjPoison(1)" style="position:relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#80e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon"><path d="M9 3 L9 8 C9 8 5 10 5 15 C5 19 8 21 12 21 C16 21 19 19 19 15 C19 10 15 8 15 8 L15 3"/><line x1="7" y1="3" x2="17" y2="3"/><ellipse cx="12" cy="15" rx="3" ry="3.5" fill="rgba(40,160,40,0.3)" stroke="#80e080" stroke-width="1.2"/></svg><span class="hrow-num" id="module-poisonNum" style="color:#80e080;">0</span><span class="hrow-lbl">Poison</span><div class="hrow-btns"><div class="reset-icon" onclick="event.stopPropagation();deferredAdjPoison(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetPoison()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`,
     xp:`<div class="card hrow" id="module-xp" onclick="deferredAdjXp(1)" style="position:relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c0a0ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><span class="hrow-num" id="module-xpNum" style="color:#c0a0ff;">0</span><span class="hrow-lbl">Exp</span><div class="hrow-btns"><div class="reset-icon" onclick="event.stopPropagation();deferredAdjXp(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetXp()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`,
@@ -4222,7 +4224,7 @@ updateGameBoardGlow();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=94').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=96').catch(() => {});
   });
 }
 
