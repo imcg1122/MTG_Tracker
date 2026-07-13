@@ -316,10 +316,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .pool-name{font-size:6px;line-height:1;}
   .pool-spent{font-size:6px;}
   
-  /* Inline mana buttons — tighter */
-  .pool-inline-btns{gap:1px;margin-top:1px;}
-  .pool-inline-btn{width:18px;font-size:7px;padding:2px 0;height:18px;min-height:18px;}
-  .pool-inline-btn-add{font-size:14px;padding:2px 0;height:18px;min-height:18px;}
+  /* Inline mana buttons — compact but still finger-sized */
+  .pool-inline-btns{gap:2px;margin-top:2px;}
+  .pool-inline-btn{width:30px;font-size:11px;padding:0;height:28px;min-height:28px;}
+  .pool-inline-btn-add{font-size:16px;padding:0;height:28px;min-height:28px;}
   
   /* Tighten main grid gaps */
   .main-grid{gap:2px;margin-bottom:0;align-items:stretch;flex:1;overflow-y:auto;}
@@ -861,10 +861,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .mpick-name{font-size:8px;text-transform:uppercase;letter-spacing:.06em;text-align:center;}
 
 /* ── INLINE POOL CONTROLS ── */
-.pool-inline-btns{display:flex;gap:3px;width:100%;margin-top:4px;}
-.pool-inline-btn-add{flex:1;font-size:16px;font-weight:600;padding:5px 0;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;line-height:1;}
+.pool-inline-btns{display:flex;gap:5px;width:100%;margin-top:5px;}
+.pool-inline-btn-add{flex:1;font-size:20px;font-weight:600;min-height:40px;border-radius:6px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;line-height:1;display:flex;align-items:center;justify-content:center;}
 .pool-inline-btn-add:active{background:var(--c-btn-active);}
-.pool-inline-btn{width:26px;font-size:10px;padding:5px 0;border-radius:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;}
+.pool-inline-btn{width:46px;font-size:15px;min-height:40px;border-radius:6px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;}
 .pool-inline-btn:active{background:var(--c-btn-active);}
 .pool-empty-tap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:8px;border:1.5px dashed rgba(180,140,60,0.25);background:transparent;width:100%;min-height:140px;cursor:pointer;user-select:none;transition:border-color .2s,background .2s;}
 .pool-empty-tap:active{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.06);}
@@ -1028,12 +1028,12 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .multi-ctl-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--c-muted);}
 .multi-ctl-btn{padding:4px 10px;border:1px solid var(--c-btn-border);background:var(--c-btn);border-radius:6px;font-size:11px;color:var(--c-gold);cursor:pointer;user-select:none;touch-action:manipulation;}
 .multi-ctl-btn.active{background:var(--c-btn-active);border-color:var(--c-accent-border);}
-.multi-grid{flex:1;display:grid;gap:8px;min-height:0;}
+.multi-grid{flex:1;display:grid;gap:8px;min-height:clamp(340px,72vh,780px);}
 .multi-grid.p2{grid-template-rows:1fr 1fr;grid-template-columns:1fr;}
 .multi-grid.p3{grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr;}
 .multi-grid.p3 .multi-seat:first-child{grid-column:1/3;}
 .multi-grid.p4{grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr;}
-.multi-seat{position:relative;border:1.5px solid var(--c-card-border);border-radius:12px;background:var(--c-card);display:flex;align-items:center;justify-content:center;overflow:hidden;user-select:none;}
+.multi-seat{position:relative;border:1.5px solid var(--c-card-border);border-radius:12px;background:var(--c-card);display:flex;align-items:center;justify-content:center;overflow:hidden;user-select:none;min-height:150px;}
 .multi-seat.flipped{transform:rotate(180deg);}
 .multi-seat.dead{opacity:.45;}
 .multi-life{font-size:clamp(40px,9vw,88px);font-weight:700;color:var(--c-gold);font-variant-numeric:tabular-nums;pointer-events:none;line-height:1;}
@@ -1043,8 +1043,8 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .multi-tap.plus{right:0;justify-content:flex-end;}
 .multi-tap .multi-tap-sign{font-size:20px;color:var(--c-faint);padding:0 12px;pointer-events:none;}
 .multi-tap:active{background:rgba(255,255,255,0.04);}
-.multi-five{position:absolute;bottom:6px;display:flex;gap:6px;left:0;right:0;justify-content:center;}
-.multi-five .cbtn{font-size:10px;padding:2px 8px;}
+.multi-five{position:absolute;bottom:8px;display:flex;gap:10px;left:0;right:0;justify-content:center;}
+.multi-five .cbtn{font-size:13px;padding:7px 18px;min-height:36px;display:flex;align-items:center;touch-action:manipulation;}
 /* ── First-player randomizer ── */
 .fp-stage{min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px 0;}
 .fp-name{font-size:clamp(22px,4vw,34px);font-weight:700;color:var(--c-gold);letter-spacing:.04em;}
@@ -1415,10 +1415,11 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   <div id="rulesPanel" class="rules-screen">
     <div class="rules-header">
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <div class="rules-tab-btn active" onclick="switchRulesTab('standard')">Standard</div>
-        <div class="rules-tab-btn" onclick="switchRulesTab('commander')">Commander</div>
-        <div class="rules-tab-btn" onclick="switchRulesTab('faq')">Official Resources</div>
-        <div class="rules-tab-btn" onclick="switchRulesTab('appinfo')">App Info</div>
+        <div class="rules-tab-btn active" onclick="switchRulesTab('standard',event)">Standard</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('commander',event)">Commander</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('draft',event)">Draft</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('faq',event)">Official Resources</div>
+        <div class="rules-tab-btn" onclick="switchRulesTab('appinfo',event)">App Info</div>
         <div class="rules-tab-btn" id="installAppBtn" onclick="triggerPwaInstall()" style="display:none;">Install App</div>
       </div>
     </div>
@@ -1508,6 +1509,18 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     </div>
     <div class="modal-foot">
       <div class="modal-close" onclick="closeFirstPlayer()">Close</div>
+    </div>
+  </div>
+</div>
+
+<!-- commander damage defeat modal -->
+<div class="overlay" id="defeatOverlay" onclick="closeOutside(event,'defeatOverlay')">
+  <div class="modal" style="text-align:center;border-color:rgba(220,80,80,0.5);">
+    <div style="font-size:40px;line-height:1;margin-bottom:8px;">☠</div>
+    <div class="modal-title" style="color:#e07a68;">21 Commander Damage</div>
+    <div class="modal-note">You've taken 21 or more combat damage from a single commander — that's game over, regardless of life total (rule 704.6c).</div>
+    <div class="modal-foot" style="justify-content:center;">
+      <div class="modal-close" onclick="document.getElementById('defeatOverlay').classList.remove('open')">Dismiss</div>
     </div>
   </div>
 </div>
@@ -1949,10 +1962,10 @@ function renderLifeLog(){
   const undoBtn=document.getElementById('lifeUndoBtn');
   if(!el)return;
   el.innerHTML='';
-  lifeLog.slice(-3).forEach(e=>{
+  lifeLog.slice(-5).forEach(e=>{
     const s=document.createElement('span');
     s.className=e.d>0?'pos':'neg';
-    s.textContent=(e.d>0?'+':'−')+Math.abs(e.d)+' · '+fmtLogTime(e.ts);
+    s.textContent=(e.d>0?'+':'−')+Math.abs(e.d);
     el.appendChild(s);
   });
   if(undoBtn)undoBtn.classList.toggle('armed',lifeLog.length>0);
@@ -2226,7 +2239,8 @@ function renderCmd(){
     const nameOnClick=!isP1?`onclick="openPlayerNameModal('${p}')"` : '';
     
     row.dataset.player=p;
-    row.innerHTML=`<div class="cmd-name ${nameClass}" style="${nameColor}${nameClickable}" ${nameOnClick}>${sanitizeHTML(playerLabel)}</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div><div class="reset-icon" onclick="resetCmd('${p}')" title="Reset" role="button" aria-label="Reset commander damage"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>`;
+    if(danger){row.style.borderColor='rgba(220,80,80,0.65)';row.style.background='rgba(180,50,50,0.18)';}
+    row.innerHTML=`<div class="cmd-name ${nameClass}" style="${nameColor}${nameClickable}" ${nameOnClick}>${sanitizeHTML(playerLabel)}${danger?' ☠':''}</div><div class="cmd-val${danger?' danger':''}">${cmdDmg[p]}</div><div class="cbtn" onclick="adjCmd('${p}',1)">+1</div><div class="cbtn" onclick="adjCmd('${p}',5)">+5</div><div class="reset-icon" onclick="resetCmd('${p}')" title="Reset" role="button" aria-label="Reset commander damage"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>`;
     el.appendChild(row);
   });
 }
@@ -2259,8 +2273,15 @@ function adjCmd(p,d){
   if(p==='P1'&&d!==0){
     adjLife(-d);
   }
+  // 21+ commander damage from a single commander loses the game (rule 704.6c)
+  if(p==='P1'&&cmdDmg.P1>=21&&!defeatShown){
+    defeatShown=true;
+    document.getElementById('defeatOverlay').classList.add('open');
+  }
+  if(cmdDmg.P1<21)defeatShown=false;
   renderCmd();
 }
+let defeatShown=false;
 function resetCmd(p){
   // If resetting P1 (self), also restore the commander damage amount to life total
   if(p==='P1'){
@@ -3222,6 +3243,20 @@ const RULES_CONTENT={
       '<strong>Official Card Search</strong> — Search for any card and see its full text, rulings, and official errata. Use this to verify exact card wording and timing. <a href="https://gatherer.wizards.com" target="_blank" style="color:#f0d080;text-decoration:underline;">View Card Search</a>'
     ]
   },
+  draft:{
+    title:'Draft (Limited)',
+    content:`In Booster Draft, 8 players each open a booster pack, pick one card, and pass the rest — repeating across three packs (~42–45 picks). You then build a deck from only what you drafted, plus as many basic lands as you like.`,
+    rules:[
+      '<strong>Deck Size:</strong> 40-card minimum (unlike Constructed\'s 60). Stay at exactly 40 — every extra card dilutes your best picks.',
+      '<strong>Lands:</strong> 17 lands is the standard (16 for very aggressive low-curve decks, 18 for slower decks with expensive spells). Basic lands are provided free — you don\'t draft them.',
+      '<strong>Spells:</strong> The other 23 cards. A good baseline: 15–17 creatures, 6–8 removal/interaction/trick spells.',
+      '<strong>Creature Curve:</strong> Aim for roughly 2–3 one/two-drops, 5–6 three-drops, 4–5 four-drops, 3–4 five-plus drops. Games are usually decided by creatures, so prioritize a smooth curve over raw power.',
+      '<strong>Colors:</strong> Two colors is the sweet spot. Splash a third only with strong fixing. Stay flexible in pack 1, commit by early pack 2.',
+      '<strong>Duplicates Allowed:</strong> No 4-copy limit in Limited — if you draft five copies of the same card, you may play all five.',
+      '<strong>B.R.E.A.D. pick order (rough guide):</strong> Bombs → Removal → Evasion → Aggro/creatures → Duds. Take the card that wins games, then the card that stops theirs.',
+      '<strong>Sealed variant:</strong> Same deck rules (40 cards, ~17 lands) but you build from six unopened boosters instead of drafting picks.'
+    ]
+  },
   appinfo:{
     title:`MTG Tracker v${APP_VERSION}`,
     content:`MTG Tracker is a free, open-source Progressive Web App (PWA) designed to enhance your Magic: The Gathering gameplay with life tracking, mana management, dice rolling, commander damage, token creatures, and more. <a href="https://github.com/imcg1122/MTG_Tracker" target="_blank" style="color:#f0d080;text-decoration:underline;">Visit on GitHub</a>`,
@@ -3230,15 +3265,16 @@ const RULES_CONTENT={
       '<strong>Android (Chrome):</strong> Tap the menu (⋮) → "Install app" or "Add to Home Screen", then confirm. The app appears on your home screen and works offline.',
       '<strong>iOS (Safari):</strong> Tap Share → "Add to Home Screen", name it, and tap Add. The app works offline without an internet connection.',
       '<strong>Desktop (Chrome, Edge, Safari):</strong> Look for the install icon (usually in the address bar or menu), click "Install app", and confirm. Use offline anytime.',
-      '<strong>Support:</strong> For issues or feature requests, <a href="https://github.com/imcg1122/MTG_Tracker" target="_blank" style="color:#f0d080;text-decoration:underline;">visit the GitHub repository</a>.'
+      '<strong>Support:</strong> For issues or feature requests, <a href="https://github.com/imcg1122/MTG_Tracker" target="_blank" style="color:#f0d080;text-decoration:underline;">visit the GitHub repository</a>.',
+      '<strong>Legal:</strong> MTG Tracker is unofficial Fan Content permitted under the <a href="https://company.wizards.com/en/legal/fancontentpolicy" target="_blank" style="color:#f0d080;text-decoration:underline;">Wizards of the Coast Fan Content Policy</a>. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC. Magic: The Gathering and its logos are trademarks of Wizards of the Coast LLC. This app is free, contains no ads, and sells nothing.'
     ]
   }
 };
 
-function switchRulesTab(tab){
+function switchRulesTab(tab,ev){
   fmtState[fmt].activeTab=tab;
   document.querySelectorAll('.rules-tab-btn').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
+  if(ev&&ev.target)ev.target.classList.add('active');
   renderRules();
 }
 
@@ -3563,15 +3599,33 @@ function openModulePicker(slotIndex){
   const overlay=document.createElement('div');
   overlay.className='overlay open';
   overlay.style.zIndex='1000';
-  const modules=['poison','xp','storm','goaded','init','monarch','speed','dayNight','energy','turnPhase'];
-  const labels=['Poison','Exp','Storm','Goaded','Initiative','Monarch','Speed','Day/Night','Energy','Turn/Phase'];
-  const modalContent=`<div class="modal"><div class="modal-title">Select module for slot ${slotIndex+1}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">${modules.map((id,i)=>`<button onclick="setActiveModule(${slotIndex},'${id}');this.closest('.overlay').remove();" style="padding:8px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);border-radius:6px;cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:.06em;">${labels[i]}</button>`).join('')}</div><button onclick="setActiveModule(${slotIndex},'');this.closest('.overlay').remove();" style="width:100%;padding:8px;border:1px solid rgba(220,100,80,0.5);background:transparent;color:rgba(220,100,80,0.7);border-radius:6px;cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:.06em;">Clear slot</button></div>`;
+  const allModules=[
+    {id:'poison',label:'Poison'},{id:'xp',label:'Exp'},{id:'storm',label:'Storm'},
+    {id:'goaded',label:'Goaded'},{id:'init',label:'Initiative'},{id:'monarch',label:'Monarch'},
+    {id:'speed',label:'Speed'},{id:'dayNight',label:'Day/Night'},{id:'energy',label:'Energy'},
+    {id:'turnPhase',label:'Turn/Phase'}
+  ];
+  // A module can only occupy one slot — its card is a single DOM element, so a second
+  // placement would steal it from the first slot. Hide modules that are already active.
+  const available=allModules.filter(m=>!activeModules.includes(m.id));
+  const buttonsHtml=available.length
+    ?available.map(m=>`<button onclick="setActiveModule(${slotIndex},'${m.id}');this.closest('.overlay').remove();" style="padding:8px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);border-radius:6px;cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:.06em;">${m.label}</button>`).join('')
+    :`<div style="grid-column:1/-1;font-size:10px;color:var(--c-muted);text-align:center;padding:10px 0;">All modules are already on the board</div>`;
+  const modalContent=`<div class="modal"><div class="modal-title">Select module for slot ${slotIndex+1}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">${buttonsHtml}</div><button onclick="setActiveModule(${slotIndex},'');this.closest('.overlay').remove();" style="width:100%;padding:8px;border:1px solid rgba(220,100,80,0.5);background:transparent;color:rgba(220,100,80,0.7);border-radius:6px;cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:.06em;">Clear slot</button></div>`;
   overlay.innerHTML=modalContent;
   document.body.appendChild(overlay);
   overlay.onclick=(e)=>{if(e.target===overlay)overlay.remove();};
 }
-function setActiveModule(slotIndex,moduleId){
+function setActiveModuleSafe(slotIndex,moduleId){
+  // Defensive: never allow the same module in two slots (also cleans up any
+  // duplicates that snuck into persisted state before this guard existed)
+  if(moduleId){
+    activeModules=activeModules.map((m,i)=>(m===moduleId&&i!==slotIndex)?'':m);
+  }
   activeModules[slotIndex]=moduleId;
+}
+function setActiveModule(slotIndex,moduleId){
+  setActiveModuleSafe(slotIndex,moduleId);
   saveState();
   markBoardUsed(fmt);
   setFormat(fmt);
