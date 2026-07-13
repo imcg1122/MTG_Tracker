@@ -435,8 +435,13 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .untap-btn{font-size:9px;padding:3px 10px;border-radius:6px;border:1px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;white-space:nowrap;}
 .untap-btn:active{filter:brightness(1.2);}
 
-/* minmax(0,1fr) lets cards shrink below their content minimum instead of overflowing the page */
-.mana-pool-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+/* minmax(0,1fr) lets cards shrink below their content minimum instead of overflowing the page.
+   Commander/Standard: 2 wide × 3 tall — the middle column is narrow, so wider cards read better.
+   Mobile keeps 3 across (set below) where the pool has the full width to spread out. */
+.mana-pool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+.mat.simple-mode .mana-pool-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+.untap-all-bar{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:46px;margin-top:8px;border-radius:8px;border:1.5px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);cursor:pointer;user-select:none;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;touch-action:manipulation;transition:filter .1s;}
+.untap-all-bar:active{filter:brightness(1.25);}
 .pool-slot{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;}
 .pool-empty{border-radius:8px;border:1.5px dashed rgba(180,140,60,0.15);background:transparent;width:100%;min-height:140px;}
 .pool-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 4px 8px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s,opacity .2s;width:100%;min-height:140px;position:relative;}
@@ -1044,6 +1049,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .multi-tap.plus{right:0;justify-content:flex-end;}
 .multi-tap .multi-tap-sign{font-size:20px;color:var(--c-faint);padding:0 12px;pointer-events:none;}
 .multi-tap:active{background:rgba(255,255,255,0.04);}
+.multi-cmd-btn{position:absolute;top:8px;right:10px;min-width:44px;min-height:40px;display:flex;align-items:center;justify-content:center;gap:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);border-radius:8px;font-size:16px;color:var(--c-gold);cursor:pointer;user-select:none;touch-action:manipulation;padding:0 8px;}
+.multi-cmd-btn:active{background:var(--c-btn-active);}
+.multi-cmd-badge{font-size:12px;font-weight:700;color:var(--c-gold);font-variant-numeric:tabular-nums;}
+.multi-cmd-badge.lethal{color:#e07a68;}
 .multi-five{position:absolute;bottom:8px;display:flex;gap:10px;left:0;right:0;justify-content:center;}
 .multi-five .cbtn{font-size:13px;padding:7px 18px;min-height:36px;display:flex;align-items:center;touch-action:manipulation;}
 /* ── First-player randomizer ── */
@@ -1158,10 +1167,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     <div class="card">
       <div class="mana-top">
         <div class="sec-label" style="margin-bottom:0;">Mana pool — tap to spend</div>
-        <div class="untap-btn" onclick="untapAll()">↺ Untap all</div>
         <div class="mana-status" id="manaStatus"></div>
       </div>
       <div class="mana-pool-grid" id="manaPoolGrid"></div>
+      <div class="untap-all-bar" onclick="untapAll()" role="button" aria-label="Untap all mana">↺ Untap all</div>
     </div>
 
 
@@ -1514,6 +1523,18 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   </div>
 </div>
 
+<!-- table board: per-seat commander damage modal -->
+<div class="overlay" id="multiCmdOverlay" onclick="closeOutside(event,'multiCmdOverlay')">
+  <div class="modal">
+    <div class="modal-title" id="multiCmdTitle">Commander damage</div>
+    <div class="modal-note">21+ from a single commander defeats the player</div>
+    <div id="multiCmdRows" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+    <div class="modal-foot">
+      <div class="modal-close" onclick="closeMultiCmd()">Done</div>
+    </div>
+  </div>
+</div>
+
 <!-- commander damage defeat modal -->
 <div class="overlay" id="defeatOverlay" onclick="closeOutside(event,'defeatOverlay')">
   <div class="modal" style="text-align:center;border-color:rgba(220,80,80,0.5);">
@@ -1740,7 +1761,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=6; // 2 rows × 3 — six mono types exist and identical types stack, so 6 distinct slots covers real games
-const APP_VERSION='99';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
+const APP_VERSION='100';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -3637,7 +3658,10 @@ let turnTimerInterval=null;
 function advancePhase(){
   markBoardUsed(fmt);
   if(phaseIdx===-1){phaseIdx=0;turnNum=1;turnStartTs=Date.now();}
-  else if(phaseIdx>=PHASES.length-1){phaseIdx=0;turnNum++;turnStartTs=Date.now();}
+  else if(phaseIdx>=PHASES.length-1){
+    phaseIdx=0;turnNum++;turnStartTs=Date.now();
+    untapAll(); // rolling into a new turn IS the untap step — refresh the mana pool
+  }
   else{phaseIdx++;}
   applyTurnPhaseUI();updateActivityBadges();
 }
@@ -3674,7 +3698,11 @@ function applyTurnPhaseUI(){
 const MULTI_COLORS=['#c8b870','#4a8fd8','#e06040','#40a060'];
 function initMultiPlayers(){
   multiPlayers=[];
-  for(let i=0;i<4;i++)multiPlayers.push({life:multiStartLife,name:'Player '+(i+1)});
+  for(let i=0;i<4;i++)multiPlayers.push({life:multiStartLife,name:'Player '+(i+1),cmd:{}});
+}
+function multiSeatDead(p){
+  if(p.life<=0)return true;
+  return Object.values(p.cmd||{}).some(v=>v>=21); // 21 from a single commander = defeated
 }
 function renderMulti(){
   const grid=document.getElementById('multiGrid');
@@ -3686,14 +3714,25 @@ function renderMulti(){
   document.querySelectorAll('.multi-ctl-btn[data-slife]').forEach(b=>b.classList.toggle('active',Number(b.dataset.slife)===multiStartLife));
   for(let i=0;i<multiCount;i++){
     const p=multiPlayers[i];
+    if(!p.cmd)p.cmd={}; // older persisted seats predate commander damage
     const seat=document.createElement('div');
     // Seats facing away from the user flip 180° so each player reads their own number upright
     const flipped=(multiCount===2&&i===0)||(multiCount===3&&i===0)||(multiCount===4&&i<2);
-    seat.className='multi-seat'+(flipped?' flipped':'')+(p.life<=0?' dead':'');
+    const dead=multiSeatDead(p);
+    seat.className='multi-seat'+(flipped?' flipped':'')+(dead?' dead':'');
     seat.style.borderColor=MULTI_COLORS[i%MULTI_COLORS.length];
-    const name=document.createElement('div');name.className='multi-name';name.textContent=p.name;
+    const name=document.createElement('div');name.className='multi-name';name.textContent=p.name+(dead?' ☠':'');
     const lifeEl=document.createElement('div');lifeEl.className='multi-life';lifeEl.textContent=p.life;
     if(p.life<=5)lifeEl.style.color='#e06040';
+    // Per-seat commander damage tracker
+    const cmdBtn=document.createElement('div');
+    cmdBtn.className='multi-cmd-btn';
+    cmdBtn.setAttribute('role','button');
+    cmdBtn.setAttribute('aria-label',p.name+' commander damage');
+    const maxCmd=Math.max(0,...Object.values(p.cmd||{}).map(Number));
+    cmdBtn.innerHTML='⚔'+(maxCmd>0?`<span class="multi-cmd-badge${maxCmd>=21?' lethal':''}">${maxCmd}</span>`:'');
+    cmdBtn.onclick=(e)=>{e.stopPropagation();openMultiCmd(i);};
+    seat.appendChild(cmdBtn);
     const minus=document.createElement('div');minus.className='multi-tap minus';minus.setAttribute('role','button');minus.setAttribute('aria-label',p.name+' minus 1 life');
     minus.innerHTML='<span class="multi-tap-sign">−</span>';
     minus.onclick=()=>adjMultiLife(i,-1);
@@ -3721,6 +3760,55 @@ function setMultiStartLife(n){
   renderMulti();updateActivityBadges();
 }
 function resetMulti(){initMultiPlayers();renderMulti();updateActivityBadges();}
+
+// ── Table board: per-seat commander damage ──
+let multiCmdSeat=-1;
+function openMultiCmd(i){
+  multiCmdSeat=i;
+  renderMultiCmdModal();
+  document.getElementById('multiCmdOverlay').classList.add('open');
+}
+function closeMultiCmd(){
+  multiCmdSeat=-1;
+  document.getElementById('multiCmdOverlay').classList.remove('open');
+}
+function renderMultiCmdModal(){
+  const i=multiCmdSeat;
+  if(i<0||!multiPlayers||!multiPlayers[i])return;
+  const p=multiPlayers[i];
+  if(!p.cmd)p.cmd={};
+  document.getElementById('multiCmdTitle').textContent=p.name+' — commander damage taken';
+  const rows=document.getElementById('multiCmdRows');
+  rows.innerHTML='';
+  for(let j=0;j<multiCount;j++){
+    if(j===i)continue;
+    const dmg=p.cmd[j]||0;
+    const row=document.createElement('div');
+    row.className='cmd-row';
+    if(dmg>=21){row.style.borderColor='rgba(220,80,80,0.65)';row.style.background='rgba(180,50,50,0.18)';}
+    const nm=document.createElement('div');nm.className='cmd-name';
+    nm.textContent='From '+multiPlayers[j].name+(dmg>=21?' ☠':'');
+    nm.style.color=MULTI_COLORS[j%MULTI_COLORS.length];
+    const val=document.createElement('div');val.className='cmd-val'+(dmg>=21?' danger':'');val.textContent=dmg;
+    const mk=(lbl,d)=>{const b=document.createElement('div');b.className='cbtn';b.textContent=lbl;b.onclick=()=>adjMultiCmd(i,j,d);return b;};
+    row.appendChild(nm);row.appendChild(val);
+    row.appendChild(mk('−1',-1));row.appendChild(mk('+1',1));row.appendChild(mk('+5',5));
+    rows.appendChild(row);
+  }
+}
+function adjMultiCmd(i,j,d){
+  const p=multiPlayers[i];
+  if(!p.cmd)p.cmd={};
+  const before=p.cmd[j]||0;
+  p.cmd[j]=Math.max(0,before+d);
+  const applied=p.cmd[j]-before;
+  // Commander damage is still damage: mirror it on the life total
+  p.life=Math.max(0,p.life-applied);
+  markBoardUsed('multi');
+  renderMultiCmdModal();
+  renderMulti();
+  updateActivityBadges();
+}
 
 // ── Starting-player randomizer ──
 let fpSpinTimer=null;
@@ -4697,7 +4785,7 @@ tryOfferResume();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=99').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=100').catch(() => {});
   });
 }
 
