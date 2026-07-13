@@ -41,7 +41,7 @@ docs/                ← DEVELOPMENT.md (environments/assets), MODERNIZATION.md 
 | `sw.js` | Line 1 | `const CACHE = 'mtg-playmat-vXX'` |
 | `index.html` | Line ~1590 | `const APP_VERSION='XX'` |
 
-**Current version: v100**
+**Current version: v101**
 
 All three must be updated to the same number in the same session — run **`npm run bump`**
 (scripts/bump-version.mjs) to update all three at once. The deploy workflow fails the build if
@@ -68,14 +68,15 @@ The SW query string (`?vXX`) forces the browser to re-download the service worke
 
 ## Format Modes
 
-The app has 9 board modes, switched via the format button bar. Each format saves and restores its own independent state.
+The app has 10 board modes, switched via the format button bar. Each format saves and restores its own independent state.
 
 | Format key | Button label | Starting life | Notes |
 |---|---|---|---|
 | `commander` | Commander | 40 | Shows commander damage card in right column |
 | `standard` | Standard | 20 | Shows Day/Night + Energy in right column; 7 module slots |
 | `simple` | Mobile | 20 | Landscape phone layout; module row at bottom; 3 visible module slots |
-| `multi` | Table | 40 | Local multiplayer: 2–4 split-screen life counters, away-facing seats rotated 180° |
+| `multi` | Table | 40 | Local multiplayer: 2–4 split-screen life counters, away-facing seats rotated 180°; per-seat ⚔ commander damage |
+| `mana` | Mana | — | Fullscreen mana-only tracker: 3×2 grid into `#manaBoardGrid` (`renderMana()` picks the grid by `fmt`), big untap bar, no scrolling |
 | `tokens` | Tokens | 20 | Token combat tracker |
 | `dungeon` | Dungeon | 20 | 4 SVG dungeon maps |
 | `ring` | The Ring | 20 | 4-stage emblem tracker |

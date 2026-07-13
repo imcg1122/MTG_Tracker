@@ -387,7 +387,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* ── WRAPPER ── */
 .wrap{
-  padding:4px;
+  padding:4px;box-sizing:border-box;
   display:flex;align-items:flex-start;justify-content:center;min-height:100vh;
 }
 .mat{
@@ -1049,11 +1049,37 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .multi-tap.plus{right:0;justify-content:flex-end;}
 .multi-tap .multi-tap-sign{font-size:20px;color:var(--c-faint);padding:0 12px;pointer-events:none;}
 .multi-tap:active{background:rgba(255,255,255,0.04);}
-.multi-cmd-btn{position:absolute;top:8px;right:10px;min-width:44px;min-height:40px;display:flex;align-items:center;justify-content:center;gap:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);border-radius:8px;font-size:16px;color:var(--c-gold);cursor:pointer;user-select:none;touch-action:manipulation;padding:0 8px;}
+/* z-index keeps the button above the seat's full-height +/- tap zones */
+.multi-cmd-btn{position:absolute;top:8px;right:10px;z-index:2;min-width:44px;min-height:40px;display:flex;align-items:center;justify-content:center;gap:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);border-radius:8px;font-size:16px;color:var(--c-gold);cursor:pointer;user-select:none;touch-action:manipulation;padding:0 8px;}
 .multi-cmd-btn:active{background:var(--c-btn-active);}
 .multi-cmd-badge{font-size:12px;font-weight:700;color:var(--c-gold);font-variant-numeric:tabular-nums;}
 .multi-cmd-badge.lethal{color:#e07a68;}
-.multi-five{position:absolute;bottom:8px;display:flex;gap:10px;left:0;right:0;justify-content:center;}
+.multi-five{position:absolute;bottom:8px;display:flex;gap:10px;left:0;right:0;justify-content:center;z-index:2;}
+.multi-five .cbtn{pointer-events:auto;}
+/* ── Mana board: fullscreen mana-only tracker ── */
+/* The mat chain becomes a fixed-height flex column so the board fills the viewport exactly — no scrolling.
+   border-box everywhere means responsive paddings on .mat/.mat-inner are absorbed, not added. */
+body.mana-fs{overflow:hidden;}
+body.mana-fs .wrap{min-height:0;}
+.mat.mana-mode{height:calc(100dvh - 16px);box-sizing:border-box;display:flex;flex-direction:column;}
+.mat.mana-mode .mat-inner{flex:1;display:flex;flex-direction:column;box-sizing:border-box;min-height:0;}
+.mana-screen{display:none;flex-direction:column;gap:10px;flex:1;min-height:0;}
+.mat.mana-mode .mana-screen{display:flex;}
+.mat.mana-mode .main-grid,
+.mat.mana-mode .bot-grid,
+.mat.mana-mode .module-row{display:none!important;}
+.mana-board-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr 1fr;gap:10px;flex:1;min-height:0;}
+.mana-board-grid .pool-slot{min-height:0;height:100%;}
+.mana-board-grid .pool-card,.mana-board-grid .pool-empty-tap{flex:1;min-height:0;height:auto;}
+.mana-board-grid .pool-total{font-size:clamp(26px,5vh,44px);}
+.mana-board-grid .pool-inline-btn{min-height:clamp(40px,7vh,56px);font-size:18px;}
+.mana-board-grid .pool-inline-btn-add{min-height:clamp(40px,7vh,56px);font-size:26px;}
+.mana-screen .untap-all-bar{margin-top:0;min-height:52px;flex:0 0 auto;}
+@media (max-width:479px) and (orientation:landscape){
+  .mana-screen{gap:4px;}
+  .mana-board-grid{gap:4px;}
+  .mana-screen .untap-all-bar{min-height:38px;font-size:11px;}
+}
 .multi-five .cbtn{font-size:13px;padding:7px 18px;min-height:36px;display:flex;align-items:center;touch-action:manipulation;}
 /* ── First-player randomizer ── */
 .fp-stage{min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px 0;}
@@ -1091,6 +1117,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
       <div class="fmt-btn" data-fmt="standard" onclick="setFormat('standard',this)">Standard</div>
       <div class="fmt-btn" data-fmt="simple" onclick="setFormat('simple',this)">Mobile</div>
       <div class="fmt-btn" data-fmt="multi" onclick="setFormat('multi',this)">Table</div>
+      <div class="fmt-btn" data-fmt="mana" onclick="setFormat('mana',this)">Mana</div>
       <div class="fmt-btn" data-fmt="dungeon" onclick="setFormat('dungeon',this)">Dungeon</div>
       <div class="fmt-btn" data-fmt="ring" onclick="setFormat('ring',this)">The Ring</div>
       <div class="fmt-btn" data-fmt="tokens" id="tokensBtn" onclick="setFormat('tokens',this)">Tokens</div>
@@ -1492,6 +1519,16 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
     <div class="multi-grid p4" id="multiGrid"></div>
   </div>
 
+  <!-- mana screen — fullscreen mana-only tracker -->
+  <div id="manaPanel" class="mana-screen">
+    <div style="display:flex;align-items:center;gap:8px;flex:0 0 auto;">
+      <div class="sec-label" style="margin-bottom:0;">Mana tracker — tap a card to spend</div>
+      <div class="mana-status" id="manaBoardStatus"></div>
+    </div>
+    <div class="mana-board-grid" id="manaBoardGrid"></div>
+    <div class="untap-all-bar" onclick="untapAll()" role="button" aria-label="Untap all mana">↺ Untap all</div>
+  </div>
+
   <!-- bottom grid: goaded+initiative+monarch | add mana (aligned with mana pool) -->
   <!-- bottom: dice only, under life total column -->
 
@@ -1728,7 +1765,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 </div>
 
 <script>
-const FORMATS={commander:{life:40},standard:{life:20},simple:{life:20},multi:{life:40},tokens:{life:20},dungeon:{life:20},ring:{life:20},lexicon:{life:0},rules:{life:0}};
+const FORMATS={commander:{life:40},standard:{life:20},simple:{life:20},multi:{life:40},mana:{life:20},tokens:{life:20},dungeon:{life:20},ring:{life:20},lexicon:{life:0},rules:{life:0}};
 const ICONS={
   w:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
   u:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 C12 2 6 8 6 14 a6 6 0 0 0 12 0 C18 8 12 2 12 2 Z"/></svg>`,
@@ -1761,7 +1798,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=6; // 2 rows × 3 — six mono types exist and identical types stack, so 6 distinct slots covers real games
-const APP_VERSION='100';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
+const APP_VERSION='101';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -1799,6 +1836,7 @@ const fmtState={
   standard: {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','','',''],lifeLog:[],turnNum:1,phaseIdx:-1},
   simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','',''],lifeLog:[],turnNum:1,phaseIdx:-1},
   multi:    {life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','',''],multiPlayers:null,multiCount:4,multiStartLife:40},
+  mana:     {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
   tokens:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',combatArea:[],activeModules:['','','','','']},
   dungeon:  {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,dungeonId:null,currentRoom:-1,dungeonPath:[],storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
   ring:     {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,ringStage:-1,ringBearer:'',storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
@@ -2086,7 +2124,10 @@ function untapAll(){manaEntries.forEach((_,i)=>{manaEntries[i].spent=0;manaEntri
 function clearMana(){manaEntries=[];requestAnimationFrame(renderMana);}
 
 function renderMana(){
-  const grid=document.getElementById('manaPoolGrid');grid.innerHTML='';
+  // The Mana board has its own grid; every other format renders into the pool card
+  const grid=document.getElementById(fmt==='mana'?'manaBoardGrid':'manaPoolGrid');
+  if(!grid)return;
+  grid.innerHTML='';
   let totalAvail=0,totalSpent=0,totalMana=0;
   for(let si=0;si<POOL_SLOTS;si++){
     const slot=document.createElement('div');slot.className='pool-slot';
@@ -2179,8 +2220,8 @@ function renderMana(){
     }
     grid.appendChild(slot);
   }
-  const st=document.getElementById('manaStatus');
-  st.textContent=manaEntries.length?totalAvail+' avail · '+totalSpent+' spent · '+totalMana+' total':'';
+  const st=document.getElementById(fmt==='mana'?'manaBoardStatus':'manaStatus');
+  if(st)st.textContent=manaEntries.length?totalAvail+' avail · '+totalSpent+' spent · '+totalMana+' total':'';
 }
 
 function buildManaGrid(){} // no longer needed — kept for safety
@@ -3028,11 +3069,11 @@ function updateActivityBadges(){
   }
 
   // build desired order: [primaryFmt, tokens, dungeon, ring, ...remaining primaries, divider, inactive primaries, lexicon, rules]
-  const originalOrder=['commander','standard','simple','multi','dungeon','ring','tokens'];
+  const originalOrder=['commander','standard','simple','multi','mana','dungeon','ring','tokens'];
   let desired;
   if(primaryFmt){
     const remaining=primaries.filter(p=>p!==primaryFmt);
-    desired=[primaryFmt,'tokens','dungeon','ring',...remaining,'lexicon','rules'];
+    desired=[primaryFmt,'mana','tokens','dungeon','ring',...remaining,'lexicon','rules'];
   } else {
     desired=[...originalOrder,'lexicon','rules'];
   }
@@ -3324,15 +3365,18 @@ function setFormat(f,el){
   const simple=f==='simple';
   const standard=f==='standard';
   const multi=f==='multi';
+  const mana=f==='mana';
   const tokens=f==='tokens';
   const dungeon=f==='dungeon';
   const ring=f==='ring';
   const lexicon=f==='lexicon';
   const rules=f==='rules';
-  const fullscreen=multi||tokens||dungeon||ring||lexicon||rules;
+  const fullscreen=multi||mana||tokens||dungeon||ring||lexicon||rules;
   const mat=document.querySelector('.mat');
   mat.classList.toggle('simple-mode',simple||fullscreen);
   mat.classList.toggle('multi-mode',multi);
+  mat.classList.toggle('mana-mode',mana);
+  document.body.classList.toggle('mana-fs',mana);
   mat.classList.toggle('tokens-mode',tokens);
   mat.classList.toggle('dungeon-mode',dungeon);
   mat.classList.toggle('ring-mode',ring);
@@ -3399,6 +3443,7 @@ function resetAll(){
   fmtState.standard={...defaultState(),activeModules:['','','','','','','']};
   fmtState.simple={...defaultState(),activeModules:['','','']};
   fmtState.multi={...defaultState(),life:40,multiPlayers:null,multiCount:4,multiStartLife:40};
+  fmtState.mana={...defaultState()};
   fmtState.tokens={...defaultState(),combatArea:[]};
   fmtState.dungeon={...defaultState(),dungeonId:null,currentRoom:-1,dungeonPath:[]};
   fmtState.ring={...defaultState(),ringStage:-1,ringBearer:''};
@@ -4785,7 +4830,7 @@ tryOfferResume();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=100').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=101').catch(() => {});
   });
 }
 
