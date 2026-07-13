@@ -13,19 +13,21 @@ MTG Tracker is a free, open-source, ad-free Progressive Web App (PWA) that works
 
 ## File Structure
 
-All five files live at the **GitHub repo root**. Missing any of them causes silent PWA install failure.
+The deployable site lives in **`Prod/`**; GitHub Actions publishes it as the Pages site root
+(main branch → play-mtg.com, dev branch → play-mtg.com/dev/). Missing any of the five site
+files causes silent PWA install failure.
 
 ```
-index.html      ← The entire app: all HTML, CSS, and JS in one file (~4,250 lines)
-sw.js           ← Service worker: caches all assets for offline use
-manifest.json   ← PWA metadata: name, icons, display mode
-icon192.png     ← PWA icon (no hyphens in filename)
-icon512.png     ← PWA icon (no hyphens in filename)
+Prod/index.html      ← The entire app: all HTML, CSS, and JS in one file (~4,500 lines)
+Prod/sw.js           ← Service worker: caches all assets for offline use
+Prod/manifest.json   ← PWA metadata: name, icons, display mode
+Prod/icon192.png     ← PWA icon (no hyphens in filename)
+Prod/icon512.png     ← PWA icon (no hyphens in filename)
+scripts/             ← bump-version.mjs (version sync), update-lexicon.mjs (Scryfall check)
+infra/assets-cdn.yml ← CloudFormation: S3+CloudFront asset CDN + $10/mo budget alarm
+.github/workflows/   ← deploy.yml (prod+dev Pages), lexicon-check.yml (monthly)
+docs/                ← DEVELOPMENT.md (environments/assets), MODERNIZATION.md (module-split spec)
 ```
-
-**Working copies in this repo:**
-- Primary: `/mnt/project/index.html`, `/mnt/project/sw.js`, `/mnt/project/manifest.json`
-- Outputs (for delivery): `/mnt/user-data/outputs/`
 
 ---
 
@@ -39,9 +41,11 @@ icon512.png     ← PWA icon (no hyphens in filename)
 | `sw.js` | Line 1 | `const CACHE = 'mtg-playmat-vXX'` |
 | `index.html` | Line ~1590 | `const APP_VERSION='XX'` |
 
-**Current version: v97**
+**Current version: v98**
 
-All three must be updated to the same number in the same session. Upload both `index.html` and `sw.js` to GitHub in the same commit. Never upload only `index.html` without `sw.js`.
+All three must be updated to the same number in the same session — run **`npm run bump`**
+(scripts/bump-version.mjs) to update all three at once. The deploy workflow fails the build if
+they disagree. Commit `index.html` and `sw.js` together; never one without the other.
 
 The SW query string (`?vXX`) forces the browser to re-download the service worker. The `CACHE` constant triggers cleanup of old cached assets. `APP_VERSION` is displayed in the app's Resources → App Info tab.
 
@@ -49,15 +53,29 @@ The SW query string (`?vXX`) forces the browser to re-download the service worke
 
 ---
 
+## v98 Additions (July 2026)
+
+- **Security**: CSP `<meta>` tag; player names sanitized at render in `renderCmd()`; ring-bearer stored raw (double-encode fix); pinch-zoom restored (`touch-action:manipulation` on controls instead).
+- **Identification**: format buttons carry `data-fmt`, commander rows carry `data-player` — never match buttons/rows by parsing text or `onclick` strings.
+- **Persistence + resume modal** (see State Management Rules) and **screen wake lock** (`requestWakeLock()`, re-acquired on visibility change).
+- **Life log/undo**: `logLifeChange()` merges taps within 2.5s; `undoLife()` reverts the last entry; rendered by `renderLifeLog()` in the life card.
+- **Table board** (`multi`): `renderMulti()`/`adjMultiLife()`; away-facing seats get class `flipped`.
+- **Turn/Phase module** (`turnPhase`), **first-player randomizer** (`openFirstPlayer()`, in the dice card), `prefers-reduced-motion` support, ARIA labels via `a11yInit()`.
+- **Token combat**: `combatArea` is saved per-format and re-indexed on token removal (`removeTokenFromStack`, `endCombatPhase` use *spliced* indices only).
+- Dev/prod flow, version bump script, and asset strategy: see `docs/DEVELOPMENT.md`. Module-split plan: `docs/MODERNIZATION.md`.
+
+---
+
 ## Format Modes
 
-The app has 8 board modes, switched via the format button bar. Each format saves and restores its own independent state.
+The app has 9 board modes, switched via the format button bar. Each format saves and restores its own independent state.
 
 | Format key | Button label | Starting life | Notes |
 |---|---|---|---|
 | `commander` | Commander | 40 | Shows commander damage card in right column |
 | `standard` | Standard | 20 | Shows Day/Night + Energy in right column; 7 module slots |
-| `simple` | Mobile | 20 | Landscape phone layout; module row at bottom; 4 visible module slots |
+| `simple` | Mobile | 20 | Landscape phone layout; module row at bottom; 3 visible module slots |
+| `multi` | Table | 40 | Local multiplayer: 2–4 split-screen life counters, away-facing seats rotated 180° |
 | `tokens` | Tokens | 20 | Token combat tracker |
 | `dungeon` | Dungeon | 20 | 4 SVG dungeon maps |
 | `ring` | The Ring | 20 | 4-stage emblem tracker |
@@ -170,11 +188,12 @@ Modules are optional tracker cards that can be added to any format's right colum
 | `xp` | Exp | Counter | Tap+1, has −/↺ buttons |
 | `storm` | Storm | Counter | Tap+1, has −/↺ buttons |
 | `energy` | Energy | Counter | Tap+1, has −/↺ buttons |
-| `speed` | Speed | Toggle | Tap cycles 1→2→3→4 (grey/red/yellow/green+glow); has −/↺ buttons |
+| `speed` | Speed | Toggle | Tap cycles 1→2→3→4 (grey/orange/yellow/green+glow — orange is colorblind-safe); has −/↺ buttons |
 | `goaded` | Goaded | Toggle | Tap to toggle; shows fire border animation when active |
 | `init` | Initiative | Toggle | Tap to toggle; shows blue pulse when active |
 | `monarch` | Monarch | Toggle | Tap to toggle; shows golden glow when active |
 | `dayNight` | Day/Night | Toggle | Tap to toggle ☀️/🌙 |
+| `turnPhase` | Turn/Phase | Stepper | Tap advances phase (Untap→Upkeep→Draw→Main 1→Combat→Main 2→End); wraps to next turn; shows per-turn timer; − steps back, ↺ resets |
 
 ### Module Slot Behavior
 - Empty slots show a "+" tile → tap to open the module picker modal
@@ -237,7 +256,11 @@ Every counter function (`adjPoison`, `adjXp`, `adjStorm`, `adjEnergy`, etc.) and
 
 ## State Management Rules
 
-- **Session-only**: No `localStorage`. State lives only in `fmtState` in memory. Refresh = full reset.
+- **In-memory first, localStorage as crash net**: live state is `fmtState` in memory. It is
+  mirrored (debounced ~500ms via `schedulePersist()` in `updateActivityBadges()`, plus
+  `pagehide`/`visibilitychange`) to localStorage key `mtgPlaymatState_v1`. On load, if the
+  snapshot is <12h old and has activity, a "Resume game?" modal offers restore; "Reset game"
+  and "New game" clear it. If the persisted shape changes, bump the key suffix.
 - `saveState()` and `loadState()` are called by `setFormat()` on every format switch
 - `renderAll()` should be called after any state change that requires a UI refresh
 - `resetAll()` wipes all format states to their starting defaults

@@ -1,0 +1,124 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  MTG Playmat asset delivery: private S3 bucket behind CloudFront (Origin
+  Access Control), plus a monthly cost budget alarm so a donation-funded app
+  can never surprise you with a bill.
+
+  Deploy (one command, from an authenticated AWS CLI):
+    aws cloudformation deploy \
+      --template-file infra/assets-cdn.yml \
+      --stack-name mtg-playmat-assets \
+      --parameter-overrides AlertEmail=you@example.com
+
+  Upload assets afterwards:
+    aws s3 sync ./assets s3://<BucketName from stack outputs>/ --cache-control "public,max-age=604800"
+
+Parameters:
+  AlertEmail:
+    Type: String
+    Description: Email address for budget alerts.
+  MonthlyBudgetUsd:
+    Type: Number
+    Default: 10
+    Description: Monthly cost ceiling in USD; alerts fire at 80% and 100%.
+
+Resources:
+  AssetsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "mtg-playmat-assets-${AWS::AccountId}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  AssetsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref AssetsBucket
+      PolicyDocument:
+        Statement:
+          - Sid: AllowCloudFrontOAC
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "${AssetsBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${Distribution}"
+
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: mtg-playmat-assets-oac
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: MTG Playmat assets
+        HttpVersion: http2and3
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: assets-s3
+            DomainName: !GetAtt AssetsBucket.RegionalDomainName
+            OriginAccessControlId: !Ref OriginAccessControl
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+        DefaultCacheBehavior:
+          TargetOriginId: assets-s3
+          ViewerProtocolPolicy: redirect-to-https
+          Compress: true
+          # AWS managed policy "CachingOptimized"
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          # AWS managed policy "CORS-S3Origin" so the PWA can fetch cross-origin
+          OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf
+        # To serve from assets.play-mtg.com instead of the d123.cloudfront.net
+        # domain: add Aliases + an ACM certificate (us-east-1) here, then a
+        # CNAME in Cloudflare. The default domain works fine to start.
+
+  CostBudget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: mtg-playmat-monthly
+        BudgetType: COST
+        TimeUnit: MONTHLY
+        BudgetLimit:
+          Amount: !Ref MonthlyBudgetUsd
+          Unit: USD
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref AlertEmail
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref AlertEmail
+
+Outputs:
+  BucketName:
+    Value: !Ref AssetsBucket
+  AssetsUrl:
+    Description: Base URL for delivered assets
+    Value: !Sub "https://${Distribution.DomainName}"

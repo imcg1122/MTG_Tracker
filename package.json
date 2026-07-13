@@ -1,0 +1,12 @@
+{
+  "name": "mtg-playmat",
+  "version": "98.0.0",
+  "private": true,
+  "description": "MTG Playmat — offline-first Magic: The Gathering game companion PWA (play-mtg.com)",
+  "type": "module",
+  "scripts": {
+    "serve": "npx --yes http-server Prod -p 8642 -c-1",
+    "bump": "node scripts/bump-version.mjs",
+    "lexicon:check": "node scripts/update-lexicon.mjs"
+  }
+}

@@ -1,0 +1,78 @@
+# Deploys GitHub Pages with a prod + dev environment on one site:
+#   main branch  →  play-mtg.com/          (production)
+#   dev branch   →  play-mtg.com/dev/      (staging — test here first)
+#
+# Every deploy publishes BOTH: the site root always comes from main,
+# /dev/ always comes from the dev branch (when it exists).
+name: Deploy Pages (prod + dev)
+
+on:
+  push:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (production)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Checkout dev (staging, optional)
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: dev
+          path: dev
+
+      - name: Assemble site
+        run: |
+          mkdir -p site
+          cp -r main/Prod/. site/
+          if [ -d dev/Prod ]; then
+            mkdir -p site/dev
+            cp -r dev/Prod/. site/dev/
+            # Keep the staging copy out of search results
+            sed -i 's|<meta charset="UTF-8">|<meta charset="UTF-8"><meta name="robots" content="noindex">|' site/dev/index.html
+            # Separate PWA cache so the dev copy never poisons the prod cache
+            sed -i "s|mtg-playmat-v|mtg-playmat-dev-v|" site/dev/sw.js
+          fi
+          # CNAME so GitHub Pages keeps serving the custom domain
+          echo "play-mtg.com" > site/CNAME
+
+      - name: Guard — version refs must match
+        run: |
+          APP=$(grep -oP "const APP_VERSION='\K\d+" site/index.html)
+          SWQ=$(grep -oP "\./sw\.js\?v=\K\d+" site/index.html)
+          CACHE=$(grep -oP "mtg-playmat-v\K\d+" site/sw.js)
+          echo "APP_VERSION=$APP sw.js?v=$SWQ CACHE=$CACHE"
+          if [ "$APP" != "$SWQ" ] || [ "$APP" != "$CACHE" ]; then
+            echo "::error::Version mismatch — run 'npm run bump' so all three references agree."
+            exit 1
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

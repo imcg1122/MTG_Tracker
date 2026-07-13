@@ -1,0 +1,64 @@
+# Monthly lexicon freshness check: compares the app's LEXICON against
+# Scryfall's live keyword catalogs and opens/updates an issue when Wizards
+# has printed keywords the app doesn't define yet.
+name: Lexicon freshness check
+
+on:
+  schedule:
+    - cron: "0 9 3 * *" # 09:00 UTC on the 3rd of each month
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run lexicon check
+        run: node scripts/update-lexicon.mjs
+
+      - name: Open or update issue if terms are missing
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const report = require('./lexicon-report.json');
+            const title = 'Lexicon: keywords missing from the app';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'lexicon'
+            });
+            const existing = issues.find(i => i.title === title);
+            if (report.missingCount === 0) {
+              if (existing) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: existing.number,
+                  body: 'Latest check: lexicon is now up to date. Closing.'
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: existing.number, state: 'closed'
+                });
+              }
+              return;
+            }
+            const list = report.missing.map(m => `- [ ] **${m.term}** _(${m.catalog})_`).join('\n');
+            const body = `Scryfall lists ${report.missingCount} keyword(s) the app's Lexicon doesn't define yet (checked ${report.checkedAt}):\n\n${list}\n\nAdd entries to the \`LEXICON\` array in \`Prod/index.html\`, or add deliberate omissions to \`IGNORED\` in \`scripts/update-lexicon.mjs\`.`;
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number, body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: ['lexicon']
+              });
+            }
