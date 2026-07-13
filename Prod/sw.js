@@ -1,4 +1,4 @@
-const CACHE = 'mtg-playmat-v97';
+const CACHE = 'mtg-playmat-v98';
 const ASSETS = [
   './',
   './index.html',
@@ -25,7 +25,7 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// Fetch: stale-while-revalidate for index.html, network-first for everything else
+// Fetch: stale-while-revalidate for index.html, cache-first for everything else
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   const isIndexHtml = url.pathname === '/' || url.pathname === '/index.html';
