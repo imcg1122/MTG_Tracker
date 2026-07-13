@@ -318,7 +318,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   
   /* Inline mana buttons — compact but still finger-sized */
   .pool-inline-btns{gap:2px;margin-top:2px;}
-  .pool-inline-btn{width:30px;font-size:11px;padding:0;height:28px;min-height:28px;}
+  .pool-inline-btn{font-size:11px;padding:0;height:28px;min-height:28px;}
   .pool-inline-btn-add{font-size:16px;padding:0;height:28px;min-height:28px;}
   
   /* Tighten main grid gaps */
@@ -435,8 +435,9 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .untap-btn{font-size:9px;padding:3px 10px;border-radius:6px;border:1px solid var(--c-accent-border);background:var(--c-accent);color:var(--c-gold);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;user-select:none;white-space:nowrap;}
 .untap-btn:active{filter:brightness(1.2);}
 
-.mana-pool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
-.pool-slot{display:flex;flex-direction:column;align-items:center;gap:4px;}
+/* minmax(0,1fr) lets cards shrink below their content minimum instead of overflowing the page */
+.mana-pool-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+.pool-slot{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;}
 .pool-empty{border-radius:8px;border:1.5px dashed rgba(180,140,60,0.15);background:transparent;width:100%;min-height:140px;}
 .pool-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 4px 8px;border-radius:8px;border:2px solid;cursor:pointer;user-select:none;transition:filter .12s,transform .1s,opacity .2s;width:100%;min-height:140px;position:relative;}
 .pool-card:active{filter:brightness(1.3);transform:scale(.96);}
@@ -862,13 +863,13 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 
 /* ── INLINE POOL CONTROLS ── */
 .pool-inline-btns{display:flex;gap:5px;width:100%;margin-top:5px;}
-.pool-inline-btn-add{flex:1;font-size:20px;font-weight:600;min-height:40px;border-radius:6px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;line-height:1;display:flex;align-items:center;justify-content:center;}
+.pool-inline-btn-add{flex:1.3;min-width:0;font-size:20px;font-weight:600;min-height:40px;border-radius:6px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;line-height:1;display:flex;align-items:center;justify-content:center;}
 .pool-inline-btn-add:active{background:var(--c-btn-active);}
-.pool-inline-btn{width:46px;font-size:15px;min-height:40px;border-radius:6px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;}
+.pool-inline-btn{flex:1;min-width:0;font-size:15px;min-height:40px;border-radius:6px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);cursor:pointer;user-select:none;text-align:center;transition:background .1s;line-height:1;display:flex;align-items:center;justify-content:center;}
 .pool-inline-btn:active{background:var(--c-btn-active);}
 .pool-empty-tap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:8px;border:1.5px dashed rgba(180,140,60,0.25);background:transparent;width:100%;min-height:140px;cursor:pointer;user-select:none;transition:border-color .2s,background .2s;}
 .pool-empty-tap:active{border-color:rgba(180,140,60,0.55);background:rgba(180,140,60,0.06);}
-.pool-empty-tap-icon{font-size:18px;opacity:.3;}
+.pool-empty-tap-icon{font-size:26px;opacity:.35;}
 .pool-empty-tap-lbl{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--c-faint);text-align:center;line-height:1.4;}
 
 /* ── MANA POOL HEIGHT FILL (commander + standard only) ── */
@@ -1738,8 +1739,8 @@ const GUILDS=[
   {name:'Izzet',c1:'u',c2:'r'},{name:'Golgari',c1:'b',c2:'g'},
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
-const POOL_SLOTS=8;
-const APP_VERSION='98';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
+const POOL_SLOTS=6; // 2 rows × 3 — six mono types exist and identical types stack, so 6 distinct slots covers real games
+const APP_VERSION='99';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -4696,7 +4697,7 @@ tryOfferResume();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=98').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=99').catch(() => {});
   });
 }
 

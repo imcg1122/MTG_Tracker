@@ -41,7 +41,7 @@ docs/                ← DEVELOPMENT.md (environments/assets), MODERNIZATION.md 
 | `sw.js` | Line 1 | `const CACHE = 'mtg-playmat-vXX'` |
 | `index.html` | Line ~1590 | `const APP_VERSION='XX'` |
 
-**Current version: v98**
+**Current version: v99**
 
 All three must be updated to the same number in the same session — run **`npm run bump`**
 (scripts/bump-version.mjs) to update all three at once. The deploy workflow fails the build if
@@ -90,7 +90,7 @@ The app has 9 board modes, switched via the format button bar. Each format saves
 ┌─────────────┬──────────────┬──────────────┐
 │ Col 1       │ Col 2        │ Col 3        │
 │ Life card   │ Mana Pool    │ Right Column │
-│ (shrink)    │ (8 slots)    │ (format-dep) │
+│ (shrink)    │ (6 slots)    │ (format-dep) │
 │             │              │              │
 │ Dice card   │              │ Module rows  │
 │ (flex:1)    │              │ (Poison, XP, │
@@ -147,7 +147,7 @@ When you switch formats, `saveState()` writes all live variables back to `fmtSta
 | `loadState()` | ~1655 | Reads `fmtState[fmt]` → live variables |
 | `setFormat(f, el)` | ~3026 | Switches format: saves old state, loads new, calls `renderAll()` + `renderModuleRow()` |
 | `renderAll()` | ~3141 | Re-renders everything via `requestAnimationFrame`; calls `renderRightColumn()` and `renderModuleRow()` |
-| `renderMana()` | ~1817 | Rebuilds the mana pool grid (8 slots) |
+| `renderMana()` | ~1817 | Rebuilds the mana pool grid (6 slots) |
 | `renderCmd()` | ~1963 | Renders commander damage rows |
 | `renderRightColumn()` | ~4100 | Renders Col 3 content (commander damage card OR Day/Night+Energy, then module rows for Commander/Standard) |
 | `renderModuleRow()` | ~3160 | Renders the Mobile board's bottom module row (only active when `fmt === 'simple'`) |
@@ -236,7 +236,7 @@ Every counter function (`adjPoison`, `adjXp`, `adjStorm`, `adjEnergy`, etc.) and
 
 ## Mana Pool
 
-- 8 slots (`POOL_SLOTS = 8`, line ~1589)
+- 6 slots in a 2×3 grid (`POOL_SLOTS = 6`; grid is `repeat(3,minmax(0,1fr))` — the `minmax(0,…)` is what stops filled cards from blowing the layout out sideways)
 - Empty slot → "Tap to add mana" → opens color picker modal
 - Filled slot → shows mana card with inline +/−/↺ buttons, breathing inner glow animation
 - Colors: White (☀️ sun), Blue (💧 drop), Black (💀 skull), Red (⛰ peak), Green (🌿 leaf), Colorless (◆ diamond)
