@@ -476,9 +476,11 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .reset-icon{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid rgba(200,80,60,0.45);background:rgba(200,80,60,0.08);cursor:pointer;color:rgba(220,100,80,0.75);user-select:none;flex-shrink:0;transition:background .1s;margin-left:3px;position:relative;}
 .reset-icon svg{width:13px;height:13px;}
 .reset-icon:active{background:rgba(200,80,60,0.22);}
-/* Compact contexts keep a slightly smaller (still tappable) size */
-.cmd-row .reset-icon{width:22px;height:22px;}
-.cmd-row .reset-icon svg{width:12px;height:12px;}
+/* Commander damage rows: roomier buttons (funded by dropping one module slot below the card) */
+.cmd-row{gap:5px;padding:6px;}
+.cmd-row .cbtn{height:30px;min-width:42px;font-size:11px;border-radius:5px;}
+.cmd-row .reset-icon{width:26px;height:26px;}
+.cmd-row .reset-icon svg{width:13px;height:13px;}
 /* Invisible tap halo on top of the visible size — effective target ~34x40px */
 .reset-icon::after{content:"";position:absolute;top:-7px;bottom:-7px;left:-3px;right:-3px;}
 .reset-icon:active{background:rgba(200,80,60,0.18);}
@@ -1086,7 +1088,16 @@ body.mana-fs .wrap{min-height:0;}
 .mana-board-grid .pool-icon svg{width:100%!important;height:100%!important;}
 .mana-board-grid .pool-name{font-size:clamp(7px,1.8vh,13px);}
 .mana-board-grid .pool-spent{font-size:clamp(7px,1.6vh,12px);}
-@media (max-height:540px){.mana-board-grid .pool-spent{display:none;}}
+/* Short screens (phone landscape): two stacked rows squash the cards flat — go one row of six
+   tall cards instead, and size the text absolutely since vh is tiny here. */
+@media (max-height:540px){
+  .mana-board-grid{grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:1fr;}
+  .mana-board-grid .pool-spent{display:none;}
+  .mana-board-grid .pool-total{font-size:26px;}
+  .mana-board-grid .pool-icon{width:30px;height:30px;}
+  .mana-board-grid .pool-name{font-size:9px;}
+  .mana-board-grid .pool-inline-btn,.mana-board-grid .pool-inline-btn-add{min-height:38px;}
+}
 .mana-board-grid .pool-inline-btn{min-height:clamp(40px,7vh,56px);font-size:18px;}
 .mana-board-grid .pool-inline-btn-add{min-height:clamp(40px,7vh,56px);font-size:26px;}
 .mana-screen .untap-all-bar{margin-top:0;min-height:52px;flex:0 0 auto;}
@@ -1753,7 +1764,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=6; // 2 rows × 3 — six mono types exist and identical types stack, so 6 distinct slots covers real games
-const APP_VERSION='103';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
+const APP_VERSION='104';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -1785,7 +1796,7 @@ const usedBoards=new Set();
 
 // ── Per-format saved state ──
 const fmtState={
-  commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','',''],lifeLog:[]},
+  commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','',''],lifeLog:[]},
   standard: {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','','',''],lifeLog:[]},
   simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','',''],lifeLog:[]},
   multi:    {life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','',''],multiPlayers:null,multiCount:4,multiStartLife:40},
@@ -1837,6 +1848,10 @@ function loadState(){
   lifeLog=s.lifeLog?JSON.parse(JSON.stringify(s.lifeLog)):[];
   // Migration: the turnPhase module was removed in v102 — clear it from any persisted slots
   activeModules=activeModules.map(m=>m==='turnPhase'?'':m);
+  // Migration: commander went 5 → 4 module slots in v104; keep active modules, drop empties first
+  if(fmt==='commander'&&activeModules.length>4){
+    activeModules=activeModules.filter(m=>m!=='').concat(['','','','']).slice(0,4);
+  }
   combatArea=(fmt==='tokens'&&s.combatArea)?JSON.parse(JSON.stringify(s.combatArea)):[];
   if(fmt==='multi'){
     multiCount=s.multiCount||4;multiStartLife=s.multiStartLife||40;
@@ -3391,7 +3406,7 @@ function applyGoadedUI(){
 }
 function resetAll(){
   const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,speed:1,tokenPool:[],tokenMode:'attack',activeModules:['','','','',''],lifeLog:[]});
-  fmtState.commander={...defaultState(),life:40};
+  fmtState.commander={...defaultState(),life:40,activeModules:['','','','']};
   fmtState.standard={...defaultState(),activeModules:['','','','','','','']};
   fmtState.simple={...defaultState(),activeModules:['','','']};
   fmtState.multi={...defaultState(),life:40,multiPlayers:null,multiCount:4,multiStartLife:40};
@@ -3694,7 +3709,7 @@ function renderMulti(){
       chip.style.background=acm.bg;
       chip.setAttribute('role','button');
       chip.setAttribute('aria-label','Commander damage from '+multiPlayers[j].name+': '+dmg+'. Tap to add 1, hold to remove 1.');
-      chip.innerHTML=`<span class="chip-num">${dmg>=21?'☠ '+dmg:dmg}</span><span class="chip-lbl">${acm.name}</span>`;
+      chip.innerHTML=`<span class="chip-num">${dmg>=21?'☠ '+dmg:dmg}</span><span class="chip-lbl">P${j+1}</span>`;
       const atkIdx=j;
       let holdTimer=null,held=false;
       chip.onpointerdown=(e)=>{e.stopPropagation();held=false;holdTimer=setTimeout(()=>{held=true;adjMultiCmd(i,atkIdx,-1);},500);};
@@ -4582,6 +4597,15 @@ function renderRightColumn(){
     slotsContainer.style.cssText='display:flex;flex-direction:column;gap:5px;flex:1;min-height:0;height:100%;';
     moduleWrapper.appendChild(slotsContainer);
   }
+  // Rescue module elements before wiping the container — innerHTML='' would DESTROY any
+  // module card still parked inside it (e.g. right after Reset game), making that module
+  // unrecoverable until page reload.
+  Object.values(moduleElements).forEach(el=>{
+    if(el&&el.parentElement===slotsContainer){
+      el.style.display='none';
+      moduleWrapper.appendChild(el);
+    }
+  });
   slotsContainer.innerHTML='';
   
   // Render each slot
@@ -4677,7 +4701,7 @@ tryOfferResume();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=103').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=104').catch(() => {});
   });
 }
 

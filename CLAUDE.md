@@ -41,7 +41,7 @@ docs/                ← DEVELOPMENT.md (environments/assets), MODERNIZATION.md 
 | `sw.js` | Line 1 | `const CACHE = 'mtg-playmat-vXX'` |
 | `index.html` | Line ~1590 | `const APP_VERSION='XX'` |
 
-**Current version: v103**
+**Current version: v104**
 
 All three must be updated to the same number in the same session — run **`npm run bump`**
 (scripts/bump-version.mjs) to update all three at once. The deploy workflow fails the build if
@@ -133,12 +133,12 @@ let activeModules // array of module IDs for the current format ('' = empty slot
 When you switch formats, `saveState()` writes all live variables back to `fmtState[fmt]`, and `loadState()` reads the new format's saved state into the live variables. This is how each format preserves its own counters independently.
 
 **Module slot counts per format (in `fmtState`):**
-- `commander`: 5 slots
+- `commander`: 4 slots (was 5; reduced in v104 so the commander-damage buttons could grow — `loadState()` migrates old 5-slot saves)
 - `standard`: 7 slots
-- `simple` / `tokens` / `dungeon` / `ring` / `lexicon` / `rules`: 5 slots each
+- `simple`: 3 slots · `tokens` / `dungeon` / `ring` / `lexicon` / `rules`: 5 slots each
 
-**`resetAll()` (line ~3108) overrides slot counts:**  
-`standard` is explicitly set to 7 slots. All others inherit the `defaultState()` base of 5 slots. Do **not** change `defaultState()` directly — use the per-format override pattern in `resetAll()`.
+**`resetAll()` overrides slot counts:**  
+`commander` is set to 4 and `standard` to 7. All others inherit the `defaultState()` base of 5 slots. Do **not** change `defaultState()` directly — use the per-format override pattern in `resetAll()`.
 
 ---
 
