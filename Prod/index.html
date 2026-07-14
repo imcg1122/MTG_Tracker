@@ -473,7 +473,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .cmd-val.danger{color:#e05040;}
 .cbtn{height:20px;min-width:32px;border-radius:3px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;padding:0 5px;white-space:nowrap;flex-shrink:0;font-weight:600;line-height:1;}
 .cbtn:active{background:var(--c-btn-active);}
-.reset-icon{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;transition:background .1s;margin-left:3px;}
+.reset-icon{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;transition:background .1s;margin-left:3px;position:relative;}
+/* Invisible tap halo: grows the touch target to ~34x40px without moving a single pixel of layout.
+   Vertical reach is generous; horizontal is tighter so adjacent buttons don't fight over taps. */
+.reset-icon::after{content:"";position:absolute;top:-12px;bottom:-12px;left:-5px;right:-5px;}
 .reset-icon:active{background:rgba(200,80,60,0.18);}
 
 
@@ -1020,10 +1023,6 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .life-log span.neg{color:#e08a7a;}
 .life-undo{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:1px solid var(--c-btn-border);border-radius:6px;color:var(--c-gold);cursor:pointer;font-size:12px;opacity:.4;user-select:none;flex:0 0 auto;}
 .life-undo.armed{opacity:1;background:var(--c-btn);}
-/* ── Turn & phase module ── */
-.turn-phase-btns{display:flex;gap:4px;margin-left:auto;align-items:center;}
-.phase-name{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--c-gold);min-width:44px;text-align:center;}
-.turn-timer{font-size:8px;color:var(--c-muted);font-variant-numeric:tabular-nums;}
 /* ── Local multiplayer (Table) board ── */
 .multi-screen{display:none;flex:1;min-height:0;flex-direction:column;gap:8px;}
 .mat.multi-mode .multi-screen{display:flex;}
@@ -1071,7 +1070,15 @@ body.mana-fs .wrap{min-height:0;}
 .mana-board-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr 1fr;gap:10px;flex:1;min-height:0;}
 .mana-board-grid .pool-slot{min-height:0;height:100%;}
 .mana-board-grid .pool-card,.mana-board-grid .pool-empty-tap{flex:1;min-height:0;height:auto;}
-.mana-board-grid .pool-total{font-size:clamp(26px,5vh,44px);}
+/* Card content scales with viewport height (grid rows are vh-proportional) and clips as a last resort */
+.mana-board-grid .pool-card{overflow:hidden;}
+.mana-board-grid .pool-card-inner{gap:clamp(1px,0.8vh,6px);min-height:0;}
+.mana-board-grid .pool-total{font-size:clamp(18px,6vh,44px);}
+.mana-board-grid .pool-icon{width:clamp(20px,6.5vh,44px);height:clamp(20px,6.5vh,44px);}
+.mana-board-grid .pool-icon svg{width:100%!important;height:100%!important;}
+.mana-board-grid .pool-name{font-size:clamp(7px,1.8vh,13px);}
+.mana-board-grid .pool-spent{font-size:clamp(7px,1.6vh,12px);}
+@media (max-height:540px){.mana-board-grid .pool-spent{display:none;}}
 .mana-board-grid .pool-inline-btn{min-height:clamp(40px,7vh,56px);font-size:18px;}
 .mana-board-grid .pool-inline-btn-add{min-height:clamp(40px,7vh,56px);font-size:26px;}
 .mana-screen .untap-all-bar{margin-top:0;min-height:52px;flex:0 0 auto;}
@@ -1081,15 +1088,6 @@ body.mana-fs .wrap{min-height:0;}
   .mana-screen .untap-all-bar{min-height:38px;font-size:11px;}
 }
 .multi-five .cbtn{font-size:13px;padding:7px 18px;min-height:36px;display:flex;align-items:center;touch-action:manipulation;}
-/* ── First-player randomizer ── */
-.fp-stage{min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px 0;}
-.fp-name{font-size:clamp(22px,4vw,34px);font-weight:700;color:var(--c-gold);letter-spacing:.04em;}
-.fp-name.fp-winner{text-shadow:0 0 18px rgba(240,208,128,0.85);animation:fp-win .5s ease-out;}
-@keyframes fp-win{0%{transform:scale(.6);opacity:0;}60%{transform:scale(1.15);}100%{transform:scale(1);opacity:1;}}
-.fp-sub{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--c-muted);}
-.fp-count-grid{display:flex;gap:8px;justify-content:center;margin:10px 0 4px;}
-.fp-count-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--c-btn-border);background:var(--c-btn);border-radius:8px;font-size:16px;color:var(--c-gold);cursor:pointer;touch-action:manipulation;}
-.fp-count-btn:active{background:var(--c-btn-active);}
 /* ── Modal inline message (replaces alert) ── */
 .modal-msg{display:none;font-size:10px;color:#e08a7a;margin:6px 0;text-align:center;}
 .modal-msg.show{display:block;}
@@ -1184,7 +1182,6 @@ body.mana-fs .wrap{min-height:0;}
             <div class="dbtn" onclick="roll(12)">d12</div>
             <div class="dbtn" onclick="roll(20)">d20</div>
           </div>
-          <div class="dbtn" style="margin-top:6px;" onclick="openFirstPlayer()" role="button" aria-label="Randomly choose the starting player">⚄ First player?</div>
         </div>
       </div>
 
@@ -1322,21 +1319,6 @@ body.mana-fs .wrap{min-height:0;}
           <div class="hrow-btns">
             <div class="reset-icon" id="speedDecBtn" onclick="event.stopPropagation();adjSpeed(-1)" style="opacity:0.4;cursor:not-allowed;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
             <div class="reset-icon" onclick="event.stopPropagation();resetSpeed()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
-          </div>
-        </div>
-
-        <!-- Turn & Phase tracker -->
-        <div class="card hrow" id="turnPhaseCard" onclick="advancePhase()" style="display:none;cursor:pointer;user-select:none;position:relative;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(210,170,90,0.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon">
-            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
-          </svg>
-          <span class="hrow-num" id="turnPhaseTurn" style="color:var(--c-gold);">1</span>
-          <span class="hrow-lbl">Turn</span>
-          <span class="phase-name" id="turnPhasePhase">—</span>
-          <span class="turn-timer" id="turnPhaseTimer"></span>
-          <div class="hrow-btns">
-            <div class="reset-icon" onclick="event.stopPropagation();regressPhase()" role="button" aria-label="Previous phase"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-            <div class="reset-icon" onclick="event.stopPropagation();resetTurnPhase()" role="button" aria-label="Reset turn tracker"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
           </div>
         </div>
 
@@ -1534,30 +1516,6 @@ body.mana-fs .wrap{min-height:0;}
 
 </div>
 </div>
-</div>
-
-<!-- first-player randomizer modal -->
-<div class="overlay" id="firstPlayerOverlay" onclick="closeOutside(event,'firstPlayerOverlay')">
-  <div class="modal">
-    <div class="modal-title">Who goes first?</div>
-    <div id="fpPick">
-      <div class="modal-note">How many players?</div>
-      <div class="fp-count-grid">
-        <div class="fp-count-btn" onclick="runFirstPlayer(2)">2</div>
-        <div class="fp-count-btn" onclick="runFirstPlayer(3)">3</div>
-        <div class="fp-count-btn" onclick="runFirstPlayer(4)">4</div>
-        <div class="fp-count-btn" onclick="runFirstPlayer(5)">5</div>
-        <div class="fp-count-btn" onclick="runFirstPlayer(6)">6</div>
-      </div>
-    </div>
-    <div class="fp-stage" id="fpStage" style="display:none;">
-      <div class="fp-name" id="fpName">—</div>
-      <div class="fp-sub" id="fpSub">consulting the dice…</div>
-    </div>
-    <div class="modal-foot">
-      <div class="modal-close" onclick="closeFirstPlayer()">Close</div>
-    </div>
-  </div>
 </div>
 
 <!-- table board: per-seat commander damage modal -->
@@ -1798,7 +1756,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=6; // 2 rows × 3 — six mono types exist and identical types stack, so 6 distinct slots covers real games
-const APP_VERSION='101';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
+const APP_VERSION='102';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -1810,8 +1768,7 @@ const MODULE_CONFIG={
     {id:'monarch',label:'Monarch'},
     {id:'speed',label:'Speed'},
     {id:'dayNight',label:'Day/Night'},
-    {id:'energy',label:'Energy'},
-    {id:'turnPhase',label:'Turn/Phase'}
+    {id:'energy',label:'Energy'}
   ],
   standard:[
     {id:'poison',label:'Poison'},
@@ -1822,8 +1779,7 @@ const MODULE_CONFIG={
     {id:'monarch',label:'Monarch'},
     {id:'speed',label:'Speed'},
     {id:'dayNight',label:'Day/Night'},
-    {id:'energy',label:'Energy'},
-    {id:'turnPhase',label:'Turn/Phase'}
+    {id:'energy',label:'Energy'}
   ]
 };
 
@@ -1832,9 +1788,9 @@ const usedBoards=new Set();
 
 // ── Per-format saved state ──
 const fmtState={
-  commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','',''],lifeLog:[],turnNum:1,phaseIdx:-1},
-  standard: {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','','',''],lifeLog:[],turnNum:1,phaseIdx:-1},
-  simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','',''],lifeLog:[],turnNum:1,phaseIdx:-1},
+  commander:{life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','',''],lifeLog:[]},
+  standard: {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','','',''],lifeLog:[]},
+  simple:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','',''],lifeLog:[]},
   multi:    {life:40,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','',''],multiPlayers:null,multiCount:4,multiStartLife:40},
   mana:     {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',activeModules:['','','','','']},
   tokens:   {life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,tokenPool:[],tokenMode:'attack',combatArea:[],activeModules:['','','','','']},
@@ -1861,7 +1817,6 @@ function saveState(){
   s.tokenMode=tokenMode;
   s.activeModules=[...activeModules];
   s.lifeLog=JSON.parse(JSON.stringify(lifeLog));
-  s.turnNum=turnNum;s.phaseIdx=phaseIdx;
   if(fmt==='tokens'){s.combatArea=JSON.parse(JSON.stringify(combatArea));}
   if(fmt==='multi'){s.multiPlayers=JSON.parse(JSON.stringify(multiPlayers));s.multiCount=multiCount;s.multiStartLife=multiStartLife;}
   if(fmt==='dungeon'){s.dungeonId=dungeonId;s.currentRoom=currentRoom;s.dungeonPath=[...dungeonPath];}
@@ -1883,7 +1838,8 @@ function loadState(){
   tokenMode=s.tokenMode||'attack';
   activeModules=[...(s.activeModules||[])];
   lifeLog=s.lifeLog?JSON.parse(JSON.stringify(s.lifeLog)):[];
-  turnNum=s.turnNum||1;phaseIdx=(s.phaseIdx!=null)?s.phaseIdx:-1;
+  // Migration: the turnPhase module was removed in v102 — clear it from any persisted slots
+  activeModules=activeModules.map(m=>m==='turnPhase'?'':m);
   combatArea=(fmt==='tokens'&&s.combatArea)?JSON.parse(JSON.stringify(s.combatArea)):[];
   if(fmt==='multi'){
     multiCount=s.multiCount||4;multiStartLife=s.multiStartLife||40;
@@ -1905,7 +1861,6 @@ let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add',manaEnt
 let tokenPool=[]; // Array of token objects: {power, toughness, color, keywords: [], tapped: false}
 let activeModules=['','','','','']; // Array of active module IDs for the current format
 let lifeLog=[]; // Life change history for undo: [{d, ts, committed}] newest last
-let turnNum=1,phaseIdx=-1,turnStartTs=null; // Turn & phase tracker
 let multiPlayers=null,multiCount=4,multiStartLife=40; // Table board (local multiplayer)
 
 // ── Core game functions ──
@@ -1932,7 +1887,7 @@ function adjXp(d){if(d!==0)markBoardUsed(fmt);xp=Math.max(0,xp+d);const num=docu
 function resetXp(){xp=0;const btn=document.getElementById('xpBtn');const moduleBtn=document.getElementById('module-xp');const num=document.getElementById('xpNum');const moduleNum=document.getElementById('module-xpNum');if(btn)btn.style.background='transparent';if(moduleBtn)moduleBtn.style.background='transparent';if(num)num.textContent=0;if(moduleNum)moduleNum.textContent=0;}
 
 // ── Board usage tracking ──
-const PRIMARY_BOARDS=['commander','standard','simple','multi'];
+const PRIMARY_BOARDS=['commander','standard','simple','multi','mana'];
 function markBoardUsed(boardName){
   // Only track the main game boards
   if(PRIMARY_BOARDS.includes(boardName)){
@@ -3073,7 +3028,7 @@ function updateActivityBadges(){
   let desired;
   if(primaryFmt){
     const remaining=primaries.filter(p=>p!==primaryFmt);
-    desired=[primaryFmt,'mana','tokens','dungeon','ring',...remaining,'lexicon','rules'];
+    desired=[primaryFmt,'tokens','dungeon','ring',...remaining,'lexicon','rules'];
   } else {
     desired=[...originalOrder,'lexicon','rules'];
   }
@@ -3438,7 +3393,7 @@ function applyGoadedUI(){
   update(moduleCard,moduleIcon,moduleLbl,moduleState);
 }
 function resetAll(){
-  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,speed:1,tokenPool:[],tokenMode:'attack',activeModules:['','','','',''],lifeLog:[],turnNum:1,phaseIdx:-1});
+  const defaultState=()=>({life:20,poison:0,xp:0,energy:0,manaEntries:[],cmdDmg:{},diceHist:[],initiative:false,goaded:false,isDay:true,storm:0,monarch:false,speed:1,tokenPool:[],tokenMode:'attack',activeModules:['','','','',''],lifeLog:[]});
   fmtState.commander={...defaultState(),life:40};
   fmtState.standard={...defaultState(),activeModules:['','','','','','','']};
   fmtState.simple={...defaultState(),activeModules:['','','']};
@@ -3454,7 +3409,6 @@ function resetAll(){
   ringStage=-1;ringBearer='';
   combatArea=[];
   lifeLog=[];
-  turnNum=1;phaseIdx=-1;turnStartTs=null;
   multiPlayers=null;multiCount=4;multiStartLife=40;
   clearPersisted();
   tokenMode='attack';
@@ -3490,7 +3444,6 @@ function renderAll(){
     document.getElementById('diceHist').textContent=diceHist.slice(1).join(' · ');
     applyMonarchUI();applyGoadedUI();updateActivityBadges();
     renderLifeLog();
-    applyTurnPhaseUI();
     renderRightColumn();
     renderModuleRow();
     if(fmt==='tokens')renderTokens();
@@ -3514,8 +3467,7 @@ function renderModuleRow(){
     monarch:`<div class="card hrow monarch-card" id="module-monarch" onclick="toggleMonarch()" style="cursor:pointer;user-select:none;"><div class="hrow-icon monarch-icon-el" id="module-monarchIcon" style="opacity:.35;transition:opacity .2s;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(240,200,80,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18 L5 10 L9 14 L12 6 L15 14 L19 10 L21 18 Z"/><line x1="3" y1="21" x2="21" y2="21"/></svg></div><span class="hrow-num" style="visibility:hidden;"></span><span class="hrow-lbl monarch-lbl" id="module-monarchLbl">Monarch</span><span class="hrow-state monarch-state" id="module-monarchState">Not held</span></div>`,
     speed:`<div class="card hrow speed-card speed-1" id="module-speed" onclick="toggleSpeed()" style="cursor:pointer;user-select:none;position:relative;"><svg width="18" height="18" viewBox="0 0 50 50" fill="none" stroke="rgba(180,140,60,0.6)" stroke-width="2" class="hrow-icon" id="module-speedIcon"><circle cx="25" cy="25" r="15"/><path d="M 25 8 L 25 5 M 25 45 L 25 42 M 42 25 L 45 25 M 5 25 L 8 25 M 36 14 L 38 12 M 12 38 L 14 36 M 36 36 L 38 38 M 12 12 L 14 14"/><circle cx="25" cy="25" r="6" fill="rgba(180,140,60,0.3)"/></svg><span class="hrow-num" id="module-speedNum" style="color:rgba(200,200,200,0.7);">1</span><span class="hrow-lbl">Speed</span><div class="hrow-btns"><div class="reset-icon" id="module-speedDecBtn" onclick="event.stopPropagation();adjSpeed(-1)" style="opacity:0.4;cursor:not-allowed;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetSpeed()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`,
     dayNight:`<div class="card hrow" id="module-dayNight" style="flex:0 0 auto;overflow:hidden;padding:6px;"><div id="module-dayNightBtn" onclick="toggleDayNight()" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;padding:6px;border-radius:6px;border:1.5px solid rgba(200,170,80,0.4);background:rgba(180,140,20,0.12);cursor:pointer;user-select:none;transition:all .25s;"><div id="module-dayNightIcon" style="font-size:18px;line-height:1;">☀️</div><div id="module-dayNightLabel" style="font-size:7px;text-transform:uppercase;letter-spacing:.06em;color:#f0d080;font-weight:500;">Day</div></div></div>`,
-    energy:`<div class="card hrow" id="module-energy" style="flex:0 0 auto;" onclick="adjEnergy(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a0c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="hrow-num" id="module-energyNum" style="color:#a0c8ff;">0</span><span class="hrow-lbl">Energy</span><div class="hrow-btns"><div class="reset-icon" onclick="event.stopPropagation();adjEnergy(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetEnergy()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`,
-    turnPhase:`<div class="card hrow" id="module-turnPhase" onclick="advancePhase()" style="cursor:pointer;user-select:none;position:relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(210,170,90,0.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="hrow-num" id="module-turnPhaseTurn" style="color:var(--c-gold);">1</span><span class="hrow-lbl">Turn</span><span class="phase-name" id="module-turnPhasePhase">—</span><span class="turn-timer" id="module-turnPhaseTimer"></span><div class="hrow-btns"><div class="reset-icon" onclick="event.stopPropagation();regressPhase()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetTurnPhase()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`
+    energy:`<div class="card hrow" id="module-energy" style="flex:0 0 auto;" onclick="adjEnergy(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a0c8ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="hrow-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="hrow-num" id="module-energyNum" style="color:#a0c8ff;">0</span><span class="hrow-lbl">Energy</span><div class="hrow-btns"><div class="reset-icon" onclick="event.stopPropagation();adjEnergy(-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="reset-icon" onclick="event.stopPropagation();resetEnergy()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div></div></div>`
   };
   modules.forEach((modId,idx)=>{
     if(!modId){
@@ -3587,7 +3539,7 @@ function updateModuleRowCounters(){
   if(energyNum)energyNum.textContent=energy;
   const energyCard=document.getElementById('module-energy');
   if(energyCard)energyCard.style.background=energy>0?'rgba(40,80,180,0.25)':'transparent';
-  applyModuleInit();applyModuleGoaded();applyModuleMonarch();applyModuleSpeed();applyModuleDayNight();applyTurnPhaseUI();
+  applyModuleInit();applyModuleGoaded();applyModuleMonarch();applyModuleSpeed();applyModuleDayNight();
 }
 function applyModuleInit(){
   const card=document.getElementById('module-init');
@@ -3669,8 +3621,7 @@ function openModulePicker(slotIndex){
   const allModules=[
     {id:'poison',label:'Poison'},{id:'xp',label:'Exp'},{id:'storm',label:'Storm'},
     {id:'goaded',label:'Goaded'},{id:'init',label:'Initiative'},{id:'monarch',label:'Monarch'},
-    {id:'speed',label:'Speed'},{id:'dayNight',label:'Day/Night'},{id:'energy',label:'Energy'},
-    {id:'turnPhase',label:'Turn/Phase'}
+    {id:'speed',label:'Speed'},{id:'dayNight',label:'Day/Night'},{id:'energy',label:'Energy'}
   ];
   // A module can only occupy one slot — its card is a single DOM element, so a second
   // placement would steal it from the first slot. Hide modules that are already active.
@@ -3697,48 +3648,6 @@ function setActiveModule(slotIndex,moduleId){
   markBoardUsed(fmt);
   setFormat(fmt);
 }
-// ── Turn & phase tracker module ──
-const PHASES=['Untap','Upkeep','Draw','Main 1','Combat','Main 2','End'];
-let turnTimerInterval=null;
-function advancePhase(){
-  markBoardUsed(fmt);
-  if(phaseIdx===-1){phaseIdx=0;turnNum=1;turnStartTs=Date.now();}
-  else if(phaseIdx>=PHASES.length-1){
-    phaseIdx=0;turnNum++;turnStartTs=Date.now();
-    untapAll(); // rolling into a new turn IS the untap step — refresh the mana pool
-  }
-  else{phaseIdx++;}
-  applyTurnPhaseUI();updateActivityBadges();
-}
-function regressPhase(){
-  if(phaseIdx<=-1)return;
-  if(phaseIdx===0){if(turnNum>1){turnNum--;phaseIdx=PHASES.length-1;}else{phaseIdx=-1;turnStartTs=null;}}
-  else{phaseIdx--;}
-  applyTurnPhaseUI();updateActivityBadges();
-}
-function resetTurnPhase(){turnNum=1;phaseIdx=-1;turnStartTs=null;applyTurnPhaseUI();updateActivityBadges();}
-function fmtElapsed(ms){const s=Math.floor(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
-function applyTurnPhaseUI(){
-  const ids=[['turnPhaseTurn','turnPhasePhase','turnPhaseTimer'],['module-turnPhaseTurn','module-turnPhasePhase','module-turnPhaseTimer']];
-  ids.forEach(([tId,pId,mId])=>{
-    const t=document.getElementById(tId),p=document.getElementById(pId),m=document.getElementById(mId);
-    if(t)t.textContent=turnNum;
-    if(p)p.textContent=phaseIdx===-1?'—':PHASES[phaseIdx];
-    if(m)m.textContent=(phaseIdx>-1&&turnStartTs)?fmtElapsed(Date.now()-turnStartTs):'';
-  });
-  // Keep the per-turn timer ticking only while a turn is running and a tracker is visible
-  const anyVisible=document.getElementById('turnPhaseTimer')||document.getElementById('module-turnPhaseTimer');
-  if(phaseIdx>-1&&turnStartTs&&anyVisible){
-    if(!turnTimerInterval)turnTimerInterval=setInterval(()=>{
-      const on=document.getElementById('turnPhaseTimer'),onM=document.getElementById('module-turnPhaseTimer');
-      if(!on&&!onM){clearInterval(turnTimerInterval);turnTimerInterval=null;return;}
-      const txt=(phaseIdx>-1&&turnStartTs)?fmtElapsed(Date.now()-turnStartTs):'';
-      if(on)on.textContent=txt;
-      if(onM)onM.textContent=txt;
-    },1000);
-  } else if(turnTimerInterval){clearInterval(turnTimerInterval);turnTimerInterval=null;}
-}
-
 // ── Local multiplayer (Table) board ──
 const MULTI_COLORS=['#c8b870','#4a8fd8','#e06040','#40a060'];
 function initMultiPlayers(){
@@ -3853,51 +3762,6 @@ function adjMultiCmd(i,j,d){
   renderMultiCmdModal();
   renderMulti();
   updateActivityBadges();
-}
-
-// ── Starting-player randomizer ──
-let fpSpinTimer=null;
-function openFirstPlayer(){
-  document.getElementById('fpPick').style.display='';
-  document.getElementById('fpStage').style.display='none';
-  clearTimeout(fpSpinTimer);
-  document.getElementById('firstPlayerOverlay').classList.add('open');
-}
-function closeFirstPlayer(){
-  clearTimeout(fpSpinTimer);
-  document.getElementById('firstPlayerOverlay').classList.remove('open');
-}
-function runFirstPlayer(count){
-  document.getElementById('fpPick').style.display='none';
-  const stage=document.getElementById('fpStage');
-  const nameEl=document.getElementById('fpName');
-  const subEl=document.getElementById('fpSub');
-  stage.style.display='';
-  nameEl.classList.remove('fp-winner');
-  subEl.textContent='consulting the dice…';
-  const winner=Math.floor(Math.random()*count)+1;
-  const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduceMotion){
-    nameEl.textContent='Player '+winner;
-    nameEl.classList.add('fp-winner');
-    subEl.textContent='goes first!';
-    return;
-  }
-  // Cycle names, slowing down before landing on the winner
-  let shown=0,delay=70;
-  const spin=()=>{
-    shown=shown%count+1;
-    nameEl.textContent='Player '+shown;
-    delay*=1.13;
-    if(delay<650){fpSpinTimer=setTimeout(spin,delay);}
-    else{
-      nameEl.textContent='Player '+winner;
-      nameEl.classList.add('fp-winner');
-      subEl.textContent='goes first!';
-      spawnPop('fpName','✦','#f0d080');
-    }
-  };
-  spin();
 }
 
 const KEYWORD_DATA={
@@ -4706,8 +4570,7 @@ function renderRightColumn(){
     monarch: document.getElementById('monarchCard'),
     dayNight: document.getElementById('dayNightCard'),
     energy: document.getElementById('energyCard'),
-    speed: document.getElementById('speedCard'),
-    turnPhase: document.getElementById('turnPhaseCard')
+    speed: document.getElementById('speedCard')
   };
   
   // Get the commander card
@@ -4830,7 +4693,7 @@ tryOfferResume();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=101').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=102').catch(() => {});
   });
 }
 

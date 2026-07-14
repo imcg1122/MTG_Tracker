@@ -41,7 +41,7 @@ docs/                ← DEVELOPMENT.md (environments/assets), MODERNIZATION.md 
 | `sw.js` | Line 1 | `const CACHE = 'mtg-playmat-vXX'` |
 | `index.html` | Line ~1590 | `const APP_VERSION='XX'` |
 
-**Current version: v101**
+**Current version: v102**
 
 All three must be updated to the same number in the same session — run **`npm run bump`**
 (scripts/bump-version.mjs) to update all three at once. The deploy workflow fails the build if
@@ -60,7 +60,7 @@ The SW query string (`?vXX`) forces the browser to re-download the service worke
 - **Persistence + resume modal** (see State Management Rules) and **screen wake lock** (`requestWakeLock()`, re-acquired on visibility change).
 - **Life log/undo**: `logLifeChange()` merges taps within 2.5s; `undoLife()` reverts the last entry; rendered by `renderLifeLog()` in the life card.
 - **Table board** (`multi`): `renderMulti()`/`adjMultiLife()`; away-facing seats get class `flipped`.
-- **Turn/Phase module** (`turnPhase`), **first-player randomizer** (`openFirstPlayer()`, in the dice card), `prefers-reduced-motion` support, ARIA labels via `a11yInit()`.
+- `prefers-reduced-motion` support, ARIA labels via `a11yInit()`. (v98's Turn/Phase module and first-player randomizer were removed in v102 at user request.)
 - **Token combat**: `combatArea` is saved per-format and re-indexed on token removal (`removeTokenFromStack`, `endCombatPhase` use *spliced* indices only).
 - Dev/prod flow, version bump script, and asset strategy: see `docs/DEVELOPMENT.md`. Module-split plan: `docs/MODERNIZATION.md`.
 
@@ -76,7 +76,9 @@ The app has 10 board modes, switched via the format button bar. Each format save
 | `standard` | Standard | 20 | Shows Day/Night + Energy in right column; 7 module slots |
 | `simple` | Mobile | 20 | Landscape phone layout; module row at bottom; 3 visible module slots |
 | `multi` | Table | 40 | Local multiplayer: 2–4 split-screen life counters, away-facing seats rotated 180°; per-seat ⚔ commander damage |
-| `mana` | Mana | — | Fullscreen mana-only tracker: 3×2 grid into `#manaBoardGrid` (`renderMana()` picks the grid by `fmt`), big untap bar, no scrolling |
+| `mana` | Mana | — | Fullscreen mana-only tracker: 3×2 grid into `#manaBoardGrid` (`renderMana()` picks the grid by `fmt`), big untap bar, no scrolling (`body.mana-fs`) |
+
+`PRIMARY_BOARDS = ['commander','standard','simple','multi','mana']` — interacting with one of these locks it as the active board and hides the other four (`markBoardUsed()` → `updateGameBoardButtonVisibility()`).
 | `tokens` | Tokens | 20 | Token combat tracker |
 | `dungeon` | Dungeon | 20 | 4 SVG dungeon maps |
 | `ring` | The Ring | 20 | 4-stage emblem tracker |
@@ -194,7 +196,8 @@ Modules are optional tracker cards that can be added to any format's right colum
 | `init` | Initiative | Toggle | Tap to toggle; shows blue pulse when active |
 | `monarch` | Monarch | Toggle | Tap to toggle; shows golden glow when active |
 | `dayNight` | Day/Night | Toggle | Tap to toggle ☀️/🌙 |
-| `turnPhase` | Turn/Phase | Stepper | Tap advances phase (Untap→Upkeep→Draw→Main 1→Combat→Main 2→End); wraps to next turn; shows per-turn timer; − steps back, ↺ resets |
+
+(A `turnPhase` module existed v98–v101 and was removed in v102 — `loadState()` migrates it out of persisted `activeModules`. A module can occupy only ONE slot; `openModulePicker()` hides already-active modules and `setActiveModuleSafe()` enforces it.)
 
 ### Module Slot Behavior
 - Empty slots show a "+" tile → tap to open the module picker modal
