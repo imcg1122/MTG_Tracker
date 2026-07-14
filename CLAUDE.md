@@ -41,7 +41,7 @@ docs/                ← DEVELOPMENT.md (environments/assets), MODERNIZATION.md 
 | `sw.js` | Line 1 | `const CACHE = 'mtg-playmat-vXX'` |
 | `index.html` | Line ~1590 | `const APP_VERSION='XX'` |
 
-**Current version: v102**
+**Current version: v103**
 
 All three must be updated to the same number in the same session — run **`npm run bump`**
 (scripts/bump-version.mjs) to update all three at once. The deploy workflow fails the build if
@@ -242,7 +242,7 @@ Every counter function (`adjPoison`, `adjXp`, `adjStorm`, `adjEnergy`, etc.) and
 
 - 6 slots (`POOL_SLOTS = 6`). Grid: 2 columns × 3 rows on Commander/Standard (narrow middle column), 3 columns × 2 rows in `simple-mode`. The `minmax(0,1fr)` columns are what stop filled cards from blowing the layout out sideways.
 - "Untap all" is a full-width bar (`.untap-all-bar`) below the grid, not a header button. The Turn/Phase module auto-untaps the pool when it wraps into a new turn (`advancePhase()`).
-- Table board: each seat has a ⚔ button → per-seat commander damage modal (`openMultiCmd(i)`, stored in `multiPlayers[i].cmd`); 21+ from one opponent marks the seat dead (`multiSeatDead()`), and damage mirrors onto the seat's life.
+- Table board: seats are filled with mana-card visuals (`MULTI_CM=['w','u','r','g']` → `CM` colors + `pool-glow` breathing). Commander damage = always-visible chips on each seat, one per opponent, colored like the attacker's seat (tap +1, hold 500ms −1, via `adjMultiCmd(i,j,d)`, stored in `multiPlayers[i].cmd`); 21+ from one opponent marks the seat dead (`multiSeatDead()`), and damage mirrors onto the seat's life. No modal.
 - Empty slot → "Tap to add mana" → opens color picker modal
 - Filled slot → shows mana card with inline +/−/↺ buttons, breathing inner glow animation
 - Colors: White (☀️ sun), Blue (💧 drop), Black (💀 skull), Red (⛰ peak), Green (🌿 leaf), Colorless (◆ diamond)

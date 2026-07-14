@@ -339,8 +339,8 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
   .mat.simple-mode .module-row .hrow-num{font-size:11px;}
   .mat.simple-mode .module-row .hrow-lbl{font-size:6px;}
   .mat.simple-mode .module-row .hrow-btns{gap:2px;}
-  .mat.simple-mode .module-row .reset-icon{width:16px;height:16px;}
-  .mat.simple-mode .module-row .reset-icon svg{width:8px;height:8px;}
+  .mat.simple-mode .module-row .reset-icon{width:22px;height:22px;}
+  .mat.simple-mode .module-row .reset-icon svg{width:11px;height:11px;}
   
   /* Mana status text */
   .mana-status{font-size:6px;}
@@ -473,10 +473,14 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .cmd-val.danger{color:#e05040;}
 .cbtn{height:20px;min-width:32px;border-radius:3px;border:1px solid var(--c-btn-border);background:var(--c-btn);color:var(--c-gold);font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;padding:0 5px;white-space:nowrap;flex-shrink:0;font-weight:600;line-height:1;}
 .cbtn:active{background:var(--c-btn-active);}
-.reset-icon{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;border:1px solid rgba(200,80,60,0.35);background:transparent;cursor:pointer;color:rgba(220,100,80,0.65);user-select:none;flex-shrink:0;transition:background .1s;margin-left:3px;position:relative;}
-/* Invisible tap halo: grows the touch target to ~34x40px without moving a single pixel of layout.
-   Vertical reach is generous; horizontal is tighter so adjacent buttons don't fight over taps. */
-.reset-icon::after{content:"";position:absolute;top:-12px;bottom:-12px;left:-5px;right:-5px;}
+.reset-icon{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:1px solid rgba(200,80,60,0.45);background:rgba(200,80,60,0.08);cursor:pointer;color:rgba(220,100,80,0.75);user-select:none;flex-shrink:0;transition:background .1s;margin-left:3px;position:relative;}
+.reset-icon svg{width:13px;height:13px;}
+.reset-icon:active{background:rgba(200,80,60,0.22);}
+/* Compact contexts keep a slightly smaller (still tappable) size */
+.cmd-row .reset-icon{width:22px;height:22px;}
+.cmd-row .reset-icon svg{width:12px;height:12px;}
+/* Invisible tap halo on top of the visible size — effective target ~34x40px */
+.reset-icon::after{content:"";position:absolute;top:-7px;bottom:-7px;left:-3px;right:-3px;}
 .reset-icon:active{background:rgba(200,80,60,0.18);}
 
 
@@ -1012,7 +1016,7 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 /* ── Reduced motion: disable decorative animation, keep functional state changes ── */
 @media (prefers-reduced-motion: reduce){
   .goaded-active::before,.monarch-active,.initiative-active,.speed-card.speed-4,
-  .dice-spinning,.fmt-btn-glowing,.pool-card,.pool-card-inner{animation:none !important;}
+  .dice-spinning,.fmt-btn-glowing,.pool-card,.pool-card-inner,.multi-seat{animation:none !important;}
   .counter-pop,.life-slash,.life-heal,.mana-burst-fixed,.token-burst-fixed{animation-duration:.01s !important;}
   *{transition-duration:.01s !important;}
 }
@@ -1038,9 +1042,9 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .multi-grid.p3{grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr;}
 .multi-grid.p3 .multi-seat:first-child{grid-column:1/3;}
 .multi-grid.p4{grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr;}
-.multi-seat{position:relative;border:1.5px solid var(--c-card-border);border-radius:12px;background:var(--c-card);display:flex;align-items:center;justify-content:center;overflow:hidden;user-select:none;min-height:150px;}
+.multi-seat{position:relative;border:2px solid var(--c-card-border);border-radius:12px;background:var(--c-card);display:flex;align-items:center;justify-content:center;overflow:hidden;user-select:none;min-height:150px;animation:pool-glow 4s ease-in-out infinite;}
 .multi-seat.flipped{transform:rotate(180deg);}
-.multi-seat.dead{opacity:.45;}
+.multi-seat.dead{opacity:.45;animation:none;}
 .multi-life{font-size:clamp(40px,9vw,88px);font-weight:700;color:var(--c-gold);font-variant-numeric:tabular-nums;pointer-events:none;line-height:1;}
 .multi-name{position:absolute;top:6px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted);pointer-events:none;}
 .multi-tap{position:absolute;top:0;bottom:0;width:50%;display:flex;align-items:center;cursor:pointer;touch-action:manipulation;}
@@ -1048,11 +1052,15 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .multi-tap.plus{right:0;justify-content:flex-end;}
 .multi-tap .multi-tap-sign{font-size:20px;color:var(--c-faint);padding:0 12px;pointer-events:none;}
 .multi-tap:active{background:rgba(255,255,255,0.04);}
-/* z-index keeps the button above the seat's full-height +/- tap zones */
-.multi-cmd-btn{position:absolute;top:8px;right:10px;z-index:2;min-width:44px;min-height:40px;display:flex;align-items:center;justify-content:center;gap:4px;border:1px solid var(--c-btn-border);background:var(--c-btn);border-radius:8px;font-size:16px;color:var(--c-gold);cursor:pointer;user-select:none;touch-action:manipulation;padding:0 8px;}
-.multi-cmd-btn:active{background:var(--c-btn-active);}
-.multi-cmd-badge{font-size:12px;font-weight:700;color:var(--c-gold);font-variant-numeric:tabular-nums;}
-.multi-cmd-badge.lethal{color:#e07a68;}
+/* Commander damage chips: one per opponent, color-matched to the attacker's seat.
+   z-index keeps them above the seat's full-height +/- tap zones. */
+.multi-cmd-row{position:absolute;top:8px;right:10px;z-index:2;display:flex;gap:8px;}
+.multi-cmd-chip{min-width:44px;height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid;border-radius:10px;cursor:pointer;user-select:none;touch-action:manipulation;padding:1px 8px 0;line-height:1.05;}
+.multi-cmd-chip .chip-num{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:rgba(255,255,255,0.92);}
+.multi-cmd-chip .chip-lbl{font-size:7px;text-transform:uppercase;letter-spacing:.06em;opacity:.8;color:rgba(255,255,255,0.85);}
+.multi-cmd-chip.zero{opacity:.5;}
+.multi-cmd-chip.lethal{background:rgba(180,50,50,0.4)!important;border-color:rgba(220,80,80,0.9)!important;}
+.multi-cmd-chip:active{filter:brightness(1.35);}
 .multi-five{position:absolute;bottom:8px;display:flex;gap:10px;left:0;right:0;justify-content:center;z-index:2;}
 .multi-five .cbtn{pointer-events:auto;}
 /* ── Mana board: fullscreen mana-only tracker ── */
@@ -1496,6 +1504,7 @@ body.mana-fs .wrap{min-height:0;}
       <div class="multi-ctl-btn" data-slife="20" onclick="setMultiStartLife(20)">20</div>
       <div class="multi-ctl-btn" data-slife="30" onclick="setMultiStartLife(30)">30</div>
       <div class="multi-ctl-btn active" data-slife="40" onclick="setMultiStartLife(40)">40</div>
+      <span class="multi-ctl-lbl" style="margin-left:12px;">Cmd damage chips: tap +1 · hold −1</span>
       <div class="multi-ctl-btn" style="margin-left:auto;" onclick="resetMulti()" role="button" aria-label="Reset all players to starting life">↺ Reset table</div>
     </div>
     <div class="multi-grid p4" id="multiGrid"></div>
@@ -1516,18 +1525,6 @@ body.mana-fs .wrap{min-height:0;}
 
 </div>
 </div>
-</div>
-
-<!-- table board: per-seat commander damage modal -->
-<div class="overlay" id="multiCmdOverlay" onclick="closeOutside(event,'multiCmdOverlay')">
-  <div class="modal">
-    <div class="modal-title" id="multiCmdTitle">Commander damage</div>
-    <div class="modal-note">21+ from a single commander defeats the player</div>
-    <div id="multiCmdRows" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
-    <div class="modal-foot">
-      <div class="modal-close" onclick="closeMultiCmd()">Done</div>
-    </div>
-  </div>
 </div>
 
 <!-- commander damage defeat modal -->
@@ -1756,7 +1753,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=6; // 2 rows × 3 — six mono types exist and identical types stack, so 6 distinct slots covers real games
-const APP_VERSION='102';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
+const APP_VERSION='103';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -3649,7 +3646,7 @@ function setActiveModule(slotIndex,moduleId){
   setFormat(fmt);
 }
 // ── Local multiplayer (Table) board ──
-const MULTI_COLORS=['#c8b870','#4a8fd8','#e06040','#40a060'];
+const MULTI_CM=['w','u','r','g']; // each seat borrows a mana identity: Plains, Island, Mountain, Forest
 function initMultiPlayers(){
   multiPlayers=[];
   for(let i=0;i<4;i++)multiPlayers.push({life:multiStartLife,name:'Player '+(i+1),cmd:{}});
@@ -3669,24 +3666,46 @@ function renderMulti(){
   for(let i=0;i<multiCount;i++){
     const p=multiPlayers[i];
     if(!p.cmd)p.cmd={}; // older persisted seats predate commander damage
+    const cm=CM[MULTI_CM[i%MULTI_CM.length]];
     const seat=document.createElement('div');
     // Seats facing away from the user flip 180° so each player reads their own number upright
     const flipped=(multiCount===2&&i===0)||(multiCount===3&&i===0)||(multiCount===4&&i<2);
     const dead=multiSeatDead(p);
     seat.className='multi-seat'+(flipped?' flipped':'')+(dead?' dead':'');
-    seat.style.borderColor=MULTI_COLORS[i%MULTI_COLORS.length];
+    // Same visual language as the mana cards: color fill + border + breathing glow
+    seat.style.background=cm.bg;
+    seat.style.borderColor=cm.bc;
+    seat.style.setProperty('--glow-color',MULTI_CM[i%MULTI_CM.length]==='w'?'rgba(200,160,40,0.5)':hexToGlow(cm.bc,0.45));
     const name=document.createElement('div');name.className='multi-name';name.textContent=p.name+(dead?' ☠':'');
+    name.style.color=cm.text;
     const lifeEl=document.createElement('div');lifeEl.className='multi-life';lifeEl.textContent=p.life;
     if(p.life<=5)lifeEl.style.color='#e06040';
-    // Per-seat commander damage tracker
-    const cmdBtn=document.createElement('div');
-    cmdBtn.className='multi-cmd-btn';
-    cmdBtn.setAttribute('role','button');
-    cmdBtn.setAttribute('aria-label',p.name+' commander damage');
-    const maxCmd=Math.max(0,...Object.values(p.cmd||{}).map(Number));
-    cmdBtn.innerHTML='⚔'+(maxCmd>0?`<span class="multi-cmd-badge${maxCmd>=21?' lethal':''}">${maxCmd}</span>`:'');
-    cmdBtn.onclick=(e)=>{e.stopPropagation();openMultiCmd(i);};
-    seat.appendChild(cmdBtn);
+    // Commander damage chips: one per opponent, colored like the attacker's seat.
+    // Tap = +1 (life deducts too), press-and-hold = −1.
+    const chipRow=document.createElement('div');
+    chipRow.className='multi-cmd-row';
+    for(let j=0;j<multiCount;j++){
+      if(j===i)continue;
+      const dmg=p.cmd[j]||0;
+      const acm=CM[MULTI_CM[j%MULTI_CM.length]];
+      const chip=document.createElement('div');
+      chip.className='multi-cmd-chip'+(dmg===0?' zero':'')+(dmg>=21?' lethal':'');
+      chip.style.borderColor=acm.bc;
+      chip.style.background=acm.bg;
+      chip.setAttribute('role','button');
+      chip.setAttribute('aria-label','Commander damage from '+multiPlayers[j].name+': '+dmg+'. Tap to add 1, hold to remove 1.');
+      chip.innerHTML=`<span class="chip-num">${dmg>=21?'☠ '+dmg:dmg}</span><span class="chip-lbl">${acm.name}</span>`;
+      const atkIdx=j;
+      let holdTimer=null,held=false;
+      chip.onpointerdown=(e)=>{e.stopPropagation();held=false;holdTimer=setTimeout(()=>{held=true;adjMultiCmd(i,atkIdx,-1);},500);};
+      chip.onpointerup=(e)=>{e.stopPropagation();clearTimeout(holdTimer);if(!held)adjMultiCmd(i,atkIdx,1);};
+      chip.onpointercancel=()=>clearTimeout(holdTimer);
+      chip.onpointerleave=()=>clearTimeout(holdTimer);
+      chip.oncontextmenu=(e)=>e.preventDefault();
+      chip.onclick=(e)=>e.stopPropagation();
+      chipRow.appendChild(chip);
+    }
+    seat.appendChild(chipRow);
     const minus=document.createElement('div');minus.className='multi-tap minus';minus.setAttribute('role','button');minus.setAttribute('aria-label',p.name+' minus 1 life');
     minus.innerHTML='<span class="multi-tap-sign">−</span>';
     minus.onclick=()=>adjMultiLife(i,-1);
@@ -3715,41 +3734,7 @@ function setMultiStartLife(n){
 }
 function resetMulti(){initMultiPlayers();renderMulti();updateActivityBadges();}
 
-// ── Table board: per-seat commander damage ──
-let multiCmdSeat=-1;
-function openMultiCmd(i){
-  multiCmdSeat=i;
-  renderMultiCmdModal();
-  document.getElementById('multiCmdOverlay').classList.add('open');
-}
-function closeMultiCmd(){
-  multiCmdSeat=-1;
-  document.getElementById('multiCmdOverlay').classList.remove('open');
-}
-function renderMultiCmdModal(){
-  const i=multiCmdSeat;
-  if(i<0||!multiPlayers||!multiPlayers[i])return;
-  const p=multiPlayers[i];
-  if(!p.cmd)p.cmd={};
-  document.getElementById('multiCmdTitle').textContent=p.name+' — commander damage taken';
-  const rows=document.getElementById('multiCmdRows');
-  rows.innerHTML='';
-  for(let j=0;j<multiCount;j++){
-    if(j===i)continue;
-    const dmg=p.cmd[j]||0;
-    const row=document.createElement('div');
-    row.className='cmd-row';
-    if(dmg>=21){row.style.borderColor='rgba(220,80,80,0.65)';row.style.background='rgba(180,50,50,0.18)';}
-    const nm=document.createElement('div');nm.className='cmd-name';
-    nm.textContent='From '+multiPlayers[j].name+(dmg>=21?' ☠':'');
-    nm.style.color=MULTI_COLORS[j%MULTI_COLORS.length];
-    const val=document.createElement('div');val.className='cmd-val'+(dmg>=21?' danger':'');val.textContent=dmg;
-    const mk=(lbl,d)=>{const b=document.createElement('div');b.className='cbtn';b.textContent=lbl;b.onclick=()=>adjMultiCmd(i,j,d);return b;};
-    row.appendChild(nm);row.appendChild(val);
-    row.appendChild(mk('−1',-1));row.appendChild(mk('+1',1));row.appendChild(mk('+5',5));
-    rows.appendChild(row);
-  }
-}
+// ── Table board: per-seat commander damage (chips on each seat) ──
 function adjMultiCmd(i,j,d){
   const p=multiPlayers[i];
   if(!p.cmd)p.cmd={};
@@ -3759,7 +3744,6 @@ function adjMultiCmd(i,j,d){
   // Commander damage is still damage: mirror it on the life total
   p.life=Math.max(0,p.life-applied);
   markBoardUsed('multi');
-  renderMultiCmdModal();
   renderMulti();
   updateActivityBadges();
 }
@@ -4693,7 +4677,7 @@ tryOfferResume();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=102').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=103').catch(() => {});
   });
 }
 
