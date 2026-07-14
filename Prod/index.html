@@ -1063,8 +1063,10 @@ html,body{width:100%;min-height:100vh;background:#111;font-family:system-ui,-app
 .multi-cmd-chip.zero{opacity:.5;}
 .multi-cmd-chip.lethal{background:rgba(180,50,50,0.4)!important;border-color:rgba(220,80,80,0.9)!important;}
 .multi-cmd-chip:active{filter:brightness(1.35);}
-.multi-five{position:absolute;bottom:8px;display:flex;gap:10px;left:0;right:0;justify-content:center;z-index:2;}
-.multi-five .cbtn{pointer-events:auto;}
+/* Per-seat reset: content-sized and centered so it doesn't blanket the seat's tap zones
+   the way the old full-width ±5 row did (that row was eating corner/bottom taps) */
+.multi-reset{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:2;display:flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:0 16px;border:1px solid var(--c-btn-border);background:var(--c-btn);border-radius:8px;font-size:12px;color:var(--c-gold);cursor:pointer;user-select:none;touch-action:manipulation;}
+.multi-reset:active{background:var(--c-btn-active);}
 /* ── Mana board: fullscreen mana-only tracker ── */
 /* The mat chain becomes a fixed-height flex column so the board fills the viewport exactly — no scrolling.
    border-box everywhere means responsive paddings on .mat/.mat-inner are absorbed, not added. */
@@ -1095,7 +1097,7 @@ body.mana-fs .wrap{min-height:0;}
   .mana-board-grid .pool-spent{display:none;}
   .mana-board-grid .pool-total{font-size:26px;}
   .mana-board-grid .pool-icon{width:30px;height:30px;}
-  .mana-board-grid .pool-name{font-size:9px;}
+  .mana-board-grid .pool-name{font-size:7.5px;letter-spacing:.02em;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 3px;}
   .mana-board-grid .pool-inline-btn,.mana-board-grid .pool-inline-btn-add{min-height:38px;}
 }
 .mana-board-grid .pool-inline-btn{min-height:clamp(40px,7vh,56px);font-size:18px;}
@@ -1106,7 +1108,6 @@ body.mana-fs .wrap{min-height:0;}
   .mana-board-grid{gap:4px;}
   .mana-screen .untap-all-bar{min-height:38px;font-size:11px;}
 }
-.multi-five .cbtn{font-size:13px;padding:7px 18px;min-height:36px;display:flex;align-items:center;touch-action:manipulation;}
 /* ── Modal inline message (replaces alert) ── */
 .modal-msg{display:none;font-size:10px;color:#e08a7a;margin:6px 0;text-align:center;}
 .modal-msg.show{display:block;}
@@ -1764,7 +1765,7 @@ const GUILDS=[
   {name:'Boros',c1:'r',c2:'w'},{name:'Simic',c1:'g',c2:'u'}
 ];
 const POOL_SLOTS=6; // 2 rows × 3 — six mono types exist and identical types stack, so 6 distinct slots covers real games
-const APP_VERSION='104';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
+const APP_VERSION='105';  // Update this each release (index.html ×2 + sw.js — or run: npm run bump)
 // ── Module Configuration ──
 const MODULE_CONFIG={
   commander:[
@@ -1871,7 +1872,7 @@ let dungeonId=null,currentRoom=-1,dungeonPath=[];
 let ringStage=-1,ringBearer='';
 let diceHist=[],manaEntries=[],themeSel=[],manualSel=[],hybridMode='add',manaEntersTapped=false;
 let tokenPool=[]; // Array of token objects: {power, toughness, color, keywords: [], tapped: false}
-let activeModules=['','','','','']; // Array of active module IDs for the current format
+let activeModules=['','','','']; // Active module IDs for the current format (commander default: 4 slots; loadState() syncs the real count per format)
 let lifeLog=[]; // Life change history for undo: [{d, ts, committed}] newest last
 let multiPlayers=null,multiCount=4,multiStartLife=40; // Table board (local multiplayer)
 
@@ -1989,7 +1990,8 @@ function renderLifeLog(){
   const undoBtn=document.getElementById('lifeUndoBtn');
   if(!el)return;
   el.innerHTML='';
-  lifeLog.slice(-5).forEach(e=>{
+  // Show only the most recent change; undo reveals the one before it
+  lifeLog.slice(-1).forEach(e=>{
     const s=document.createElement('span');
     s.className=e.d>0?'pos':'neg';
     s.textContent=(e.d>0?'+':'−')+Math.abs(e.d);
@@ -3727,11 +3729,13 @@ function renderMulti(){
     const plus=document.createElement('div');plus.className='multi-tap plus';plus.setAttribute('role','button');plus.setAttribute('aria-label',p.name+' plus 1 life');
     plus.innerHTML='<span class="multi-tap-sign">+</span>';
     plus.onclick=()=>adjMultiLife(i,1);
-    const five=document.createElement('div');five.className='multi-five';
-    const m5=document.createElement('div');m5.className='cbtn';m5.textContent='−5';m5.onclick=(e)=>{e.stopPropagation();adjMultiLife(i,-5);};
-    const p5=document.createElement('div');p5.className='cbtn';p5.textContent='+5';p5.onclick=(e)=>{e.stopPropagation();adjMultiLife(i,5);};
-    five.appendChild(m5);five.appendChild(p5);
-    seat.appendChild(name);seat.appendChild(lifeEl);seat.appendChild(minus);seat.appendChild(plus);seat.appendChild(five);
+    const resetBtn=document.createElement('div');
+    resetBtn.className='multi-reset';
+    resetBtn.setAttribute('role','button');
+    resetBtn.setAttribute('aria-label','Reset '+p.name+' to '+multiStartLife+' life');
+    resetBtn.textContent='↺ Reset';
+    resetBtn.onclick=(e)=>{e.stopPropagation();resetMultiSeat(i);};
+    seat.appendChild(name);seat.appendChild(lifeEl);seat.appendChild(minus);seat.appendChild(plus);seat.appendChild(resetBtn);
     grid.appendChild(seat);
   }
 }
@@ -3748,6 +3752,12 @@ function setMultiStartLife(n){
   renderMulti();updateActivityBadges();
 }
 function resetMulti(){initMultiPlayers();renderMulti();updateActivityBadges();}
+function resetMultiSeat(i){
+  if(!multiPlayers||!multiPlayers[i])return;
+  multiPlayers[i].life=multiStartLife;
+  multiPlayers[i].cmd={};
+  renderMulti();updateActivityBadges();
+}
 
 // ── Table board: per-seat commander damage (chips on each seat) ──
 function adjMultiCmd(i,j,d){
@@ -4691,6 +4701,7 @@ function a11yInit(){
   if(lifeNum)lifeNum.setAttribute('aria-live','polite');
 }
 
+loadState(); // sync live vars (incl. per-format module slot count) with fmtState before first render
 buildManaGrid();
 renderAll();
 renderCombatArea();
@@ -4701,7 +4712,7 @@ tryOfferResume();
 // Register service worker for offline/PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=104').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=105').catch(() => {});
   });
 }
 

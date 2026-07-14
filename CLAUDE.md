@@ -41,7 +41,7 @@ docs/                ← DEVELOPMENT.md (environments/assets), MODERNIZATION.md 
 | `sw.js` | Line 1 | `const CACHE = 'mtg-playmat-vXX'` |
 | `index.html` | Line ~1590 | `const APP_VERSION='XX'` |
 
-**Current version: v104**
+**Current version: v105**
 
 All three must be updated to the same number in the same session — run **`npm run bump`**
 (scripts/bump-version.mjs) to update all three at once. The deploy workflow fails the build if
@@ -58,8 +58,8 @@ The SW query string (`?vXX`) forces the browser to re-download the service worke
 - **Security**: CSP `<meta>` tag; player names sanitized at render in `renderCmd()`; ring-bearer stored raw (double-encode fix); pinch-zoom restored (`touch-action:manipulation` on controls instead).
 - **Identification**: format buttons carry `data-fmt`, commander rows carry `data-player` — never match buttons/rows by parsing text or `onclick` strings.
 - **Persistence + resume modal** (see State Management Rules) and **screen wake lock** (`requestWakeLock()`, re-acquired on visibility change).
-- **Life log/undo**: `logLifeChange()` merges taps within 2.5s; `undoLife()` reverts the last entry; rendered by `renderLifeLog()` in the life card.
-- **Table board** (`multi`): `renderMulti()`/`adjMultiLife()`; away-facing seats get class `flipped`.
+- **Life log/undo**: `logLifeChange()` merges taps within 2.5s; `undoLife()` reverts the last entry; `renderLifeLog()` shows only the single most recent change (undo reveals the one before).
+- **Table board** (`multi`): `renderMulti()`/`adjMultiLife()`; away-facing seats get class `flipped`. Each seat: full-height ±1 tap halves, a centered per-seat `↺ Reset` (`resetMultiSeat(i)`), and cmd-damage chips. NEVER add a full-width absolutely-positioned overlay inside a seat — it eats the tap zones (this is why the old ±5 row was removed). `loadState()` must run once at init before the first render so the live `activeModules` length matches the format (commander = 4 slots).
 - `prefers-reduced-motion` support, ARIA labels via `a11yInit()`. (v98's Turn/Phase module and first-player randomizer were removed in v102 at user request.)
 - **Token combat**: `combatArea` is saved per-format and re-indexed on token removal (`removeTokenFromStack`, `endCombatPhase` use *spliced* indices only).
 - Dev/prod flow, version bump script, and asset strategy: see `docs/DEVELOPMENT.md`. Module-split plan: `docs/MODERNIZATION.md`.
